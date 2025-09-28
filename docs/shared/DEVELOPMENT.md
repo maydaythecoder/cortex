@@ -341,3 +341,10 @@ cargo test
 The Cortex project follows modern software development practices with a focus on performance, safety, and usability. By maintaining dual implementations and comprehensive documentation, we ensure both development velocity and production readiness.
 
 Contributors are encouraged to follow these guidelines and help improve the project for the entire community.
+
+## Related Documentation
+
+- [Function Status](FUNCTION_STATUS.md)
+- [Python Implementation Guide](../python/README.md)
+- [Rust Implementation Guide](../rust/README.md)
+- [Language Comparison](COMPARISON.md)

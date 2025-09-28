@@ -382,6 +382,7 @@ let result = self.interpret_expression(arg)
 ## Related Documentation
 
 - [Shared Error Reference](../shared/ERRORS.md)
+- [Function Status](../shared/FUNCTION_STATUS.md)
 - [Rust Implementation Guide](README.md)
 - [Development Guide](../shared/DEVELOPMENT.md)
 - [Rust Book](https://doc.rust-lang.org/book/)

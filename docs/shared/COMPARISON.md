@@ -108,6 +108,13 @@ This document compares the Python and Rust implementations of the Cortex compile
 - **Learning**: Understanding language implementation
 - **Prototyping**: Quick feature development and testing
 
+## Related Documentation
+
+- [Function Status](FUNCTION_STATUS.md)
+- [Python Implementation Guide](../python/README.md)
+- [Rust Implementation Guide](../rust/README.md)
+- [Development Guide](DEVELOPMENT.md)
+
 ### Code Examples
 
 #### Hello World - Python

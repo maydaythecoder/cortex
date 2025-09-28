@@ -281,6 +281,7 @@ Suggestion: Add '|' after the parameter list
 
 - [Python Error Reference](../python/ERRORS.md)
 - [Rust Error Reference](../rust/ERRORS.md)
+- [Function Status](FUNCTION_STATUS.md)
 - [Development Guide](DEVELOPMENT.md)
 - [Language Specification](SYNTAX.md)
 

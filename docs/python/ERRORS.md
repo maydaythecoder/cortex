@@ -194,6 +194,14 @@ This document provides specific error information for the Python-based Cortex co
 - **Cause:** LLVM version incompatible with llvmlite
 - **Solution:** Check LLVM and llvmlite version compatibility
 
+## Related Documentation
+
+- [Shared Error Reference](../shared/ERRORS.md)
+- [Function Status](../shared/FUNCTION_STATUS.md)
+- [Python Implementation Guide](README.md)
+- [Development Guide](../shared/DEVELOPMENT.md)
+- [LLVM Documentation](https://llvm.org/docs/)
+
 ## Troubleshooting Python Errors
 
 ### Debug Mode

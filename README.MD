@@ -448,6 +448,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 - **Documentation**: [docs/shared/](docs/shared/)
 - **Examples**: [docs/shared/examples/](docs/shared/examples/)  
+- **Function Status**: [docs/shared/FUNCTION_STATUS.md](docs/shared/FUNCTION_STATUS.md)
 - **Python Implementation**: [python/](python/)
 - **Rust Implementation**: [rust/](rust/)
 - **Issues**: [GitHub Issues](https://github.com/yourname/cortex/issues)
