@@ -97,7 +97,14 @@ class Parser:
         
         var_name = self._expect(TokenType.IDENTIFIER).value
         
-        # Check for assignment type first
+        # Check for type annotation
+        type_annotation = None
+        if self.current_token and self.current_token.type == TokenType.COLON:
+            self._advance()
+            type_name = self._expect(TokenType.IDENTIFIER).value
+            type_annotation = TypeAnnotation(type_name)
+        
+        # Check for assignment type
         if self.current_token and self.current_token.type == TokenType.ASSIGN_CONST:
             self._advance()
             value = self._parse_expression()
