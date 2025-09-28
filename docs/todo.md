@@ -1,208 +1,241 @@
-# Cortex Development TODO
+# Cortex Development TODO - Rust Compiler Migration
 
-This document contains actionable tasks for Cortex development, organized by priority and timeline.
+This document contains actionable tasks for Cortex development, organized by priority and timeline. **Focus: Migrating from Python to Rust for production-grade AI/ML compiler performance.**
 
-## Short-term Tasks (Immediate - Next 4 weeks)
+## 🦀 **RUST MIGRATION STRATEGY**
 
-### ✅ COMPLETED: Basic Compiler Implementation
+### **Migration Rationale**
 
-- [x] **LLVM-based compiler architecture**
-  - Implemented `compiler/codegen.py` with LLVM IR generation
-  - Created `compiler/compiler.py` with binary compilation pipeline
-  - Updated `cortexc.py` to support `build` command
-  - **Files**: `compiler/codegen.py`, `compiler/compiler.py`, `cortexc.py`
+- **Performance**: 10-100x faster compilation and execution
+- **Memory Safety**: Zero-cost abstractions with compile-time guarantees
+- **LLVM Integration**: Superior Rust LLVM bindings (inkwell, llvm-sys)
+- **Concurrency**: Safe parallelism for multi-threaded compilation
+- **Production Ready**: Industry-standard for system programming
 
-- [x] **Core language features support**
-  - Arithmetic operations (+, -, *, /, %, **)
-  - Printing functionality with `print[]` function
-  - While loops with condition evaluation
-  - Variable assignments and expressions
-  - **Files**: All compiler modules
+### **Technology Stack**
 
-- [x] **Test examples created**
-  - `examples/arithmetic.ctx` - arithmetic operations
-  - `examples/loops.ctx` - while loops and control flow
-  - `examples/printing.ctx` - printing capabilities
-  - **Files**: `examples/` directory
+```rust
+// Core Dependencies
+inkwell = "0.4"           // LLVM bindings
+logos = "0.14"            // Lexing
+pest = "2.7"              // Parsing
+rayon = "1.8"             // Parallel processing
+ndarray = "0.15"          // Tensor operations
+serde = "1.0"             // Serialization
+clap = "4.0"              // CLI interface
+anyhow = "1.0"            // Error handling
+```
 
-### Critical Compiler Improvements (High Priority)
+---
 
-- [ ] **Enhanced Error Handling & Diagnostics**
-  - Add line/column information to all error messages
-  - Implement error recovery for common syntax errors
-  - Add helpful suggestions for typos and common mistakes
-  - Create comprehensive error message system
-  - **Files**: `compiler/parser/parser.py`, `compiler/parser/lexer.py`, `compiler/error_handler.py`
+## **Phase 1: Rust Foundation (Weeks 1-4)**
 
-- [ ] **Type System Foundation**
-  - Design and implement type checking system
-  - Add type inference for expressions and functions
-  - Implement type annotations and validation
-  - Create type error reporting with helpful messages
-  - **Files**: `compiler/type_checker.py`, `compiler/types/` directory
+### 🎯 **Week 1-2: Project Setup & Language Design**
 
-- [ ] **Symbol Table & Semantic Analysis**
-  - Implement multi-scope symbol table
-  - Add variable declaration and usage tracking
-  - Implement function signature validation
-  - Add semantic error detection (undefined variables, type mismatches)
-  - **Files**: `compiler/semantic_analyzer.py`, `compiler/symbol_table.py`
+- [ ] **Rust Project Initialization**
+  - Create new Rust workspace with Cargo
+  - Set up project structure: `cortex-rust/`
+  - Configure dependencies in `Cargo.toml`
+  - Set up CI/CD with GitHub Actions for Rust
+  - **Files**: `cortex-rust/Cargo.toml`, `cortex-rust/src/`
 
-- [ ] **Comprehensive Test Suite**
-  - Create `tests/` directory structure
-  - Add unit tests for lexer, parser, type checker, and code generator
-  - Add integration tests for example programs
-  - Add performance benchmarks and regression tests
-  - Set up continuous integration (GitHub Actions)
-  - **Files**: Create `tests/` directory, add `test_*.py` files
+- [ ] **Language Specification Update**
+  - Define enhanced Cortex syntax for AI/ML operations
+  - Design tensor literals: `[1, 2, 3]`, `[[1, 2], [3, 4]]`
+  - Plan automatic differentiation syntax: `∇[loss, params]`
+  - Design neural network primitives: `layer::Dense[input_size, output_size]`
+  - **Files**: `docs/language_spec.md`, `docs/ai_ml_syntax.md`
 
-### Advanced Language Features
+- [ ] **Rust Architecture Design**
+  - Design modular compiler architecture in Rust
+  - Plan trait-based interfaces for extensibility
+  - Design error handling with `anyhow` and `thiserror`
+  - Plan memory management and ownership patterns
+  - **Files**: `cortex-rust/architecture.md`
 
-- [ ] **Complete Data Structures**
-  - Implement native array data type with indexing (`arr[0]`, `arr[1:3]`)
-  - Add dictionary operations (get, set, iterate)
-  - Implement string concatenation and formatting
-  - Add bounds checking and error handling
-  - **Files**: `compiler/ast/nodes.py`, `compiler/codegen.py`, `compiler/interpreter.py`
+### 🎯 **Week 3-4: Rust Frontend Implementation**
 
-- [ ] **Enhanced Control Flow**
-  - Implement complete for loops with range support
-  - Add break and continue statements
-  - Implement exception handling (try/catch)
-  - Add switch/case statements
-  - **Files**: `compiler/parser/parser.py`, `compiler/codegen.py`
+- [ ] **Rust Lexer Implementation**
+  - Implement tokenizer using `logos` crate
+  - Define comprehensive token types for AI/ML syntax
+  - Add position tracking and error reporting
+  - Handle tensor literals, ML operators, and special symbols
+  - **Files**: `cortex-rust/src/lexer.rs`, `cortex-rust/src/tokens.rs`
 
-- [ ] **String Operations & Formatting**
-  - Implement string concatenation with `+` operator
-  - Add string formatting with placeholders
-  - Implement string interpolation
-  - Add string methods (length, split, join, etc.)
-  - **Files**: `compiler/codegen.py`, `compiler/builtins.py`
+- [ ] **Rust Parser Implementation**
+  - Implement recursive descent parser using `pest` or manual parsing
+  - Define AST nodes as Rust enums with proper ownership
+  - Parse function definitions, control structures, and tensor operations
+  - Handle operator precedence and associativity
+  - **Files**: `cortex-rust/src/parser.rs`, `cortex-rust/src/ast.rs`
 
-- [ ] **Memory Management**
-  - Implement garbage collection for complex data structures
-  - Add memory optimization for large arrays
-  - Implement reference counting
-  - Add memory usage monitoring
-  - **Files**: `compiler/runtime/` directory
+- [ ] **Rust AST & Type System**
+  - Design type-safe AST with Rust enums and structs
+  - Implement tensor type system (scalar, vector, matrix, n-dimensional)
+  - Add type inference and checking with ownership semantics
+  - Design ML-specific types (layers, activations, loss functions)
+  - **Files**: `cortex-rust/src/ast.rs`, `cortex-rust/src/types.rs`
 
-### Standard Library & Examples
+---
 
-- [ ] **Core Standard Library**
+## **Phase 2: LLVM Backend & Code Generation (Weeks 5-8)**
+
+### 🎯 **Week 5-6: LLVM Integration**
+
+- [ ] **Rust LLVM Backend Setup**
+  - Integrate `inkwell` crate for LLVM bindings
+  - Set up LLVM context, module, and builder
+  - Implement basic IR generation for arithmetic and control flow
+  - Add cross-platform target detection (x86_64, ARM64, GPU)
+  - **Files**: `cortex-rust/src/llvm_backend.rs`, `cortex-rust/src/codegen.rs`
+
+- [ ] **Basic Code Generation**
+  - Implement AST-to-LLVM-IR translation
+  - Generate LLVM IR for functions, variables, and expressions
+  - Add optimization passes (constant folding, dead code elimination)
+  - Implement binary executable generation
+  - **Files**: `cortex-rust/src/codegen/`, `cortex-rust/src/optimization.rs`
+
+- [ ] **Tensor Code Generation**
+  - Design tensor memory layout and representation in LLVM
+  - Implement tensor operations in LLVM IR
+  - Add BLAS/LAPACK integration for matrix operations
+  - Generate optimized loops for tensor computations
+  - **Files**: `cortex-rust/src/tensor_codegen.rs`
+
+### 🎯 **Week 7-8: Advanced Code Generation**
+
+- [ ] **GPU Code Generation**
+  - Design CUDA kernel generation system
+  - Implement OpenCL support for cross-platform GPU computing
+  - Add GPU memory management and optimization
+  - Generate optimized tensor operations for GPU
+  - **Files**: `cortex-rust/src/gpu/`, `cortex-rust/src/cuda.rs`, `cortex-rust/src/opencl.rs`
+
+- [ ] **Performance Optimizations**
+  - Implement SIMD vectorization for CPU operations
+  - Add multi-threading support with `rayon`
+  - Implement operator fusion for tensor operations
+  - Add profile-guided optimization support
+  - **Files**: `cortex-rust/src/optimization/`, `cortex-rust/src/vectorization.rs`
+
+- [ ] **Runtime System**
+  - Design memory allocator for large tensors
+  - Implement reference counting and garbage collection
+  - Add runtime type checking and validation
+  - Implement error handling and stack traces
+  - **Files**: `cortex-rust/src/runtime/`, `cortex-rust/src/memory.rs`
+
+---
+
+## **Phase 3: AI/ML Core Features (Weeks 9-16)**
+
+### 🎯 **Week 9-12: Automatic Differentiation System**
+
+- [ ] **Forward-Mode Autodiff**
+  - Implement dual numbers for forward-mode differentiation
+  - Add gradient computation for all tensor operations
+  - Design efficient memory layout for gradient computation
+  - Implement gradient accumulation and reduction
+  - **Files**: `cortex-rust/src/autodiff/forward.rs`, `cortex-rust/src/autodiff/dual.rs`
+
+- [ ] **Reverse-Mode Autodiff (Backpropagation)**
+  - Implement computational graph construction
+  - Add gradient checkpointing for memory efficiency
+  - Design tape-based backpropagation system
+  - Implement gradient scaling and accumulation
+  - **Files**: `cortex-rust/src/autodiff/reverse.rs`, `cortex-rust/src/autodiff/tape.rs`
+
+- [ ] **Gradient Operations**
+  - Implement gradient computation for all operations
+  - Add gradient checking and validation
+  - Design higher-order derivatives support
+  - Implement gradient clipping and normalization
+  - **Files**: `cortex-rust/src/autodiff/gradients.rs`
+
+### 🎯 **Week 13-16: Neural Network Primitives**
+
+- [ ] **Layer Implementations**
+  - Implement Dense/Linear layers with bias support
+  - Add Convolutional layers (1D, 2D, 3D)
+  - Implement Recurrent layers (LSTM, GRU, RNN)
+  - Add Attention mechanisms and Transformer layers
+  - **Files**: `cortex-rust/src/nn/layers.rs`
+
+- [ ] **Activation Functions**
+  - Implement common activations (ReLU, Sigmoid, Tanh, Softmax)
+  - Add specialized activations (GELU, Swish, Mish)
+  - Implement activation gradients for backpropagation
+  - Add activation fusion for performance optimization
+  - **Files**: `cortex-rust/src/nn/activations.rs`
+
+- [ ] **Loss Functions**
+  - Implement regression losses (MSE, MAE, Huber)
+  - Add classification losses (CrossEntropy, BinaryCrossEntropy)
+  - Implement specialized losses (Focal, Dice, IoU)
+  - Add loss function gradients and reduction strategies
+  - **Files**: `cortex-rust/src/nn/losses.rs`
+
+- [ ] **Optimizers**
+  - Implement SGD with momentum and Nesterov acceleration
+  - Add adaptive optimizers (Adam, AdamW, RMSprop, Adagrad)
+  - Implement learning rate schedulers (Step, Cosine, Exponential)
+  - Add optimizer state management and serialization
+  - **Files**: `cortex-rust/src/nn/optimizers.rs`
+
+---
+
+## **Phase 4: Training & Data Pipeline (Weeks 17-20)**
+
+### 🎯 **Week 17-20: Training Infrastructure**
+
+- [ ] **Training Loop Implementation**
+  - Implement basic training loop with forward/backward passes
+  - Add batch processing and mini-batch training
+  - Implement gradient accumulation for large models
+  - Add training metrics and logging system
+  - **Files**: `cortex-rust/src/training/loop.rs`, `cortex-rust/src/training/metrics.rs`
+
+- [ ] **Data Pipeline**
+  - Implement dataset loading and preprocessing
+  - Add data augmentation (rotation, scaling, noise injection)
+  - Implement batch collation and data loading
+  - Add streaming data processing for large datasets
+  - **Files**: `cortex-rust/src/data/`, `cortex-rust/src/data/augmentation.rs`
+
+- [ ] **Model Management**
+  - Implement model checkpointing and saving
+  - Add model loading and state restoration
+  - Implement model serialization (ONNX, custom format)
+  - Add model versioning and metadata tracking
+  - **Files**: `cortex-rust/src/models/`, `cortex-rust/src/serialization.rs`
+
+---
+
+## **Phase 5: Production & Ecosystem (Weeks 21-24+)**
+
+### 🎯 **Week 21-24: Standard Library & Tooling**
+
+- [ ] **Standard Library Implementation**
   - Implement math functions (sin, cos, exp, log, sqrt, pow)
   - Add I/O functions (read, write, file operations)
   - Implement collection utilities (map, filter, reduce)
   - Add string utilities (split, join, format)
-  - **Files**: `stdlib/` directory
+  - **Files**: `cortex-rust/src/stdlib/`
 
-- [ ] **Enhanced Examples**
-  - Matrix multiplication with arrays
-  - Sorting algorithms (bubble sort, quicksort)
-  - Data processing pipeline with collections
-  - Simple neural network (without autodiff)
-  - **Files**: `examples/` directory
+- [ ] **CLI & Package Management**
+  - Implement CLI interface with `clap`
+  - Add package manager with dependency resolution
+  - Implement module system and imports
+  - Add package repository and distribution
+  - **Files**: `cortex-rust/src/cli.rs`, `cortex-rust/src/package_manager.rs`
 
-- [ ] **Documentation Updates**
-  - Update README with current capabilities and installation
-  - Create comprehensive syntax guide
-  - Add troubleshooting and FAQ section
-  - Create API documentation for standard library
-  - **Files**: `README.MD`, `docs/` directory
-
-## Medium-term Tasks (Next 1-3 months)
-
-### ML Primitives & Tensor System
-
-- [ ] **Native Tensor Data Type**
-  - Design tensor type system (scalar, vector, matrix, n-dimensional)
-  - Implement tensor literals: `[1, 2, 3]` → `Tensor([1, 2, 3])`
-  - Add tensor operations (+, -, *, /, dot product, matrix multiplication)
-  - Implement tensor indexing and slicing
-  - **Files**: `compiler/tensor/` directory
-
-- [ ] **Basic Mathematical Functions**
-  - Implement `sin`, `cos`, `exp`, `log`, `sqrt`, `pow`
-  - Add `sum`, `mean`, `std`, `min`, `max` for tensors
-  - Implement linear algebra functions (transpose, inverse, determinant)
-  - Add statistical functions (variance, correlation)
-  - **Files**: `stdlib/math/` directory
-
-- [ ] **Simple ML Examples**
-  - Linear regression with gradient descent
-  - Matrix multiplication and basic operations
-  - Simple data processing pipeline
-  - **Files**: `examples/ml/` directory
-
-### Module System & Package Management
-
-- [ ] **Module System Design**
-  - Design import/export syntax and semantics
-  - Implement module resolution and loading
-  - Add namespace management and scoping
-  - Create module caching and optimization
-  - **Files**: `compiler/modules/` directory
-
-- [ ] **Package Manager Foundation**
-  - Design package format and metadata
-  - Implement dependency resolution algorithm
-  - Add package installation and management
-  - Create package repository structure
-  - **Files**: `tools/cortex-pm/` directory
-
-- [ ] **Standard Library Organization**
-  - Organize existing functions into modules
-  - Create module hierarchy (core, math, io, collections)
-  - Implement module loading and initialization
-  - Add module documentation and examples
-  - **Files**: `stdlib/` directory reorganization
-
-### Performance & Optimization
-
-- [ ] **Advanced LLVM Optimizations**
-  - Implement custom optimization passes for Cortex constructs
-  - Add loop optimization and vectorization
-  - Implement dead code elimination and constant folding
-  - Add profile-guided optimization support
-  - **Files**: `compiler/optimization/` directory
-
-- [ ] **Performance Benchmarking**
-  - Create comprehensive benchmark suite
-  - Compare performance with Python, NumPy, and other languages
-  - Add regression testing for performance
-  - Implement performance profiling tools
-  - **Files**: `benchmarks/` directory
-
-- [ ] **Memory Management & Garbage Collection**
-  - Implement reference counting garbage collector
-  - Add memory pooling for frequent allocations
-  - Implement memory usage monitoring and optimization
-  - Add memory leak detection and debugging
-  - **Files**: `compiler/runtime/` directory
-
-## Long-term Milestones (3-6 months)
-
-### Automatic Differentiation & Neural Networks
-
-- [ ] **Automatic Differentiation System**
-  - Design and implement forward-mode autodiff
-  - Add reverse-mode autodiff (backpropagation)
-  - Implement gradient computation for all operations
-  - Add gradient checking and validation
-  - **Files**: `compiler/autodiff/` directory
-
-- [ ] **Neural Network Primitives**
-  - Implement layer definitions (Dense, Conv2D, LSTM, etc.)
-  - Add activation functions (ReLU, Sigmoid, Tanh, Softmax)
-  - Implement loss functions (MSE, CrossEntropy, etc.)
-  - Add optimizer implementations (SGD, Adam, RMSprop)
-  - **Files**: `stdlib/nn/` directory
-
-- [ ] **Training Infrastructure**
-  - Implement training loop utilities
-  - Add learning rate schedulers
-  - Implement callbacks and monitoring
-  - Add model checkpointing and saving
-  - **Files**: `stdlib/training/` directory
+- [ ] **Development Tools**
+  - Implement Language Server Protocol (LSP)
+  - Add syntax highlighting and code completion
+  - Implement debugging support with breakpoints
+  - Add profiling and performance analysis tools
+  - **Files**: `cortex-rust/src/lsp.rs`, `cortex-rust/src/debugger.rs`
 
 ### GPU Support & Advanced Compilation
 
@@ -487,6 +520,168 @@ cortexc run examples/hello_world.ctx
 
 ---
 
+## 🤖 **AGENT CONTEXT & IMPLEMENTATION GUIDELINES**
+
+### **Current Status Summary**
+
+- ✅ **Python Compiler**: Working LLVM-based compiler with binary generation
+- ✅ **Core Features**: Arithmetic, loops, functions, variables, printing
+- ✅ **Cross-platform**: macOS ARM64/x86_64, Linux support
+- 🔄 **Migration Target**: Convert to Rust for 10-100x performance improvement
+
+### **Critical Success Factors**
+
+1. **Performance First**: Rust implementation must achieve significant speedup over Python
+2. **AI/ML Native**: Every feature designed for machine learning workflows
+3. **Production Ready**: Memory safety, error handling, and robust testing
+4. **Extensible**: Modular architecture for easy feature additions
+
+### **Implementation Priorities for Agents**
+
+#### **🔥 IMMEDIATE (Next 2 weeks)**
+
+```rust
+// Priority 1: Rust project setup and basic lexer
+cortex-rust/
+├── Cargo.toml          // Dependencies: inkwell, logos, pest, rayon
+├── src/
+│   ├── main.rs         // CLI entry point
+│   ├── lexer.rs        // Tokenizer with logos
+│   ├── tokens.rs       // Token definitions
+│   └── ast.rs          // AST node definitions
+```
+
+#### **🚀 HIGH PRIORITY (Next month)**
+
+```rust
+// Priority 2: Parser and basic code generation
+src/
+├── parser.rs           // Recursive descent parser
+├── llvm_backend.rs     // LLVM integration with inkwell
+├── codegen.rs          // AST to LLVM IR translation
+└── optimization.rs     // Basic optimization passes
+```
+
+#### **📈 MEDIUM PRIORITY (2-3 months)**
+
+```rust
+// Priority 3: AI/ML specific features
+src/
+├── tensor/             // Tensor data type and operations
+├── autodiff/           // Automatic differentiation
+├── nn/                 // Neural network primitives
+└── training/           // Training infrastructure
+```
+
+### **Key Rust Patterns for Implementation**
+
+#### **Error Handling**
+
+```rust
+use anyhow::{Result, Context};
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum CompilerError {
+    #[error("Parse error at {line}:{column}: {message}")]
+    ParseError { line: usize, column: usize, message: String },
+    #[error("Type error: {message}")]
+    TypeError { message: String },
+}
+
+pub fn compile(source: &str) -> Result<()> {
+    let tokens = lex(source).context("Failed to tokenize")?;
+    let ast = parse(tokens).context("Failed to parse")?;
+    let ir = generate_ir(ast).context("Failed to generate IR")?;
+    Ok(())
+}
+```
+
+#### **AST Design**
+
+```rust
+#[derive(Debug, Clone)]
+pub enum Expr {
+    Literal(Literal),
+    Binary(BinaryOp),
+    Call(FunctionCall),
+    Tensor(TensorExpr),
+}
+
+#[derive(Debug, Clone)]
+pub enum TensorExpr {
+    Create(Vec<Expr>),
+    Index { tensor: Box<Expr>, index: Expr },
+    Dot { left: Box<Expr>, right: Box<Expr> },
+}
+```
+
+#### **LLVM Integration**
+
+```rust
+use inkwell::{context::Context, module::Module, builder::Builder};
+
+pub struct CodeGenerator<'ctx> {
+    context: &'ctx Context,
+    module: Module<'ctx>,
+    builder: Builder<'ctx>,
+}
+
+impl<'ctx> CodeGenerator<'ctx> {
+    pub fn generate_tensor_op(&self, op: &TensorExpr) -> Result<inkwell::values::FloatValue<'ctx>> {
+        match op {
+            TensorExpr::Dot { left, right } => {
+                let left_val = self.generate_expr(left)?;
+                let right_val = self.generate_expr(right)?;
+                // Generate optimized dot product
+                Ok(self.builder.build_float_add(left_val, right_val, "dot_result")?)
+            }
+            // ... other operations
+        }
+    }
+}
+```
+
+### **Performance Benchmarks to Target**
+
+- **Compilation Speed**: 10x faster than current Python implementation
+- **Runtime Performance**: Competitive with PyTorch for tensor operations
+- **Memory Usage**: 50% reduction compared to Python
+- **Binary Size**: <10MB for full compiler
+
+### **Testing Strategy**
+
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn test_tensor_addition() {
+        let source = "let a = [1, 2, 3]; let b = [4, 5, 6]; let c = a + b;";
+        let result = compile(source).expect("Compilation failed");
+        // Verify correct LLVM IR generation
+    }
+    
+    #[test]
+    fn test_autodiff() {
+        let source = "∇[loss, params]";
+        // Test automatic differentiation
+    }
+}
+```
+
+### **Development Workflow for Agents**
+
+1. **Start with**: `cortex-rust/src/main.rs` - basic CLI structure
+2. **Implement**: Lexer with comprehensive token support
+3. **Build**: Parser with AI/ML syntax support
+4. **Generate**: LLVM IR for tensor operations
+5. **Optimize**: Performance-critical paths
+6. **Test**: Comprehensive test suite with benchmarks
+
+---
+
 **Last Updated**: January 2025  
 **Next Review**: February 2025
-**Priority Focus**: Robustness and completeness before new features
+**Priority Focus**: Rust migration for production-grade AI/ML compiler
