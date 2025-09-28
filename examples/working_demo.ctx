@@ -1,0 +1,51 @@
+// Working Cortex Demo
+// Shows basic features that work
+
+// Constants
+let MAX_COUNT :: 5
+
+// Variables
+let counter := 0
+let message := "Hello from Cortex!"
+
+// Main function
+func main[] |
+  print["=== Cortex Working Demo ==="]
+  print[""]
+  
+  // Variables and expressions
+  print["Message: " + message]
+  print["Counter: " + str[counter]]
+  print["Max Count: " + str[MAX_COUNT]]
+  print[""]
+  
+  // Control flow with if statement
+  if [counter < MAX_COUNT] |
+    print["Counter is less than " + str[MAX_COUNT]]
+  ^
+  
+  // While loop
+  print["Counting up:"]
+  while [counter < MAX_COUNT] |
+    print["  " + str[counter]]
+    counter := counter + 1
+  ^
+  
+  // Mathematical expressions
+  let a := 10
+  let b := 3
+  let sum := a + b
+  let product := a * b
+  let quotient := a / b
+  
+  print["Math operations:"]
+  print["  " + str[a] + " + " + str[b] + " = " + str[sum]]
+  print["  " + str[a] + " * " + str[b] + " = " + str[product]]
+  print["  " + str[a] + " / " + str[b] + " = " + str[quotient]]
+  
+  print[""]
+  print["=== Demo Complete ==="]
+^
+
+// Entry point
+main[]

@@ -288,6 +288,10 @@ class Lexer:
             self._add_token(TokenType.ASSIGN_CONST, '::')
             self._advance(2)
             return
+        elif char == ':' and self._peek() == '=':
+            self._add_token(TokenType.ASSIGN, ':=')
+            self._advance(2)
+            return
         elif char == '=' and self._peek() == '=':
             self._add_token(TokenType.EQUALS, '==')
             self._advance(2)

@@ -25,14 +25,14 @@ func main[] |
   ^
   
   // While loop
-  print["Counting up:")
+  print["Counting up:"]
   while [counter < MAX_ITERATIONS] |
     print["  " + str[counter]]
     counter := counter + 1
   ^
   
   // For loop
-  print["Counting down:")
+  print["Counting down:"]
   for [i in range[MAX_ITERATIONS, 0, -1]] |
     print["  " + str[i]]
   ^
@@ -44,7 +44,7 @@ func main[] |
   let product := a * b
   let quotient := a / b
   
-  print["Math operations:")
+  print["Math operations:"]
   print["  " + str[a] + " + " + str[b] + " = " + str[sum]]
   print["  " + str[a] + " * " + str[b] + " = " + str[product]]
   print["  " + str[a] + " / " + str[b] + " = " + str[quotient]]
@@ -53,7 +53,7 @@ func main[] |
   let numbers := [1, 2, 3, 4, 5]
   let doubled := numbers * 2
   
-  print["Array operations:")
+  print["Array operations:"]
   print["  Original: " + str[numbers]]
   print["  Doubled: " + str[doubled]]
   
@@ -64,12 +64,12 @@ func main[] |
     "compiled": true
   }
   
-  print["Configuration:")
+  print["Configuration:"]
   print["  Language: " + config["language"]]
   print["  Version: " + config["version"]]
   print["  Compiled: " + str[config["compiled"]]]
   
-  print["")
+  print[""]
   print["=== Demo Complete ==="]
 ^
 

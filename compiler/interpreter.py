@@ -185,10 +185,10 @@ class Interpreter:
     
     def _resolve_identifier(self, name: str) -> Any:
         """Resolve an identifier to its value."""
-        if name in self.runtime.variables:
-            return self.runtime.variables[name]
-        elif name in self.runtime.constants:
+        if name in self.runtime.constants:
             return self.runtime.constants[name]
+        elif name in self.runtime.variables:
+            return self.runtime.variables[name]
         else:
             raise RuntimeError(f"Undefined variable: {name}")
     

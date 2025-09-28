@@ -135,7 +135,7 @@ cortexc build hello_world.ctx -o hello_world
 
 ### 4. Expected Output
 
-```
+``` txt
 Hello, World!
 Welcome to Cortex!
 ```
@@ -156,7 +156,7 @@ cortexc build examples/basic_syntax.ctx -o basic_demo
 
 ### 3. Expected Output
 
-```
+``` txt
 === Cortex Basic Syntax Demo ===
 
 Message: Hello from Cortex!
