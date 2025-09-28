@@ -10,12 +10,10 @@ __author__ = "Cortex Team"
 
 from .parser import Parser
 from .ast import ASTNode, Program, Function, Variable, Expression
-from .codegen import CodeGenerator
-from .llvm_backend import LLVMBackend
+from .interpreter import Interpreter, run_cortex_program
 
 __all__ = [
     "Parser",
     "ASTNode", "Program", "Function", "Variable", "Expression",
-    "CodeGenerator",
-    "LLVMBackend"
+    "Interpreter", "run_cortex_program"
 ]

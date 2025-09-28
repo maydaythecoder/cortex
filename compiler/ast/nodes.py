@@ -78,7 +78,7 @@ class Program(ASTNode):
 class Function(Statement):
     """Function definition."""
     
-    def __init__(self, name: str, parameters: List[Variable], 
+    def __init__(self, name: str, parameters: List['Variable'], 
                  return_type: Optional[str], body: 'Block', 
                  line: int = 0, column: int = 0):
         super().__init__(NodeType.FUNCTION, line, column)

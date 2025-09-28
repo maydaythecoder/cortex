@@ -65,6 +65,13 @@ class Parser:
         if not self.current_token:
             return None
         
+        # Skip comments
+        while self.current_token and self.current_token.type == TokenType.COMMENT:
+            self._advance()
+        
+        if not self.current_token:
+            return None
+        
         if self.current_token.type == TokenType.LET:
             return self._parse_assignment()
         elif self.current_token.type == TokenType.FUNC:
@@ -90,22 +97,17 @@ class Parser:
         
         var_name = self._expect(TokenType.IDENTIFIER).value
         
-        # Check for type annotation
-        type_annotation = None
-        if self.current_token and self.current_token.type == TokenType.COLON:
-            self._advance()
-            type_name = self._expect(TokenType.IDENTIFIER).value
-            type_annotation = TypeAnnotation(type_name)
-        
-        # Check for assignment type
+        # Check for assignment type first
         if self.current_token and self.current_token.type == TokenType.ASSIGN_CONST:
             self._advance()
             value = self._parse_expression()
             return ConstantAssignment(var_name, value)
-        else:
-            self._expect(TokenType.ASSIGN)
+        elif self.current_token and self.current_token.type == TokenType.ASSIGN:
+            self._advance()
             value = self._parse_expression()
             return Assignment(var_name, value)
+        else:
+            raise ParseError(f"Expected assignment operator, got {self.current_token.type.value if self.current_token else 'EOF'}")
     
     def _parse_function(self) -> Function:
         """Parse function definition."""
