@@ -1,4 +1,0 @@
-
-// Simple test program
-let x := 42
-print["x = " + str[x]]
