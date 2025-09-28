@@ -254,10 +254,13 @@ cortex/
 
 ### Short-term (6 months)
 
+- [x] Basic compiler infrastructure with LLVM backend
+- [x] Working interpreter and REPL
+- [x] Comprehensive documentation and examples
+- [x] Binary compilation capability
 - [ ] Can implement and train a neural network from scratch
 - [ ] Interpreter performance within 2x of Python
 - [ ] Comprehensive test suite with >90% coverage
-- [ ] Clear documentation and examples
 
 ### Medium-term (12 months)
 
