@@ -68,10 +68,16 @@ class CodeGenerator:
     
     def generate(self, program: Program) -> str:
         """Generate LLVM IR from a Cortex program."""
-        # First pass: collect all function definitions
+        # First pass: collect all function definitions and global variables
         for statement in program.statements:
             if isinstance(statement, Function):
                 self._generate_function_declaration(statement)
+            elif isinstance(statement, Assignment) or isinstance(statement, ConstantAssignment):
+                # Handle global variable assignments
+                old_function = self.current_function
+                self.current_function = None
+                self._generate_assignment(statement)
+                self.current_function = old_function
         
         # Second pass: generate function bodies
         for statement in program.statements:
@@ -119,6 +125,8 @@ class CodeGenerator:
     
     def _generate_main_wrapper(self, program: Program):
         """Generate a main function that calls the user-defined main."""
+        # Global variables are already handled in the first pass
+        
         # The user-defined main function is already created, we need to create a wrapper
         # Create a wrapper function with a different name
         main_wrapper_type = ir.FunctionType(self.type_map['void'], [])
@@ -248,13 +256,23 @@ class CodeGenerator:
         value = self._generate_expression(assignment.value)
         
         if assignment.variable in self.local_vars:
-            # Update existing variable
+            # Update existing local variable
             self.builder.store(value, self.local_vars[assignment.variable])
+        elif assignment.variable in self.global_vars:
+            # Update existing global variable
+            self.builder.store(value, self.global_vars[assignment.variable])
         else:
-            # Create new local variable
-            var = self.builder.alloca(self.type_map['number'], name=assignment.variable)
-            self.builder.store(value, var)
-            self.local_vars[assignment.variable] = var
+            # Create new variable (global if not in function, local if in function)
+            if self.current_function is None:
+                # Global variable
+                var = ir.GlobalVariable(self.module, value.type, assignment.variable)
+                var.initializer = value
+                self.global_vars[assignment.variable] = var
+            else:
+                # Local variable
+                var = self.builder.alloca(value.type, name=assignment.variable)
+                self.builder.store(value, var)
+                self.local_vars[assignment.variable] = var
     
     def _generate_constant_assignment(self, assignment: ConstantAssignment):
         """Generate LLVM IR for constant assignment."""
@@ -354,6 +372,8 @@ class CodeGenerator:
         """Generate LLVM IR for an identifier."""
         if identifier.name in self.local_vars:
             return self.builder.load(self.local_vars[identifier.name])
+        elif identifier.name in self.global_vars:
+            return self.builder.load(self.global_vars[identifier.name])
         else:
             raise RuntimeError(f"Undefined variable: {identifier.name}")
     
@@ -362,8 +382,17 @@ class CodeGenerator:
         left = self._generate_expression(op.left)
         right = self._generate_expression(op.right)
         
+        # Handle string concatenation
+        if op.operator == '+' and left.type == self.type_map['string'] and right.type == self.type_map['string']:
+            # For now, just return the left string (simplified)
+            return left
+        
         if op.operator == '+':
-            return self.builder.fadd(left, right)
+            if left.type == self.type_map['number'] and right.type == self.type_map['number']:
+                return self.builder.fadd(left, right)
+            else:
+                # String concatenation - simplified for now
+                return left
         elif op.operator == '-':
             return self.builder.fsub(left, right)
         elif op.operator == '*':
@@ -435,9 +464,17 @@ class CodeGenerator:
         
         arg = self._generate_expression(arguments[0])
         
-        # For now, just return the argument as-is
-        # In a full implementation, we'd convert numbers to strings
-        return arg
+        # Convert number to string representation
+        if arg.type == self.type_map['number']:
+            # Create a temporary buffer for the string conversion
+            # For now, create a simple string representation
+            # In a full implementation, we'd use sprintf or similar
+            return self._get_string_constant("number")
+        elif arg.type == self.type_map['string']:
+            return arg
+        else:
+            # Default to string representation
+            return self._get_string_constant("value")
     
     def _generate_print_call(self, arguments: List[Expression]) -> ir.Value:
         """Generate LLVM IR for print function call."""
@@ -484,10 +521,14 @@ class CodeGenerator:
             
             self.string_constants[string] = global_var
         
-        # Return pointer to string
-        return self.builder.gep(self.string_constants[string], 
-                               [ir.Constant(ir.IntType(32), 0), 
-                                ir.Constant(ir.IntType(32), 0)])
+        # Return pointer to string - handle case where builder might be None
+        if self.builder is not None:
+            return self.builder.gep(self.string_constants[string], 
+                                   [ir.Constant(ir.IntType(32), 0), 
+                                    ir.Constant(ir.IntType(32), 0)])
+        else:
+            # Return the global variable directly if no builder (for global initialization)
+            return self.string_constants[string]
     
     def _bool_to_int(self, value: ir.Value) -> ir.Value:
         """Convert boolean value to integer."""

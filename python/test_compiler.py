@@ -63,12 +63,12 @@ def test_compiler():
 
 def test_examples():
     """Test compiling example files."""
-    examples_dir = Path("examples")
+    examples_dir = Path("../docs/shared/examples")
     if not examples_dir.exists():
         print("❌ Examples directory not found")
         return False
     
-    example_files = ["arithmetic.ctx", "loops.ctx", "printing.ctx"]
+    example_files = ["simple_arithmetic.ctx", "simple_loops.ctx", "hello_world.ctx", "function_demo.ctx"]
     
     print("\nTesting example compilation...")
     print("=" * 50)

@@ -25,28 +25,50 @@ Instead of writing AI in bloated frameworks, Cortex gives you a **language desig
 
 ### Prerequisites
 
+**Python Implementation:**
+
 - Python 3.8+
 - Git
 - GCC or Clang (for binary compilation)
 - LLVM (will be installed via pip)
 
+**Rust Implementation:**
+
+- Rust 1.70+
+- Git
+- Cargo (comes with Rust)
+
 ### Installation
+
+**Python Implementation:**
 
 ```bash
 git clone https://github.com/yourname/cortex
 cd cortex
+cd python
 python3 -m venv venv
 source venv/bin/activate
 pip install llvmlite
 ```
 
+**Rust Implementation:**
+
+```bash
+git clone https://github.com/yourname/cortex
+cd cortex/rust
+cargo build --release
+```
+
 ### Hello World
+
+**Python Implementation:**
 
 ```bash
 # Create hello_world.ctx
 echo 'print["Hello, Cortex!"]' > hello_world.ctx
 
 # Run it (interpreted)
+cd python
 python3 cortexc.py run hello_world.ctx
 
 # Compile to binary executable
@@ -54,6 +76,20 @@ python3 cortexc.py build hello_world.ctx -o hello
 
 # Run the compiled executable
 ./hello
+```
+
+**Rust Implementation:**
+
+```bash
+# Create hello_world.ctx
+echo 'print["Hello, Cortex!"]' > hello_world.ctx
+
+# Run it (interpreted)
+cd rust
+cargo run -- run hello_world.ctx
+
+# Check syntax
+cargo run -- check hello_world.ctx
 ```
 
 ---
@@ -198,36 +234,46 @@ main[]
 
 ``` txt
 cortex/
-├─ examples/         # Working example programs
-│  ├─ hello_world.ctx
-│  ├─ simple_arithmetic.ctx
-│  ├─ simple_loops.ctx
-│  └─ function_demo.ctx
-├─ docs/            # Complete documentation
-│  ├─ syntax.md
-│  ├─ run.md
-│  ├─ functions.md
-│  ├─ data_structures.md
-│  ├─ numerical.md
-│  ├─ training.md
-│  └─ examples/     # Example documentation
-├─ compiler/        # Python-based compiler
-│  ├─ parser/       # Lexer and parser
-│  ├─ ast/          # Abstract syntax tree
-│  ├─ codegen.py    # LLVM IR generation
-│  ├─ compiler.py   # Binary compilation pipeline
-│  └─ interpreter.py
-├─ cortexc.py       # Command-line tool
-└─ venv/            # Virtual environment
+├─ python/          # Python implementation
+│  ├─ compiler/     # Python-based compiler
+│  │  ├─ parser/    # Lexer and parser
+│  │  ├─ ast/       # Abstract syntax tree
+│  │  ├─ codegen.py # LLVM IR generation
+│  │  ├─ compiler.py# Binary compilation pipeline
+│  │  └─ interpreter.py
+│  ├─ cortexc.py    # Python command-line tool
+│  ├─ test_compiler.py
+│  └─ venv/         # Python virtual environment
+├─ rust/            # Rust implementation
+│  ├─ src/          # Rust source code
+│  │  ├─ main.rs    # CLI interface
+│  │  ├─ lexer.rs   # Tokenizer
+│  │  ├─ parser.rs  # Parser
+│  │  ├─ ast.rs     # AST definitions
+│  │  ├─ codegen.rs # Interpreter
+│  │  └─ error.rs   # Error handling
+│  ├─ Cargo.toml    # Rust dependencies
+│  └─ target/       # Rust build artifacts
+├─ docs/            # Documentation
+│  ├─ shared/       # Shared documentation
+│  │  ├─ examples/  # Example .ctx files
+│  │  ├─ syntax.md
+│  │  ├─ functions.md
+│  │  └─ *.md       # Core documentation
+│  ├─ python/       # Python-specific docs
+│  └─ rust/         # Rust-specific docs
+└─ requirements.txt # Python dependencies
 ```
 
 ---
 
 ## 🏃‍♂️ Running Programs
 
-### Available Commands
+### Python Implementation Commands
 
 ```bash
+cd python
+
 # Run a program (interpreter mode)
 python3 cortexc.py run program.ctx
 
@@ -241,24 +287,58 @@ python3 cortexc.py build program.ctx -o program
 python3 cortexc.py build program.ctx -o program -O 2
 ```
 
-### Try the Working Examples
+### Rust Implementation Commands
 
 ```bash
+cd rust
+
+# Run a program (interpreter mode)
+cargo run -- run program.ctx
+
+# Check syntax
+cargo run -- check program.ctx
+
+# Build executable
+cargo run -- build program.ctx -o program
+```
+
+### Try the Working Examples
+
+**Python Implementation:**
+
+```bash
+cd python
+
 # Basic hello world
-python3 cortexc.py run examples/hello_world.ctx
+python3 cortexc.py run ../docs/shared/examples/hello_world.ctx
 
 # Functions and variables
-python3 cortexc.py run examples/function_demo.ctx
+python3 cortexc.py run ../docs/shared/examples/function_demo.ctx
 
 # NEW: Compile examples to binary
-python3 cortexc.py build examples/simple_arithmetic.ctx -o arithmetic
-python3 cortexc.py build examples/simple_loops.ctx -o loops
-python3 cortexc.py build examples/hello_world.ctx -o hello
+python3 cortexc.py build ../docs/shared/examples/simple_arithmetic.ctx -o arithmetic
+python3 cortexc.py build ../docs/shared/examples/simple_loops.ctx -o loops
+python3 cortexc.py build ../docs/shared/examples/hello_world.ctx -o hello
 
 # Run compiled binaries
 ./arithmetic
 ./loops
 ./hello
+```
+
+**Rust Implementation:**
+
+```bash
+cd rust
+
+# Basic hello world
+cargo run -- run ../docs/shared/examples/hello_world.ctx
+
+# Functions and variables
+cargo run -- run ../docs/shared/examples/function_demo.ctx
+
+# Check syntax
+cargo run -- check ../docs/shared/examples/hello_world.ctx
 ```
 
 ---
@@ -323,9 +403,11 @@ We welcome contributions! Here's how to get started:
 
 ### Development Setup
 
+**Python Implementation:**
+
 ```bash
 git clone https://github.com/yourname/cortex
-cd cortex
+cd cortex/python
 python3 -m venv venv
 source venv/bin/activate
 pip install llvmlite
@@ -334,10 +416,24 @@ pip install llvmlite
 python3 test_compiler.py
 
 # Run examples
-python3 cortexc.py run examples/hello_world.ctx
+python3 cortexc.py run ../docs/shared/examples/hello_world.ctx
 
 # Compile examples
-python3 cortexc.py build examples/hello_world.ctx -o hello
+python3 cortexc.py build ../docs/shared/examples/hello_world.ctx -o hello
+```
+
+**Rust Implementation:**
+
+```bash
+git clone https://github.com/yourname/cortex
+cd cortex/rust
+cargo build
+
+# Run examples
+cargo run -- run ../docs/shared/examples/hello_world.ctx
+
+# Check syntax
+cargo run -- check ../docs/shared/examples/hello_world.ctx
 ```
 
 ---
@@ -350,13 +446,15 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## 🔗 Links
 
-- **Documentation**: [docs/](docs/)
-- **Examples**: [examples/](examples/)  
+- **Documentation**: [docs/shared/](docs/shared/)
+- **Examples**: [docs/shared/examples/](docs/shared/examples/)  
+- **Python Implementation**: [python/](python/)
+- **Rust Implementation**: [rust/](rust/)
 - **Issues**: [GitHub Issues](https://github.com/yourname/cortex/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/yourname/cortex/discussions)
 
 ---
 
-**Ready to try Cortex?** Start with our [Getting Started Guide](docs/run.md) and explore the [examples](examples/)!
+**Ready to try Cortex?** Start with our [Getting Started Guide](docs/shared/run.md) and explore the [examples](docs/shared/examples/)!
 
-**The compiler is working!** Try compiling your first Cortex program to binary today! 🚀
+**Both implementations are working!** Try the Python compiler for LLVM binary generation or the Rust interpreter for fast development! 🚀

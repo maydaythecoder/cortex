@@ -1,0 +1,359 @@
+//! Cortex AST (Abstract Syntax Tree)
+//! 
+//! Defines the AST nodes for the Cortex language.
+
+use std::fmt;
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum NodeType {
+    // Program structure
+    Program,
+    Function,
+    Variable,
+    
+    // Expressions
+    BinaryOp,
+    UnaryOp,
+    Call,
+    Array,
+    Dictionary,
+    Literal,
+    Identifier,
+    
+    // Statements
+    Block,
+    IfStatement,
+    WhileLoop,
+    ForLoop,
+    ReturnStatement,
+    Assignment,
+    ConstantAssignment,
+    
+    // Types
+    TypeAnnotation,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum LiteralValue {
+    Number(f64),
+    String(String),
+    Boolean(bool),
+    Null,
+}
+
+impl fmt::Display for LiteralValue {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            LiteralValue::Number(n) => write!(f, "{}", n),
+            LiteralValue::String(s) => write!(f, "\"{}\"", s),
+            LiteralValue::Boolean(b) => write!(f, "{}", b),
+            LiteralValue::Null => write!(f, "null"),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum Expression {
+    Literal(Literal),
+    Identifier(Identifier),
+    BinaryOp(BinaryOp),
+    UnaryOp(UnaryOp),
+    Call(Call),
+    Array(Array),
+    Dictionary(Dictionary),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum Statement {
+    Block(Block),
+    Function(Function),
+    IfStatement(IfStatement),
+    WhileLoop(WhileLoop),
+    ForLoop(ForLoop),
+    ReturnStatement(ReturnStatement),
+    Assignment(Assignment),
+    ConstantAssignment(ConstantAssignment),
+    Expression(Expression),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Program {
+    pub statements: Vec<Statement>,
+}
+
+impl Program {
+    pub fn new(statements: Vec<Statement>) -> Self {
+        Self { statements }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Function {
+    pub name: String,
+    pub parameters: Vec<Variable>,
+    pub return_type: Option<String>,
+    pub body: Block,
+}
+
+impl Function {
+    pub fn new(name: String, parameters: Vec<Variable>, return_type: Option<String>, body: Block) -> Self {
+        Self { name, parameters, return_type, body }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Variable {
+    pub name: String,
+    pub type_annotation: Option<TypeAnnotation>,
+}
+
+impl Variable {
+    pub fn new(name: String, type_annotation: Option<TypeAnnotation>) -> Self {
+        Self { name, type_annotation }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct TypeAnnotation {
+    pub type_name: String,
+}
+
+impl TypeAnnotation {
+    pub fn new(type_name: String) -> Self {
+        Self { type_name }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BinaryOp {
+    pub left: Box<Expression>,
+    pub operator: String,
+    pub right: Box<Expression>,
+}
+
+impl BinaryOp {
+    pub fn new(left: Expression, operator: String, right: Expression) -> Self {
+        Self {
+            left: Box::new(left),
+            operator,
+            right: Box::new(right),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct UnaryOp {
+    pub operator: String,
+    pub operand: Box<Expression>,
+}
+
+impl UnaryOp {
+    pub fn new(operator: String, operand: Expression) -> Self {
+        Self {
+            operator,
+            operand: Box::new(operand),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Call {
+    pub function: Box<Expression>,
+    pub arguments: Vec<Expression>,
+}
+
+impl Call {
+    pub fn new(function: Expression, arguments: Vec<Expression>) -> Self {
+        Self {
+            function: Box::new(function),
+            arguments,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Array {
+    pub elements: Vec<Expression>,
+}
+
+impl Array {
+    pub fn new(elements: Vec<Expression>) -> Self {
+        Self { elements }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Dictionary {
+    pub pairs: Vec<(Expression, Expression)>,
+}
+
+impl Dictionary {
+    pub fn new(pairs: Vec<(Expression, Expression)>) -> Self {
+        Self { pairs }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Literal {
+    pub value: LiteralValue,
+    pub literal_type: String,
+}
+
+impl Literal {
+    pub fn new(value: LiteralValue, literal_type: String) -> Self {
+        Self { value, literal_type }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Identifier {
+    pub name: String,
+}
+
+impl Identifier {
+    pub fn new(name: String) -> Self {
+        Self { name }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Block {
+    pub statements: Vec<Statement>,
+}
+
+impl Block {
+    pub fn new(statements: Vec<Statement>) -> Self {
+        Self { statements }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct IfStatement {
+    pub condition: Expression,
+    pub then_block: Block,
+    pub else_block: Option<Block>,
+}
+
+impl IfStatement {
+    pub fn new(condition: Expression, then_block: Block, else_block: Option<Block>) -> Self {
+        Self { condition, then_block, else_block }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct WhileLoop {
+    pub condition: Expression,
+    pub body: Block,
+}
+
+impl WhileLoop {
+    pub fn new(condition: Expression, body: Block) -> Self {
+        Self { condition, body }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ForLoop {
+    pub variable: String,
+    pub iterable: Option<Expression>,
+    pub body: Block,
+}
+
+impl ForLoop {
+    pub fn new(variable: String, iterable: Option<Expression>, body: Block) -> Self {
+        Self { variable, iterable, body }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ReturnStatement {
+    pub value: Option<Expression>,
+}
+
+impl ReturnStatement {
+    pub fn new(value: Option<Expression>) -> Self {
+        Self { value }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Assignment {
+    pub variable: String,
+    pub value: Expression,
+}
+
+impl Assignment {
+    pub fn new(variable: String, value: Expression) -> Self {
+        Self { variable, value }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ConstantAssignment {
+    pub variable: String,
+    pub value: Expression,
+}
+
+impl ConstantAssignment {
+    pub fn new(variable: String, value: Expression) -> Self {
+        Self { variable, value }
+    }
+}
+
+// Visitor trait for AST traversal
+pub trait Visitor<T> {
+    fn visit_program(&mut self, program: &Program) -> T;
+    fn visit_function(&mut self, function: &Function) -> T;
+    fn visit_variable(&mut self, variable: &Variable) -> T;
+    fn visit_binary_op(&mut self, binary_op: &BinaryOp) -> T;
+    fn visit_unary_op(&mut self, unary_op: &UnaryOp) -> T;
+    fn visit_call(&mut self, call: &Call) -> T;
+    fn visit_array(&mut self, array: &Array) -> T;
+    fn visit_dictionary(&mut self, dictionary: &Dictionary) -> T;
+    fn visit_literal(&mut self, literal: &Literal) -> T;
+    fn visit_identifier(&mut self, identifier: &Identifier) -> T;
+    fn visit_block(&mut self, block: &Block) -> T;
+    fn visit_if_statement(&mut self, if_statement: &IfStatement) -> T;
+    fn visit_while_loop(&mut self, while_loop: &WhileLoop) -> T;
+    fn visit_for_loop(&mut self, for_loop: &ForLoop) -> T;
+    fn visit_return_statement(&mut self, return_statement: &ReturnStatement) -> T;
+    fn visit_assignment(&mut self, assignment: &Assignment) -> T;
+    fn visit_constant_assignment(&mut self, constant_assignment: &ConstantAssignment) -> T;
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn test_literal_creation() {
+        let number_literal = Literal::new(LiteralValue::Number(42.0), "number".to_string());
+        assert_eq!(number_literal.literal_type, "number");
+        
+        let string_literal = Literal::new(LiteralValue::String("hello".to_string()), "string".to_string());
+        assert_eq!(string_literal.literal_type, "string");
+    }
+    
+    #[test]
+    fn test_binary_op_creation() {
+        let left = Expression::Literal(Literal::new(LiteralValue::Number(1.0), "number".to_string()));
+        let right = Expression::Literal(Literal::new(LiteralValue::Number(2.0), "number".to_string()));
+        let binary_op = BinaryOp::new(left, "+".to_string(), right);
+        
+        assert_eq!(binary_op.operator, "+");
+    }
+    
+    #[test]
+    fn test_function_creation() {
+        let params = vec![
+            Variable::new("a".to_string(), None),
+            Variable::new("b".to_string(), None),
+        ];
+        let body = Block::new(vec![]);
+        let function = Function::new("add".to_string(), params, Some("number".to_string()), body);
+        
+        assert_eq!(function.name, "add");
+        assert_eq!(function.parameters.len(), 2);
+        assert_eq!(function.return_type, Some("number".to_string()));
+    }
+}
