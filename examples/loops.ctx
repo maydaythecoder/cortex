@@ -1,0 +1,49 @@
+// Loops example
+// Demonstrates while loops and basic control flow in Cortex
+
+func main[] |
+  // While loop example - count from 1 to 5
+  let counter := 1
+  
+  print["While loop example:"]
+  while [counter <= 5] |
+    print["Counter: " + str[counter]]
+    let counter := counter + 1
+  ^
+  
+  // Conditional statements
+  print["\nConditional example:"]
+  let number := 7
+  
+  if [number > 5] |
+    print["Number is greater than 5"]
+  ^ else |
+    print["Number is 5 or less"]
+  ^
+  
+  // Nested loops and conditions
+  print["\nNested control flow:"]
+  let i := 1
+  while [i <= 3] |
+    print["Outer loop: " + str[i]]
+    let j := 1
+    while [j <= 2] |
+      print["  Inner loop: " + str[j]]
+      let j := j + 1
+    ^
+    let i := i + 1
+  ^
+  
+  // Mathematical loop - factorial
+  print["\nFactorial calculation:"]
+  let n := 5
+  let factorial := 1
+  let temp := 1
+  
+  while [temp <= n] |
+    let factorial := factorial * temp
+    let temp := temp + 1
+  ^
+  
+  print["Factorial of " + str[n] + " = " + str[factorial]]
+^

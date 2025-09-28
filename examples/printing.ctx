@@ -1,0 +1,49 @@
+// Printing example
+// Demonstrates various printing capabilities in Cortex
+
+func main[] |
+  // Basic string printing
+  print["Hello, World!"]
+  print["Welcome to Cortex Programming Language"]
+  
+  // Printing variables
+  let name := "Cortex"
+  let version := 1.0
+  let is_awesome := true
+  
+  print["Language: " + name]
+  print["Version: " + str[version]]
+  print["Is awesome: " + str[is_awesome]]
+  
+  // Mathematical expressions
+  let a := 10
+  let b := 20
+  let sum := a + b
+  
+  print["Mathematical expressions:"]
+  print["a = " + str[a]]
+  print["b = " + str[b]]
+  print["a + b = " + str[sum]]
+  print["a * b = " + str[a * b]]
+  print["a / b = " + str[a / b]]
+  
+  // Formatted output simulation
+  print["\nFormatted output:"]
+  print["=================="]
+  print["Name: " + name]
+  print["Value: " + str[version]]
+  print["Status: Active"]
+  print["=================="]
+  
+  // Multiple values
+  print["Multiple values:"]
+  print["First", "Second", "Third"]
+  print["Numbers:", 1, 2, 3]
+  
+  // Special characters and formatting
+  print["\nSpecial formatting:"]
+  print["Line 1"]
+  print["Line 2"]
+  print["Line 3"]
+  print["End of program"]
+^

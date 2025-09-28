@@ -1,0 +1,26 @@
+// Simple loops example
+// Demonstrates while loops without string concatenation
+
+func main[] |
+  // While loop example - count from 1 to 5
+  let counter := 1
+  
+  while [counter <= 5] |
+    print[counter]
+    let counter := counter + 1
+  ^
+  
+  // Mathematical loop - factorial
+  let n := 5
+  let factorial := 1
+  let temp := 1
+  
+  while [temp <= n] |
+    let factorial := factorial * temp
+    let temp := temp + 1
+  ^
+  
+  print[factorial]
+^
+
+main[]

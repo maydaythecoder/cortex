@@ -16,6 +16,7 @@ sys.path.insert(0, str(project_root))
 
 from compiler.parser import Parser, ParseError
 from compiler.interpreter import run_cortex_program
+from compiler.compiler import compile_cortex_file, compile_cortex_source
 
 
 def main():
@@ -111,11 +112,44 @@ def run_command(args):
 
 
 def build_command(args):
-    """Build a Cortex program (placeholder for future LLVM compilation)."""
-    print("Build command not yet implemented.")
-    print("Currently, Cortex programs are interpreted, not compiled.")
-    print("Use 'cortexc run' to execute programs.")
-    return 0
+    """Build a Cortex program to binary executable."""
+    if not os.path.exists(args.file):
+        print(f"Error: File '{args.file}' not found")
+        return 1
+    
+    if not args.file.endswith('.ctx'):
+        print(f"Error: File '{args.file}' is not a Cortex source file (.ctx)")
+        return 1
+    
+    # Determine output path
+    if args.output:
+        output_path = args.output
+    else:
+        # Use input filename without extension
+        output_path = os.path.splitext(args.file)[0]
+    
+    try:
+        if args.verbose:
+            print(f"Compiling Cortex program: {args.file}")
+            print(f"Output executable: {output_path}")
+            print("=" * 50)
+        
+        # Compile to binary
+        success = compile_cortex_file(args.file, output_path, optimize=(args.optimize != '0'))
+        
+        if success:
+            if args.verbose:
+                print("=" * 50)
+                print("Compilation successful!")
+                print(f"Executable created: {output_path}")
+            return 0
+        else:
+            print("Compilation failed!")
+            return 1
+    
+    except Exception as e:
+        print(f"Error during compilation: {e}")
+        return 1
 
 
 def repl_command(args):

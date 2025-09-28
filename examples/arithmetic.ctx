@@ -1,0 +1,39 @@
+// Arithmetic operations example
+// Demonstrates basic arithmetic operations in Cortex
+
+func main[] |
+  // Basic arithmetic
+  let a := 10
+  let b := 3
+  
+  let sum := a + b
+  let diff := a - b
+  let product := a * b
+  let quotient := a / b
+  let remainder := a % b
+  let power := a ** b
+  
+  // Print results
+  print["Arithmetic Operations:"]
+  print["a = " + str[a]]
+  print["b = " + str[b]]
+  print["a + b = " + str[sum]]
+  print["a - b = " + str[diff]]
+  print["a * b = " + str[product]]
+  print["a / b = " + str[quotient]]
+  print["a % b = " + str[remainder]]
+  print["a ** b = " + str[power]]
+  
+  // Floating point arithmetic
+  let x := 3.14
+  let y := 2.71
+  
+  print["\nFloating Point Operations:"]
+  print["x = " + str[x]]
+  print["y = " + str[y]]
+  print["x + y = " + str[x + y]]
+  print["x * y = " + str[x * y]]
+  print["x / y = " + str[x / y]]
+^
+
+main[]
