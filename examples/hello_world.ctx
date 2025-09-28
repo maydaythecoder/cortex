@@ -1,0 +1,11 @@
+// Hello World in Cortex
+// Demonstrates basic syntax with brackets and block delimiters
+
+// Main function
+func main[] |
+  print["Hello, World!"]
+  print["Welcome to Cortex - the AI/ML programming language!"]
+^
+
+// Entry point
+main[]

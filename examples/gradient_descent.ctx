@@ -1,0 +1,216 @@
+// Gradient Descent Optimization Example
+// Demonstrates various optimization algorithms
+
+// Constants
+let MAX_ITERATIONS :: 1000
+let CONVERGENCE_THRESHOLD :: 1e-6
+
+// Objective function: f(x, y) = (x - 2)² + (y - 3)²
+func objective_function[x: float, y: float] -> float |
+  return[(x - 2.0) ** 2 + (y - 3.0) ** 2]
+^
+
+// Gradient of objective function
+func objective_gradient[x: float, y: float] |
+  let grad_x := 2.0 * (x - 2.0)
+  let grad_y := 2.0 * (y - 3.0)
+  return[grad_x, grad_y]
+^
+
+// Basic Gradient Descent
+func gradient_descent[initial_x: float, initial_y: float, learning_rate: float] |
+  let x := initial_x
+  let y := initial_y
+  let history := []
+  
+  print["=== Basic Gradient Descent ==="]
+  print["Initial point: (" + str[x] + ", " + str[y] + ")"]
+  print["Learning rate: " + str[learning_rate]]
+  
+  for [iteration in range[0, MAX_ITERATIONS]] |
+    let grad_x, grad_y := objective_gradient[x, y]
+    
+    // Update parameters
+    x := x - learning_rate * grad_x
+    y := y - learning_rate * grad_y
+    
+    let current_value := objective_function[x, y]
+    history := append[history, current_value]
+    
+    if [iteration % 100 == 0] |
+      print["Iteration " + str[iteration] + ": " +
+            "x = " + str[x] + ", y = " + str[y] + ", " +
+            "f(x,y) = " + str[current_value]]
+    ^
+    
+    // Check convergence
+    if [current_value < CONVERGENCE_THRESHOLD] |
+      print["Converged at iteration " + str[iteration]]
+      break
+    ^
+  ^
+  
+  print["Final point: (" + str[x] + ", " + str[y] + ")"]
+  print["Final value: " + str[objective_function[x, y]]]
+  
+  return[x, y, history]
+^
+^
+
+// Momentum-based Gradient Descent
+func momentum_gradient_descent[initial_x: float, initial_y: float, learning_rate: float, momentum: float] |
+  let x := initial_x
+  let y := initial_y
+  let vx := 0.0  // velocity in x direction
+  let vy := 0.0  // velocity in y direction
+  let history := []
+  
+  print["=== Momentum Gradient Descent ==="]
+  print["Initial point: (" + str[x] + ", " + str[y] + ")"]
+  print["Learning rate: " + str[learning_rate] + ", Momentum: " + str[momentum]]
+  
+  for [iteration in range[0, MAX_ITERATIONS]] |
+    let grad_x, grad_y := objective_gradient[x, y]
+    
+    // Update velocities
+    vx := momentum * vx + learning_rate * grad_x
+    vy := momentum * vy + learning_rate * grad_y
+    
+    // Update parameters
+    x := x - vx
+    y := y - vy
+    
+    let current_value := objective_function[x, y]
+    history := append[history, current_value]
+    
+    if [iteration % 100 == 0] |
+      print["Iteration " + str[iteration] + ": " +
+            "x = " + str[x] + ", y = " + str[y] + ", " +
+            "f(x,y) = " + str[current_value]]
+    ^
+    
+    // Check convergence
+    if [current_value < CONVERGENCE_THRESHOLD] |
+      print["Converged at iteration " + str[iteration]]
+      break
+    ^
+  ^
+  
+  print["Final point: (" + str[x] + ", " + str[y] + ")"]
+  print["Final value: " + str[objective_function[x, y]]]
+  
+  return[x, y, history]
+^
+^
+
+// Adam Optimizer
+func adam_optimizer[initial_x: float, initial_y: float, learning_rate: float] |
+  let x := initial_x
+  let y := initial_y
+  let m_x := 0.0  // first moment estimate for x
+  let m_y := 0.0  // first moment estimate for y
+  let v_x := 0.0  // second moment estimate for x
+  let v_y := 0.0  // second moment estimate for y
+  let beta1 := 0.9
+  let beta2 := 0.999
+  let epsilon := 1e-8
+  let history := []
+  
+  print["=== Adam Optimizer ==="]
+  print["Initial point: (" + str[x] + ", " + str[y] + ")"]
+  print["Learning rate: " + str[learning_rate]]
+  
+  for [iteration in range[0, MAX_ITERATIONS]] |
+    let grad_x, grad_y := objective_gradient[x, y]
+    
+    // Update biased first moment estimates
+    m_x := beta1 * m_x + (1 - beta1) * grad_x
+    m_y := beta1 * m_y + (1 - beta1) * grad_y
+    
+    // Update biased second raw moment estimates
+    v_x := beta2 * v_x + (1 - beta2) * (grad_x ** 2)
+    v_y := beta2 * v_y + (1 - beta2) * (grad_y ** 2)
+    
+    // Compute bias-corrected first moment estimates
+    let m_x_hat := m_x / (1 - beta1 ** (iteration + 1))
+    let m_y_hat := m_y / (1 - beta1 ** (iteration + 1))
+    
+    // Compute bias-corrected second raw moment estimates
+    let v_x_hat := v_x / (1 - beta2 ** (iteration + 1))
+    let v_y_hat := v_y / (1 - beta2 ** (iteration + 1))
+    
+    // Update parameters
+    x := x - learning_rate * m_x_hat / (sqrt[v_x_hat] + epsilon)
+    y := y - learning_rate * m_y_hat / (sqrt[v_y_hat] + epsilon)
+    
+    let current_value := objective_function[x, y]
+    history := append[history, current_value]
+    
+    if [iteration % 100 == 0] |
+      print["Iteration " + str[iteration] + ": " +
+            "x = " + str[x] + ", y = " + str[y] + ", " +
+            "f(x,y) = " + str[current_value]]
+    ^
+    
+    // Check convergence
+    if [current_value < CONVERGENCE_THRESHOLD] |
+      print["Converged at iteration " + str[iteration]]
+      break
+    ^
+  ^
+  
+  print["Final point: (" + str[x] + ", " + str[y] + ")"]
+  print["Final value: " + str[objective_function[x, y]]]
+  
+  return[x, y, history]
+^
+^
+
+// Compare optimization methods
+func compare_optimizers[initial_x: float, initial_y: float] |
+  print["=== Comparing Optimization Methods ==="]
+  print["Objective function: f(x, y) = (x - 2)² + (y - 3)²"]
+  print["True minimum: (2, 3) with value 0"]
+  print[""]
+  
+  // Basic Gradient Descent
+  let gd_x, gd_y, gd_history := gradient_descent[initial_x, initial_y, 0.1]
+  print["")
+  
+  // Momentum Gradient Descent
+  let mom_x, mom_y, mom_history := momentum_gradient_descent[initial_x, initial_y, 0.1, 0.9]
+  print[""]
+  
+  // Adam Optimizer
+  let adam_x, adam_y, adam_history := adam_optimizer[initial_x, initial_y, 0.1]
+  print[""]
+  
+  // Summary
+  print["=== Summary ==="]
+  print["Gradient Descent: (" + str[gd_x] + ", " + str[gd_y] + ") - Value: " + str[objective_function[gd_x, gd_y]]]
+  print["Momentum: (" + str[mom_x] + ", " + str[mom_y] + ") - Value: " + str[objective_function[mom_x, mom_y]]]
+  print["Adam: (" + str[adam_x] + ", " + str[adam_y] + ") - Value: " + str[objective_function[adam_x, adam_y]]]
+^
+^
+
+// Main execution
+func main[] |
+  print["=== Gradient Descent Optimization in Cortex ==="]
+  print[""]
+  
+  // Test with different starting points
+  let start_points := [
+    [0.0, 0.0],
+    [5.0, 5.0],
+    [-1.0, 4.0]
+  ]
+  
+  for [i in range[0, len[start_points]]] |
+    let start_x, start_y := start_points[i]
+    print["Testing with starting point: (" + str[start_x] + ", " + str[start_y] + ")"]
+    compare_optimizers[start_x, start_y]
+    print[""]
+    print["=" * 50]
+    print[""]
+  ^
+^

@@ -1,0 +1,93 @@
+// Linear Regression Example in Cortex
+// This example demonstrates basic machine learning concepts
+
+// Constants
+let MAX_EPOCHS :: 1000
+let LEARNING_RATE :: 0.01
+let CONVERGENCE_THRESHOLD :: 0.001
+
+// Generate synthetic data
+func generate_data[n_samples: int] |
+  let X := randn[n_samples, 1] * 2.0  // Input features
+  let true_w := 2.5
+  let true_b := 1.0
+  let noise := randn[n_samples] * 0.1
+  let y := X * true_w + true_b + noise  // Target values
+  
+  return[X, y]
+^
+
+// Linear model function
+func linear_model[X: tensor, w: float, b: float] -> tensor |
+  return[X * w + b]
+^
+
+// Mean Squared Error loss
+func mse_loss[predictions: tensor, targets: tensor] -> float |
+  let diff := predictions - targets
+  return[mean[diff ** 2]]
+^
+
+// Training function
+func train_linear_regression[X: tensor, y: tensor] |
+  // Initialize parameters
+  let w := randn[1] * 0.1
+  let b := 0.0
+  
+  print["Starting training..."]
+  print["Initial parameters: w=" + str[w] + ", b=" + str[b]]
+  
+  // Training loop
+  for [epoch in range[0, MAX_EPOCHS]] |
+    // Forward pass
+    let predictions := linear_model[X, w, b]
+    
+    // Compute loss
+    let loss := mse_loss[predictions, y]
+    
+    // Compute gradients
+    let grad_w := ∇[loss, w]
+    let grad_b := ∇[loss, b]
+    
+    // Update parameters
+    w := w - LEARNING_RATE * grad_w
+    b := b - LEARNING_RATE * grad_b
+    
+    // Print progress
+    if [epoch % 100 == 0] |
+      print["Epoch " + str[epoch] + ": Loss = " + str[loss] + ", w = " + str[w] + ", b = " + str[b]]
+    ^
+    
+    // Check convergence
+    if [loss < CONVERGENCE_THRESHOLD] |
+      print["Converged at epoch " + str[epoch]]
+      break
+    ^
+  ^
+  
+  print["Training completed!"]
+  print["Final parameters: w=" + str[w] + ", b=" + str[b]]
+  
+  return[w, b]
+^
+
+// Main execution
+func main[] |
+  print["=== Linear Regression in Cortex ==="]
+  
+  // Generate training data
+  let X, y := generate_data[100]
+  print["Generated " + str[len[X]] + " training samples"]
+  
+  // Train the model
+  let w, b := train_linear_regression[X, y]
+  
+  // Test on new data
+  let X_test := [[1.0], [2.0], [3.0]]
+  let y_pred := linear_model[X_test, w, b]
+  
+  print["Predictions on test data:")
+  for [i in range[0, len[X_test]]] |
+    print["X=" + str[X_test[i]] + " -> y=" + str[y_pred[i]]]
+  ^
+^
