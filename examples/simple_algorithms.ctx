@@ -1,0 +1,101 @@
+// Simple Algorithms Demo
+// Demonstrates basic algorithms in Cortex
+
+func is_prime[n] |
+  if [n <= 1] |
+    return[false]
+  ^
+  if [n <= 3] |
+    return[true]
+  ^
+  if [n % 2 == 0] |
+    return[false]
+  ^
+  let i := 3
+  while [i * i <= n] |
+    if [n % i == 0] |
+      return[false]
+    ^
+    let i := i + 2
+  ^
+  return[true]
+^
+
+func factorial[n] |
+  if [n <= 1] |
+    return[1]
+  ^
+  let result := 1
+  let i := 2
+  while [i <= n] |
+    let result := result * i
+    let i := i + 1
+  ^
+  return[result]
+^
+
+func fibonacci[n] |
+  if [n <= 1] |
+    return[n]
+  ^
+  let a := 0
+  let b := 1
+  let temp := 0
+  let i := 2
+  while [i <= n] |
+    let temp := a + b
+    let a := b
+    let b := temp
+    let i := i + 1
+  ^
+  return[b]
+^
+
+func gcd[a, b] |
+  while [b != 0] |
+    let temp := b
+    let b := a % b
+    let a := temp
+  ^
+  return[a]
+^
+
+func main[] |
+  print["Simple Algorithms Demo"]
+  print["====================="]
+  
+  // Prime number testing
+  print["\nPrime Number Testing:"]
+  print["17 is prime: " + str[is_prime[17]]]
+  print["25 is prime: " + str[is_prime[25]]]
+  print["29 is prime: " + str[is_prime[29]]]
+  
+  // Factorial calculation
+  print["\nFactorial Calculation:"]
+  print["5! = " + str[factorial[5]]]
+  print["7! = " + str[factorial[7]]]
+  print["10! = " + str[factorial[10]]]
+  
+  // Fibonacci sequence
+  print["\nFibonacci Sequence:"]
+  let i := 0
+  while [i < 10] |
+    let fib := fibonacci[i]
+    print["F[" + str[i] + "] = " + str[fib]]
+    let i := i + 1
+  ^
+  
+  // Greatest Common Divisor
+  print["\nGreatest Common Divisor:"]
+  print["GCD(48, 18) = " + str[gcd[48, 18]]]
+  print["GCD(100, 25) = " + str[gcd[100, 25]]]
+  print["GCD(17, 13) = " + str[gcd[17, 13]]]
+  
+  // Algorithm complexity demonstration
+  print["\nAlgorithm Performance:"]
+  print["Factorial of 10: " + str[factorial[10]]]
+  print["Fibonacci(20): " + str[fibonacci[20]]]
+  print["Is 97 prime: " + str[is_prime[97]]]
+^
+
+main[]

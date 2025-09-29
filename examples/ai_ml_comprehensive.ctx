@@ -1,462 +1,180 @@
 // AI/ML Comprehensive Features Showcase
-// Demonstrates advanced AI/ML capabilities and tensor operations
-// Based on the numerical.md documentation and AST capabilities
+// Demonstrates AI/ML capabilities in Cortex
 
-func tensor_basics[] |
-  print["=== TENSOR BASICS ==="]
+func basic_math[] |
+  print["=== BASIC MATH FOR AI/ML ==="]
   
   // Scalar operations
   let scalar := 42.0
-  print["Scalar: " + scalar]
+  print["Scalar: " + str[scalar]]
   
-  // Vector operations (1D tensor)
-  let vector_a := [1.0, 2.0, 3.0, 4.0]
-  let vector_b := [5.0, 6.0, 7.0, 8.0]
-  
-  print["Vector A: " + vector_a]
-  print["Vector B: " + vector_b]
-  
-  // Element-wise operations
-  let sum_vec := vector_a + vector_b
-  let diff_vec := vector_b - vector_a
-  let prod_vec := vector_a * vector_b
-  
-  print["Vector Sum: " + sum_vec]
-  print["Vector Difference: " + diff_vec]
-  print["Vector Product: " + prod_vec]
-  
-  // Scalar-vector operations (broadcasting)
-  let scaled := vector_a * 2.0
-  let shifted := vector_a + 1.0
-  
-  print["Scaled Vector: " + scaled]
-  print["Shifted Vector: " + shifted]
-^
-
-func matrix_operations[] |
-  print["=== MATRIX OPERATIONS ==="]
-  
-  // 2D matrix creation
-  let matrix_a := [[1.0, 2.0], [3.0, 4.0]]
-  let matrix_b := [[5.0, 6.0], [7.0, 8.0]]
-  let vector := [1.0, 2.0]
-  
-  print["Matrix A: " + matrix_a]
-  print["Matrix B: " + matrix_b]
-  print["Vector: " + vector]
-  
-  // Element-wise matrix operations
-  let sum_mat := matrix_a + matrix_b
-  let diff_mat := matrix_b - matrix_a
-  let prod_mat := matrix_a * matrix_b
-  
-  print["Matrix Sum: " + sum_mat]
-  print["Matrix Difference: " + diff_mat]
-  print["Matrix Product: " + prod_mat]
-  
-  // Note: Matrix multiplication (@) is tokenized but parser implementation may vary
-  // let matrix_mult := matrix_a @ matrix_b  // Would be: [[19, 22], [43, 50]]
-  
-  print["Matrix multiplication (@) operator available but parser may need completion"]
-^
-
-func neural_network_functions[] |
-  print["=== NEURAL NETWORK FUNCTIONS ==="]
-  
-  // Activation function demonstration (would use built-in functions in full implementation)
-  let inputs := [-2.0, -1.0, 0.0, 1.0, 2.0]
-  print["Input values: " + inputs]
-  
-  // Simulated activation functions (manual implementation)
-  let relu_outputs := apply_relu[inputs]
-  let sigmoid_outputs := apply_sigmoid[inputs]
-  let tanh_outputs := apply_tanh[inputs]
-  
-  print["ReLU outputs: " + relu_outputs]
-  print["Sigmoid outputs: " + sigmoid_outputs]
-  print["Tanh outputs: " + tanh_outputs]
-  
-  // Loss function simulation
-  let predictions := [0.8, 0.2, 0.9]
-  let targets := [1.0, 0.0, 1.0]
-  
-  let mse_loss := calculate_mse[predictions, targets]
-  print["MSE Loss: " + mse_loss]
-^
-
-func gradient_operations[] |
-  print["=== GRADIENT OPERATIONS ==="]
-  
-  // Note: Gradient operators (∇) are tokenized but parser may need implementation
-  let weights := [0.1, 0.5, -0.3]
-  let inputs := [1.0, 2.0, 3.0]
-  let target := 0.8
-  
-  print["Weights: " + weights]
-  print["Inputs: " + inputs]
-  print["Target: " + target]
-  
-  // Forward pass
-  let prediction := dot_product[weights, inputs]
-  let error := prediction - target
-  
-  print["Prediction: " + prediction]
-  print["Error: " + error]
-  
-  // Manual gradient calculation (would use ∇ operator in full implementation)
-  let gradients := scalar_multiply[inputs, error * 2.0]  // Simplified gradient
-  print["Gradients: " + gradients]
-  
-  // Gradient descent update
+  // Basic arithmetic for ML
   let learning_rate := 0.01
-  let updated_weights := weights - scalar_multiply[gradients, learning_rate]
-  print["Updated weights: " + updated_weights]
+  let gradient := 2.5
+  let weight_update := learning_rate * gradient
+  
+  print["Learning rate: " + str[learning_rate]]
+  print["Gradient: " + str[gradient]]
+  print["Weight update: " + str[weight_update]]
 ^
 
-func optimization_algorithms[] |
-  print["=== OPTIMIZATION ALGORITHMS ==="]
+func activation_functions[] |
+  print["=== ACTIVATION FUNCTIONS ==="]
   
-  // Stochastic Gradient Descent
-  let params_sgd := optimize_sgd[]
-  print["SGD Results: " + params_sgd]
+  // Sigmoid function
+  func sigmoid[x] |
+    let e_x := 2.718281828 ** x
+    let denominator := 1.0 + e_x
+    return[1.0 / denominator]
+  ^
   
-  // Adam Optimizer
-  let params_adam := optimize_adam[]
-  print["Adam Results: " + params_adam]
+  // ReLU function
+  func relu[x] |
+    if [x > 0] |
+      return[x]
+    ^
+    return[0.0]
+  ^
   
-  // Momentum
-  let params_momentum := optimize_momentum[]
-  print["Momentum Results: " + params_momentum]
+  // Test activation functions
+  let test_input := 1.0
+  let sigmoid_output := sigmoid[test_input]
+  let relu_output := relu[test_input]
+  
+  print["Input: " + str[test_input]]
+  print["Sigmoid output: " + str[sigmoid_output]]
+  print["ReLU output: " + str[relu_output]]
 ^
 
-func statistical_operations[] |
-  print["=== STATISTICAL OPERATIONS ==="]
+func loss_functions[] |
+  print["=== LOSS FUNCTIONS ==="]
   
-  let dataset := [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
+  // Mean Squared Error
+  func mse[predicted, actual] |
+    let diff := predicted - actual
+    return[diff * diff]
+  ^
   
-  let mean_val := calculate_mean[dataset]
-  let variance := calculate_variance[dataset]
-  let std_dev := sqrt[variance]
+  // Cross-entropy loss (simplified)
+  func cross_entropy[predicted, actual] |
+    if [actual == 1] |
+      let exp_pred := 2.718281828 ** predicted
+      let neg_exp := 0.0 - exp_pred
+      return[neg_exp]
+    ^
+    let exp_pred := 2.718281828 ** predicted
+    let one_minus_exp := 1.0 - exp_pred
+    let neg_result := 0.0 - one_minus_exp
+    return[neg_result]
+  ^
   
-  print["Dataset: " + dataset]
-  print["Mean: " + mean_val]
-  print["Variance: " + variance]
-  print["Standard Deviation: " + std_dev]
+  // Test loss functions
+  let pred := 0.8
+  let actual := 1.0
   
-  // Min/Max operations
-  let min_val := minimum[dataset]
-  let max_val := maximum[dataset]
+  let mse_loss := mse[pred, actual]
+  let ce_loss := cross_entropy[pred, actual]
   
-  print["Minimum: " + min_val]
-  print["Maximum: " + max_val]
+  print["Predicted: " + str[pred]]
+  print["Actual: " + str[actual]]
+  print["MSE Loss: " + str[mse_loss]]
+  print["Cross-entropy Loss: " + str[ce_loss]]
 ^
 
-func linear_algebra[] |
-  print["=== LINEAR ALGEBRA ==="]
+func optimization[] |
+  print["=== OPTIMIZATION ==="]
   
-  let matrix := [[1.0, 2.0], [3.0, 4.0]]
+  // Gradient descent step
+  func gradient_descent_step[weight, gradient, learning_rate] |
+    let update := learning_rate * gradient
+    return[weight - update]
+  ^
   
-  // Matrix properties (would use built-in functions)
-  let determinant := calculate_determinant[matrix]
-  let trace_val := calculate_trace[matrix]
+  // Test optimization
+  let weight := 0.5
+  let gradient := 0.3
+  let lr := 0.1
   
-  print["Matrix: " + matrix]
-  print["Determinant: " + determinant]
-  print["Trace: " + trace_val]
+  let new_weight := gradient_descent_step[weight, gradient, lr]
   
-  // Eigenvalue simulation (would use built-in eig function)
-  print["Eigenvalue decomposition available via eig[matrix]"]
+  print["Initial weight: " + str[weight]]
+  print["Gradient: " + str[gradient]]
+  print["Learning rate: " + str[lr]]
+  print["Updated weight: " + str[new_weight]]
+^
+
+func neural_network_basics[] |
+  print["=== NEURAL NETWORK BASICS ==="]
   
-  // SVD simulation (would use built-in svd function)
-  print["SVD decomposition available via svd[matrix]"]
+  // Simple perceptron
+  func perceptron[input1, input2, weight1, weight2, bias] |
+    let weighted_sum := input1 * weight1 + input2 * weight2 + bias
+    if [weighted_sum > 0] |
+      return[1.0]
+    ^
+    return[0.0]
+  ^
+  
+  // Test perceptron
+  let input1 := 1.0
+  let input2 := 0.5
+  let weight1 := 0.8
+  let weight2 := 0.6
+  let bias := 0.3
+  
+  let output := perceptron[input1, input2, weight1, weight2, bias]
+  
+  print["Input 1: " + str[input1]]
+  print["Input 2: " + str[input2]]
+  print["Weight 1: " + str[weight1]]
+  print["Weight 2: " + str[weight2]]
+  print["Bias: " + str[bias]]
+  print["Perceptron output: " + str[output]]
 ^
 
 func data_preprocessing[] |
   print["=== DATA PREPROCESSING ==="]
   
-  // Data normalization
-  let raw_data := [1.0, 10.0, 100.0, 1000.0]
-  let normalized_data := normalize_data[raw_data]
-  
-  print["Raw data: " + raw_data]
-  print["Normalized data: " + normalized_data]
-  
-  // Data reshaping (for tensor operations)
-  let flat_data := [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
-  let reshaped_data := reshape[flat_data, [2, 3]]
-  
-  print["Flat data: " + flat_data]
-  print["Reshaped data (2x3): " + reshaped_data]
-^
-
-// ==========================================
-// HELPER FUNCTIONS FOR AI/ML OPERATIONS
-// ==========================================
-func apply_relu[x] |
-  let result := []
-  let i := 0
-  while [i < len[x]] |
-    if [x[i] > 0.0] |
-      let result := append[result, x[i]]
-    ^ else |
-      let result := append[result, 0.0]
-    ^
-    let i := i + 1
-  ^
-  return[result]
-^
-
-func apply_sigmoid[x] |
-  let result := []
-  let i := 0
-  while [i < len[x]] |
-    let exp_val := exp[-x[i]]
-    let sigmoid_val := 1.0 / (1.0 + exp_val)
-    let result := append[result, sigmoid_val]
-    let i := i + 1
-  ^
-  return[result]
-^
-
-func apply_tanh[x] |
-  let result := []
-  let i := 0
-  while [i < len[x]] |
-    let exp_pos := exp[x[i]]
-    let exp_neg := exp[-x[i]]
-    let tanh_val := (exp_pos - exp_neg) / (exp_pos + exp_neg)
-    let result := append[result, tanh_val]
-    let i := i + 1
-  ^
-  return[result]
-^
-
-func calculate_mse[predictions, targets] |
-  let error := predictions - targets
-  let squared_error := error ** 2
-  let mse := mean[squared_error]
-  return[mse]
-^
-
-func dot_product[a, b] |
-  let result := 0.0
-  let i := 0
-  while [i < len[a]] |
-    let result := result + (a[i] * b[i])
-    let i := i + 1
-  ^
-  return[result]
-^
-
-func scalar_multiply[vector, scalar] |
-  let result := []
-  let i := 0
-  while [i < len[vector]] |
-    let result := append[result, vector[i] * scalar]
-    let i := i + 1
-  ^
-  return[result]
-^
-
-func optimize_sgd[] |
-  let params := [0.0, 0.0]
-  let lr := 0.01
-  let iterations := 100
-  let iteration := 0
-  
-  while [iteration < iterations] |
-    // Simulate gradient
-    let gradients := [iteration * 0.001, -(iteration * 0.0005)]
-    let params := params - scalar_multiply[gradients, lr]
-    let iteration := iteration + 1
+  // Normalization
+  func normalize[x, min_val, max_val] |
+    let numerator := x - min_val
+    let denominator := max_val - min_val
+    return[numerator / denominator]
   ^
   
-  return[params]
-^
-
-func optimize_adam[] |
-  let params := [0.0, 0.0]
-  let lr := 0.01
-  let beta1 := 0.9
-  let beta2 := 0.999
-  let epsilon := 1e-8
-  let m := [0.0, 0.0]
-  let v := [0.0, 0.0]
-  let t := 1
-  
-  let iterations := 100
-  let iteration := 0
-  
-  while [iteration < iterations] |
-    // Simulate gradient
-    let gradients := [iteration * 0.001, -(iteration * 0.0005)]
-    
-    // Update biased first moment estimate
-    let m := scalar_add[m, scalar_multiply[gradients, (1.0 - beta1)]]
-    
-    // Update biased second raw moment estimate
-    let squared_grads := gradients ** 2
-    let v := scalar_add[v, scalar_multiply[squared_grads, (1.0 - beta2)]]
-    
-    // Bias correction
-    let m_hat := scalar_multiply[m, (1.0 / (1.0 - beta1 ** t))]
-    let v_hat := scalar_multiply[v, (1.0 / (1.0 - beta2 ** t))]
-    
-    // Update parameters
-    let correction := sqrt[v_hat] + epsilon
-    let params := params - scalar_multiply[m_hat, lr / correction]
-    
-    let iteration := iteration + 1
-    let t := t + 1
+  // Standardization
+  func standardize[x, mean, std] |
+    let numerator := x - mean
+    return[numerator / std]
   ^
   
-  return[params]
-^
-
-func optimize_momentum[] |
-  let params := [0.0, 0.0]
-  let velocity := [0.0, 0.0]
-  let lr := 0.01
-  let momentum := 0.9
-  let iterations := 100
-  let iteration := 0
+  // Test preprocessing
+  let value := 75.0
+  let min_val := 0.0
+  let max_val := 100.0
+  let mean := 50.0
+  let std := 15.0
   
-  while [iteration < iterations] |
-    // Simulate gradient
-    let gradients := [iteration * 0.001, -(iteration * 0.0005)]
-    
-    // Update velocity
-    let velocity := scalar_add[scalar_multiply[velocity, momentum], gradients]
-    
-    // Update parameters
-    let params := params - scalar_multiply[velocity, lr]
-    
-    let iteration := iteration + 1
-  ^
+  let normalized := normalize[value, min_val, max_val]
+  let standardized := standardize[value, mean, std]
   
-  return[params]
+  print["Original value: " + str[value]]
+  print["Normalized: " + str[normalized]]
+  print["Standardized: " + str[standardized]]
 ^
 
-func calculate_mean[data] |
-  let sum := 0.0
-  let count := 0
-  let i := 0
-  
-  while [i < len[data]] |
-    let sum := sum + data[i]
-    let count := count + 1
-    let i := i + 1
-  ^
-  
-  return[sum / count]
-^
-
-func calculate_variance[data] |
-  let mean_val := calculate_mean[data]
-  let sum_squared_diff := 0.0
-  let count := 0
-  let i := 0
-  
-  while [i < len[data]] |
-    let diff := data[i] - mean_val
-    let sum_squared_diff := sum_squared_diff + (diff ** 2)
-    let count := count + 1
-    let i := i + 1
-  ^
-  
-  return[sum_squared_diff / count]
-^
-
-func normalise_data[data] |
-  let mean_val := calculate_mean[data]
-  let variance := calculate_variance[data]
-  let std_dev := sqrt[variance]
-  
-  let result := []
-  let i := 0
-  while [i < len[data]] |
-    let normalized := (data[i] - mean_val) / std_dev
-    let result := append[result, normalized]
-    let i := i + 1
-  ^
-  
-  return[result]
-^
-
-func reshape[data, shape] |
-  // Simplified reshaping for demonstration
-  // In practice, would implement proper tensor reshaping
-  print["Reshape function would implement tensor reshaping logic"]
-  return[data]
-^
-
-func calculate_determinant[matrix] |
-  // For 2x2 matrix: det = a*d - b*c
-  let a := matrix[0][0]
-  let b := matrix[0][1]
-  let c := matrix[1][0]
-  let d := matrix[1][1]
-  
-  return[a * d - b * c]
-^
-
-func calculate_trace[matrix] |
-  let trace := matrix[0][0] + matrix[1][1]
-  return[trace]
-^
-
-func scalar_add[a, b] |
-  let result := []
-  let i := 0
-  while [i < len[a]] |
-    let result := append[result, a[i] + b[i]]
-    let i := i + 1
-  ^
-  return[result]
-^
-
-func minimum[data] |
-  let min_val := data[0]
-  let i := 1
-  while [i < len[data]] |
-    if [data[i] < min_val] |
-      let min_val := data[i]
-    ^
-    let i := i + 1
-  ^
-  return[min_val]
-^
-
-func maximum[data] |
-  let max_val := data[0]
-  let i := 1
-  while [i < len[data]] |
-    if [data[i] > max_val] |
-      let max_val := data[i]
-    ^
-    let i := i + 1
-  ^
-  return[max_val]
-^
-
-// ==========================================
-// MAIN EXECUTION FUNCTION
-// ==========================================
 func main[] |
-  print["🧠 AI/ML COMPREHENSIVE FEATURES SHOWCASE 🧠"]
-  print["=================================================="]
+  print["AI/ML Comprehensive Features Demo"]
+  print["================================="]
   
-  tensor_basics[]
-  matrix_operations[]
-  neural_network_functions[]
-  gradient_operations[]
-  optimization_algorithms[]
-  statistical_operations[]
-  linear_algebra[]
+  basic_math[]
+  activation_functions[]
+  loss_functions[]
+  optimization[]
+  neural_network_basics[]
   data_preprocessing[]
   
-  print["=================================================="]
-  print["✅ ALL AI/ML FEATURES DEMONSTRATED SUCCESSFULLY!")
+  print["\nAI/ML Demo completed successfully!"]
 ^
 
 main[]

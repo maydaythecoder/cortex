@@ -1,0 +1,39 @@
+// Factorial Algorithm
+// Demonstrates iterative approach in Cortex
+
+func factorial[n] |
+  if [n <= 1] |
+    return[1]
+  ^
+  
+  let result := 1
+  let i := 2
+  while [i <= n] |
+    let result := result * i
+    let i := i + 1
+  ^
+  
+  return[result]
+^
+
+func main[] |
+  print["Factorial Algorithm Demo"]
+  print["======================="]
+  
+  // Test factorial calculation
+  print["\nFactorial Calculation:"]
+  let i := 1
+  while [i <= 10] |
+    let result := factorial[i]
+    print[str[i] + "! = " + str[result]]
+    let i := i + 1
+  ^
+  
+  // Performance test
+  print["\nPerformance Test:"]
+  print["10! = " + str[factorial[10]]]
+  print["15! = " + str[factorial[15]]]
+  print["20! = " + str[factorial[20]]]
+^
+
+main[]

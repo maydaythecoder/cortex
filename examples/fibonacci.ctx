@@ -1,0 +1,43 @@
+// Fibonacci Sequence Algorithm
+// Demonstrates iterative approach in Cortex
+
+func fibonacci[n] |
+  if [n == 0] |
+    return[0]
+  ^
+  if [n == 1] |
+    return[1]
+  ^
+  
+  let a := 0
+  let b := 1
+  let temp := 0
+  
+  let i := 2
+  while [i <= n] |
+    let temp := a + b
+    let a := b
+    let b := temp
+    let i := i + 1
+  ^
+  
+  return[b]
+^
+
+func main[] |
+  print["Fibonacci Sequence Algorithm Demo"]
+  print["================================"]
+    print["\nFibonacci Sequence:"]
+  let i := 0
+  while [i < 15] |
+    let result := fibonacci[i]
+    print["F[" + str[i] + "] = " + str[result]]
+    let i := i + 1
+  ^
+  print["\nPerformance Test:"]
+  print["F[20] = " + str[fibonacci[20]]]
+  print["F[25] = " + str[fibonacci[25]]]
+  print["F[30] = " + str[fibonacci[30]]]
+^
+
+main[]

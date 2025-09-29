@@ -1,0 +1,83 @@
+// Simple Sorting Demo
+// Demonstrates sorting logic without arrays in Cortex
+
+func find_min[a, b, c, d, e] |
+  let min := a
+  
+  if [b < min] |
+    let min := b
+  ^
+  
+  if [c < min] |
+    let min := c
+  ^
+  
+  if [d < min] |
+    let min := d
+  ^
+  
+  if [e < min] |
+    let min := e
+  ^
+  
+  return[min]
+^
+
+func find_max[a, b, c, d, e] |
+  let max := a
+  
+  if [b > max] |
+    let max := b
+  ^
+  
+  if [c > max] |
+    let max := c
+  ^
+  
+  if [d > max] |
+    let max := d
+  ^
+  
+  if [e > max] |
+    let max := e
+  ^
+  
+  return[max]
+^
+
+func main[] |
+  print["Simple Sorting Demo"]
+  print["==================="]
+  
+  // Test with sample numbers
+  let a := 64
+  let b := 34
+  let c := 25
+  let d := 12
+  let e := 22
+  
+  print["Original numbers: " + str[a] + ", " + str[b] + ", " + str[c] + ", " + str[d] + ", " + str[e]]
+  
+  let min_val := find_min[a, b, c, d, e]
+  let max_val := find_max[a, b, c, d, e]
+  
+  print["Minimum: " + str[min_val]]
+  print["Maximum: " + str[max_val]]
+  
+  // Test with different numbers
+  let x := 100
+  let y := 50
+  let z := 75
+  let w := 25
+  let v := 200
+  
+  print["\nSecond test: " + str[x] + ", " + str[y] + ", " + str[z] + ", " + str[w] + ", " + str[v]]
+  
+  let min_val2 := find_min[x, y, z, w, v]
+  let max_val2 := find_max[x, y, z, w, v]
+  
+  print["Minimum: " + str[min_val2]]
+  print["Maximum: " + str[max_val2]]
+^
+
+main[]

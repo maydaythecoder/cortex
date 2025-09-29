@@ -432,10 +432,16 @@ impl Interpreter {
                     } else {
                         result = Value::Null;
                     }
+                    // Set the return value and break
+                    self.current_return_value = Some(result.clone());
                     break; // Return immediately
                 }
                 _ => {
                     self.interpret_statement(statement)?;
+                    // Check if we hit a return statement
+                    if self.current_return_value.is_some() {
+                        break;
+                    }
                 }
             }
         }
@@ -453,8 +459,10 @@ impl Interpreter {
             ));
         }
         
-        // Save current variables
+        // Save current variables and return value
         let old_variables = self.variables.clone();
+        let old_return_value = self.current_return_value.clone();
+        self.current_return_value = None;
         
         // Bind parameters to arguments
         for (param, arg) in function.parameters.iter().zip(arguments.iter()) {
@@ -465,11 +473,19 @@ impl Interpreter {
         // Execute function body
         let result = self.interpret_block(&function.body)?;
         
-        // Restore variables
-        self.variables = old_variables;
+        // Check if we have a return value
+        let final_result = if let Some(return_val) = &self.current_return_value {
+            return_val.clone()
+        } else {
+            result
+        };
         
-        // Return the result from the block
-        Ok(result)
+        // Restore variables and return value
+        self.variables = old_variables;
+        self.current_return_value = old_return_value;
+        
+        // Return the result (not wrapped in array)
+        Ok(final_result)
     }
 
     fn interpret_print_call(&mut self, args: &[Expression]) -> Result<()> {

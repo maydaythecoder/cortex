@@ -1,6 +1,4 @@
-
-
-![Cortex Logo](assets/cortex-with-text.svg)
+# ![Cortex Logo](assets/cortex-with-text.svg)
 
 A high-performance AI/ML programming language built in Rust
 

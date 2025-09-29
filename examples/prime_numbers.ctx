@@ -1,0 +1,59 @@
+// Prime Number Algorithm
+// Demonstrates prime number checking in Cortex
+
+func is_prime[n] |
+  if [n <= 1] |
+    return[false]
+  ^
+  
+  if [n == 2] |
+    return[true]
+  ^
+  
+  if [n % 2 == 0] |
+    return[false]
+  ^
+  
+  let i := 3
+  while [i <= n / 2] |
+    if [n % i == 0] |
+      return[false]
+    ^
+    let i := i + 2
+  ^
+  
+  return[true]
+^
+
+func main[] |
+  print["Prime Number Algorithm Demo"]
+  print["==========================="]
+  
+  // Test individual numbers
+  print["\nTesting individual numbers:"]
+  print["2 is prime: " + str[is_prime[2]]]
+  print["3 is prime: " + str[is_prime[3]]]
+  print["4 is prime: " + str[is_prime[4]]]
+  print["5 is prime: " + str[is_prime[5]]]
+  print["17 is prime: " + str[is_prime[17]]]
+  print["25 is prime: " + str[is_prime[25]]]
+  print["29 is prime: " + str[is_prime[29]]]
+  print["100 is prime: " + str[is_prime[100]]]
+  
+  // Find primes up to 30
+  print["\nFinding primes up to 30:"]
+  let count := 0
+  let i := 2
+  while [i <= 30] |
+    if [is_prime[i]] |
+      print[str[i] + " "]
+      let count := count + 1
+    ^
+    let i := i + 1
+  ^
+  
+  print[""]
+  print["Total primes found: " + str[count]]
+^
+
+main[]
