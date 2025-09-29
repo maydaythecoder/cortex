@@ -441,7 +441,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 - **Function Status**: [docs/shared/FUNCTION_STATUS.md](docs/shared/FUNCTION_STATUS.md)
 - **Python Implementation**: [python/](python/)
 - **Rust Implementation**: [rust/](rust/)
-- **VS Code Marketplace**: <https://marketplace.visualstudio.com/items?itemName=muhyadinmohamed.cortex-language>
+- **VS Code Marketplace**: [Cortex Language Extension](https://marketplace.visualstudio.com/items?itemName=muhyadinmohamed.cortex-language)
 - **Issues**: [GitHub Issues](https://github.com/yourname/cortex/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/yourname/cortex/discussions)
 
