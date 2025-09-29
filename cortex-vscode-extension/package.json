@@ -73,6 +73,16 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Format Cortex files on save"
+                },
+                "cortex.compiler.binaryPath": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Absolute path to the Cortex compiler binary (cortexc). If empty, the extension will try rust/target first, then fallback to cargo run."
+                },
+                "cortex.compiler.preferBinary": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Prefer using a compiled cortexc binary when available instead of cargo run."
                 }
             }
         },
@@ -85,6 +95,16 @@
             {
                 "command": "cortex.run",
                 "title": "Run Cortex File",
+                "category": "Cortex"
+            },
+            {
+                "command": "cortex.debug",
+                "title": "Debug Cortex File",
+                "category": "Cortex"
+            },
+            {
+                "command": "cortex.buildCompiler",
+                "title": "Build Cortex Compiler (Rust)",
                 "category": "Cortex"
             }
         ],
@@ -102,7 +122,9 @@
         ]
     },
     "activationEvents": [
-        "onLanguage:cortex"
+        "onLanguage:cortex",
+        "onCommand:cortex.debug",
+        "onCommand:cortex.buildCompiler"
     ],
     "main": "./extension.js"
 }
