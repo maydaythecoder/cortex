@@ -1,0 +1,483 @@
+// Comprehensive Features Showcase
+// Demonstrates ALL capabilities of the Cortex language
+
+// ==========================================
+// 1. VARIABLE DECLARATIONS (Both types)
+// ==========================================
+func variable_declarations[] |
+  // Mutable variables (let ... :=)
+  let mutable_var := 42.0
+  let mutable_string := "Hello, Cortex!"
+  let mutable_bool := true
+  let mutable_null := null
+  
+  // Constants (let ... ::)
+  let const_num :: 3.14159
+  let const_string :: "Immutable"
+  let const_array :: [1, 2, 3]
+  
+  print["=== VARIABLES ==="]
+  print[mutable_var]
+  print[mutable_string]
+  print[mutable_bool]
+  print[mutable_null]
+  print[const_num]
+  print[const_string]
+^
+
+// ==========================================
+// 2. TYPE ANNOTATIONS
+// ==========================================
+func type_annotations[] |
+  let explicit_number: number := 42.0
+  let explicit_string: string := "typed"
+  let explicit_bool: boolean := false
+  
+  print["=== TYPE ANNOTATIONS ==="]
+  print[explicit_number]
+  print[explicit_string]
+  print[explicit_bool]
+^
+
+// ==========================================
+// 3. NUMERIC PRECISION & FORMATS
+// ==========================================
+func numeric_precision[] |
+  let integer := 100
+  let float_normal := 1.25
+  let scientific_small := 1e-10
+  let scientific_large := 2e5
+  let pi := 3.141592653589793
+  let epsilon := 0.000000001
+  
+  print["=== NUMERIC PRECISION ==="]
+  print[integer]
+  print[float_normal]
+  print[scientific_small]
+  print[scientific_large]
+  print[pi]
+  print[epsilon]
+^
+
+// ==========================================
+// 4. ARITHMETIC OPERATIONS (ALL OPERATORS)
+// ==========================================
+func arithmetic_operations[] |
+  let a := 15.0
+  let b := 4.0
+  
+  print["=== ARITHMETIC OPERATIONS ==="]
+  
+  // Basic operations
+  let addition := a + b
+  let subtraction := a - b
+  let multiplication := a * b
+  let division := a / b
+  let modulo := a % b
+  let exponentiation := a ** b
+  
+  print["Addition: " + addition]
+  print["Subtraction: " + subtraction]
+  print["Multiplication: " + multiplication]
+  print["Division: " + division]
+  print["Modulo: " + modulo]
+  print["Exponentiation: " + exponentiation]
+  
+  // Complex expressions with operator precedence
+  let complex := (a + b) * (a - b) + a ** 2 / b ** 2
+  print["Complex: " + complex]
+  
+  // Unary operations
+  let unary_plus := +a
+  let unary_minus := -a
+  print["Unary plus: " + unary_plus]
+  print["Unary minus: " + unary_minus]
+^
+
+// ==========================================
+// 5. BOOLEAN LOGIC & COMPARISONS
+// ==========================================
+func boolean_logic[] |
+  let x := 10
+  let y := 5
+  let z := 10
+  
+  print["=== BOOLEAN LOGIC ==="]
+  
+  // Comparison operators
+  let eq_check := x == z
+  let ne_check := x != y
+  let lt_check := y < x
+  let le_check := y <= x
+  let gt_check := x > y
+  let ge_check := x >= z
+  
+  print["Equal: " + eq_check]
+  print["Not equal: " + ne_check]
+  print["Less than: " + lt_check]
+  print["Less/equal: " + le_check]
+  print["Greater than: " + gt_check]
+  print["Greater/equal: " + ge_check]
+  
+  // Logical operators
+  let logic_and := (x > 5) && (y < 10)
+  let logic_or := (x < 5) || (y > 3)
+  let logic_not := !(x == 0)
+  
+  print["Logical AND: " + logic_and]
+  print["Logical OR: " + logic_or]
+  print["Logical NOT: " + logic_not]
+  
+  // Complex boolean expressions
+  let complex_bool := !((x > y) && (z == x)) || (y <= 5)
+  print["Complex boolean: " + complex_bool]
+^
+
+// ==========================================
+// 6. ARRAYS & COLLECTIONS
+// ==========================================
+func array_operations[] |
+  // Array literals
+  let numbers := [1, 2, 3, 4, 5]
+  let decimals := [1.1, 2.2, 3.3]
+  let mixed := [1, 2.5, "hello", true]
+  let nested := [[1, 2], [3, 4]]
+  
+  print["=== ARRAYS ==="]
+  print[numbers]
+  print[decimals]
+  print[mixed]
+  print[nested]
+^
+
+// ==========================================
+// 7. DICTIONARIES/HASH MAPS
+// ==========================================
+func dictionary_operations[] |
+  let person := {
+    "name": "Alice",
+    "age": 30,
+    "active": true
+  }
+  
+  let mixed_dict := {
+    "count": 42,
+    "ratio": 3.14,
+    "enabled": false,
+    "data": [1, 2, 3]
+  }
+  
+  print["=== DICTIONARIES ==="]
+  // Note: Dictionary access syntax may need implementation
+  print["Person: " + person]
+  print["Mixed: " + mixed_dict]
+^
+
+// ==========================================
+// 8. CONTROL FLOW - CONDITIONALS
+// ==========================================
+func conditional_statements[] |
+  let score := 85
+  
+  print["=== CONDITIONALS ==="]
+  
+  // Simple if
+  if [score >= 90] |
+    print["Grade: A"]
+  ^ else |
+    // If-else if chains
+    if [score >= 80] |
+      print["Grade: B"]
+    ^ else |
+      if [score >= 70] |
+        print["Grade: C"]
+      ^ else |
+        if [score >= 60] |
+          print["Grade: D"]
+        ^ else |
+          print["Grade: F"]
+        ^
+      ^
+    ^
+  ^
+  
+  // Complex boolean conditions
+  let temperature := 75
+  let humidity := 60
+  if [(temperature > 80) && (humidity < 70)] |
+    print["Perfect weather!"]
+  ^ else |
+    if [(temperature < 60) || (humidity > 80)] |
+      print["Uncomfortable weather"]
+    ^ else |
+      print["Average weather"]
+    ^
+  ^
+^
+
+// ==========================================
+// 9. CONTROL FLOW - LOOPS
+// ==========================================
+func loop_statements[] |
+  print["=== LOOPS ==="]
+  
+  // While loops - counting
+  let counter := 1
+  print["While loop counting:")
+  while [counter <= 5] |
+    print[counter]
+    let counter := counter + 1
+  ^
+  
+  // While loops - factorial calculation
+  let n := 6
+  let factorial := 1
+  let temp := 1
+  
+  while [temp <= n] |
+    let factorial := factorial * temp
+    let temp := temp + 1
+  ^
+  print["Factorial of " + n + ": " + factorial]
+  
+  // While loops with conditions
+  let number := 1024
+  let steps := 0
+  while [number > 1] |
+    let steps := steps + 1
+    if [number % 2 == 0] |
+      let number := number / 2
+    ^ else |
+      let number := (number * 3) + 1
+    ^
+  ^
+  print["Collatz conjecture steps for 1024: " + steps]
+  
+  // Nested loops
+  print["Nested loops - multiplication table:")
+  let i := 1
+  while [i <= 3] |
+    let j := 1
+    while [j <= 3] |
+      let product := i * j
+      print[i + " x " + j + " = " + product]
+      let j := j + 1
+    ^
+    let i := i + 1
+  ^
+^
+
+// ==========================================
+// 10. FUNCTION DEFINITIONS (All Features)
+// ==========================================
+func function_features[] |
+  print["=== FUNCTION FEATURES ==="]
+  print["Function definitions and calls:"]
+^
+
+// No parameters, no return
+func greet[] |
+  print["Hello from parameterless function!"]
+^
+
+// No parameters, with return
+func get_pi[]: number |
+  return[3.141592653589793]
+^
+
+// Single parameter
+func square[x] |
+  return[x ** 2]
+^
+
+// Multiple parameters
+func power[base, exponent] |
+  return[base ** exponent]
+^
+
+// Complex function with all features
+func fibonacci[n]: number |
+  if [n <= 1] |
+    return[n]
+  ^ else |
+    return[fibonacci[n - 1] + fibonacci[n - 2]]
+  ^
+^
+
+// Function with type annotations
+func multiply[a: number, b: number]: number |
+  return[a * b]
+^
+
+// ==========================================
+// 11. RECURSION & HIGHER-ORDER PATTERNS
+// ==========================================
+func recursion_example[] |
+  print["=== RECURSION ==="]
+  
+  // Factorial (iterative vs recursive)
+  let iter_fact := factorial_iterative[5]
+  let rec_fact := factorial_recursive[5]
+  
+  print["Factorial iterative: " + iter_fact]
+  print["Factorial recursive: " + rec_fact]
+  
+  // GCD calculation
+  let gcd_result := gcd[48, 18]
+  print["GCD of 48 and 18: " + gcd_result]
+^
+
+// ==========================================
+// 12. ADVANCED MATH (With Special Tokens)
+// ==========================================
+func advanced_math[] |
+  print["=== ADVANCED MATH ==="]
+  
+  // Note: Special operators @, ∇, ∂ are tokenized but parser may need implementation
+  
+  let matrix_a := [[1, 2], [3, 4]]
+  let matrix_b := [[5, 6], [7, 8]]
+  let vector := [2, 3]
+  
+  // Matrix operations (would use @ operator)
+  // let dot_product := vector @ vector_transpose
+  
+  // Gradient operations (would use ∇ operator)  
+  // let gradient := ∇[matrix_a @ vector]
+  
+  // Partial derivatives (would use ∂ operator)
+  // let partial := ∂[f, x]
+  
+  print["Advanced math operators available: @ (matrix ops), ∇ (gradient), ∂ (partial)"]
+^
+
+// ==========================================
+// 13. NULL HANDLING
+// ==========================================
+func null_handling[] |
+  print["=== NULL HANDLING ==="]
+  
+  let null_value := null
+  let normal_value := 42
+  
+  print["Null value: " + null_value]
+  print["Normal value: " + normal_value]
+  
+  // Null checking
+  if [normal_value == null] |
+    print["Value is null"]
+  ^ else |
+    print["Value is not null: " + normal_value]
+  ^
+^
+
+// ==========================================
+// 14. STRING OPERATIONS
+// ==========================================
+func string_operations[] |
+  print["=== STRING OPERATIONS ==="]
+  
+  let greeting := "Hello"
+  let name := "Cortex"
+  
+  // String concatenation
+  let message := greeting + ", " + name + "!"
+  print[message]
+  
+  // String/number conversion (assuming built-in functions)
+  let number_str := "123"
+  // let parsed_num := parse_number[number_str]
+  print["String parsing capabilities would be here"]
+^
+
+// ==========================================
+// 15. COMMENTS & DOCUMENTATION
+// ==========================================
+func comments_example[] |
+  // Single-line comment
+  let commented_var := 42  // Inline comment
+  
+  /*
+   * Multi-line comment
+   * This demonstrates documentation
+   * capabilities
+   */
+  
+  print["=== COMMENTS ==="]
+  print[commented_var]
+^
+
+// ==========================================
+// HELPER FUNCTIONS FOR COMPREHENSIVE EXAMPLE
+// ==========================================
+func factorial_iterative[n] |
+  let result := 1
+  let temp := 1
+  while [temp <= n] |
+    let result := result * temp
+    let temp := temp + 1
+  ^
+  return[result]
+^
+
+func factorial_recursive[n] |
+  if [n <= 1] |
+    return[1]
+  ^ else |
+    return[n * factorial_recursive[n - 1]]
+  ^
+^
+
+func gcd[a, b] |
+  while [b != 0] |
+    let temp := b
+    let b := a % b
+    let a := temp
+  ^
+  return[a]
+^
+
+// ==========================================
+// MAIN EXECUTION FUNCTION
+// ==========================================
+func main[] |
+  print["🚀 COMPREHENSIVE CORTEX LANGUAGE FEATURES SHOWCASE 🚀"]
+  print["========================================================"]
+  
+  // Execute all feature demonstrations
+  variable_declarations[]
+  type_annotations[]
+  numeric_precision[]
+  arithmetic_operations[]
+  boolean_logic[]
+  array_operations[]
+  dictionary_operations[]
+  conditional_statements[]
+  loop_statements[]
+  function_features[]
+  
+  // Call various functions to demonstrate
+  greet[]
+  let pi := get_pi[]
+  print["Pi value: " + pi]
+  
+  let squared := square[7]
+  print["7 squared: " + squared]
+  
+  let power_result := power[2, 8]
+  print["2^8: " + power_result]
+  
+  let typed_mult := multiply[3.14, 2.0]
+  print["Typed multiply: " + typed_mult]
+  
+  recursion_example[]
+  advanced_math[]
+  null_handling[]
+  string_operations[]
+  comments_example[]
+  
+  print["========================================================"]
+  print["✅ ALL FEATURES DEMONSTRATED SUCCESSFULLY!")
+^
+
+main[]
