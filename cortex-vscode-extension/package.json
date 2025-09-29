@@ -2,7 +2,7 @@
     "name": "cortex-language",
     "displayName": "Cortex Language",
     "description": "Syntax highlighting and formatting for Cortex programming language",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "publisher": "muhyadinmohamed",
     "engines": {
         "vscode": "^1.74.0"
