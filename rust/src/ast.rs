@@ -4,34 +4,34 @@
 
 use std::fmt;
 
-#[derive(Debug, Clone, PartialEq)]
-pub enum NodeType {
-    // Program structure
-    Program,
-    Function,
-    Variable,
-    
-    // Expressions
-    BinaryOp,
-    UnaryOp,
-    Call,
-    Array,
-    Dictionary,
-    Literal,
-    Identifier,
-    
-    // Statements
-    Block,
-    IfStatement,
-    WhileLoop,
-    ForLoop,
-    ReturnStatement,
-    Assignment,
-    ConstantAssignment,
-    
-    // Types
-    TypeAnnotation,
-}
+// #[derive(Debug, Clone, PartialEq)]
+// pub enum NodeType {
+//     // Program structure
+//     Program,
+//     Function,
+//     Variable,
+//     
+//     // Expressions
+//     BinaryOp,
+//     UnaryOp,
+//     Call,
+//     Array,
+//     Dictionary,
+//     Literal,
+//     Identifier,
+//     
+//     // Statements
+//     Block,
+//     IfStatement,
+//     WhileLoop,
+//     ForLoop,
+//     ReturnStatement,
+//     Assignment,
+//     ConstantAssignment,
+//     
+//     // Types
+//     TypeAnnotation,
+// }
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum LiteralValue {
@@ -65,7 +65,6 @@ pub enum Expression {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Statement {
-    Block(Block),
     Function(Function),
     IfStatement(IfStatement),
     WhileLoop(WhileLoop),
@@ -301,6 +300,7 @@ impl ConstantAssignment {
 }
 
 // Visitor trait for AST traversal
+#[allow(dead_code)]
 pub trait Visitor<T> {
     fn visit_program(&mut self, program: &Program) -> T;
     fn visit_function(&mut self, function: &Function) -> T;

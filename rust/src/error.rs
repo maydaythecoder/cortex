@@ -2,6 +2,7 @@
 
 use thiserror::Error;
 
+#[allow(dead_code)]
 #[derive(Error, Debug)]
 pub enum CompilerError {
     #[error("Lexical error: {message} at line {line}:{column}")]

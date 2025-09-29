@@ -601,27 +601,27 @@ impl Parser {
         }
     }
     
-    fn parse_call(&mut self, function_name: String) -> Result<Expression> {
-        let mut arguments = Vec::new();
-        
-        if !self.match_token(Token::RightBracket) {
-            loop {
-                let arg = self.parse_expression()?;
-                arguments.push(arg);
-                
-                if !self.match_token(Token::Comma) {
-                    break;
-                }
-            }
-            
-            self.expect(Token::RightBracket)?;
-        }
-        
-        Ok(Expression::Call(Call::new(
-            Expression::Identifier(Identifier::new(function_name)),
-            arguments,
-        )))
-    }
+    // fn parse_call(&mut self, function_name: String) -> Result<Expression> {
+    //     let mut arguments = Vec::new();
+    //     
+    //     if !self.match_token(Token::RightBracket) {
+    //         loop {
+    //             let arg = self.parse_expression()?;
+    //             arguments.push(arg);
+    //             
+    //             if !self.match_token(Token::Comma) {
+    //                 break;
+    //             }
+    //         }
+    //         
+    //         self.expect(Token::RightBracket)?;
+    //     }
+    //     
+    //     Ok(Expression::Call(Call::new(
+    //         Expression::Identifier(Identifier::new(function_name)),
+    //         arguments,
+    //     )))
+    // }
     
     fn parse_call_argless(&mut self, function_name: String) -> Result<Expression> {
         let mut arguments = Vec::new();

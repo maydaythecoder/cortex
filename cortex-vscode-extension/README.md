@@ -1,5 +1,9 @@
 # Cortex Language Extension
 
+![Cortex Language Logo](./cortexlogo.png)
+
+_Syntax highlighting, formatting, and language tooling for Cortex._
+
 Syntax highlighting, formatting, and language support for the Cortex programming language in VS Code.
 
 ## Features

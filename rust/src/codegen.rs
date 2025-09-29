@@ -3,7 +3,7 @@
 //! Interprets Cortex AST directly without LLVM compilation.
 
 use crate::ast::*;
-use anyhow::{Result, anyhow};
+use anyhow::Result;
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -81,15 +81,6 @@ impl Interpreter {
     
     fn interpret_statement(&mut self, statement: &Statement) -> Result<()> {
         match statement {
-            Statement::Block(block) => {
-                for stmt in &block.statements {
-                    self.interpret_statement(stmt)?;
-                    // If we hit a return statement, stop processing the block
-                    if self.current_return_value.is_some() {
-                        break;
-                    }
-                }
-            }
             Statement::Function(function) => {
                 self.interpret_function(function)?;
             }
@@ -488,17 +479,17 @@ impl Interpreter {
         Ok(final_result)
     }
 
-    fn interpret_print_call(&mut self, args: &[Expression]) -> Result<()> {
-        for (i, arg) in args.iter().enumerate() {
-            let value = self.interpret_expression(arg)?;
-            if i > 0 {
-                print!(" ");
-            }
-            print!("{}", value);
-        }
-        println!();
-        Ok(())
-    }
+    // fn interpret_print_call(&mut self, args: &[Expression]) -> Result<()> {
+    //     for (i, arg) in args.iter().enumerate() {
+    //         let value = self.interpret_expression(arg)?;
+    //         if i > 0 {
+    //             print!(" ");
+    //         }
+    //         print!("{}", value);
+    //     }
+    //     println!();
+    //     Ok(())
+    // }
     
     fn add_values(&self, left: &Value, right: &Value) -> Result<Value> {
         match (left, right) {
