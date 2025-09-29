@@ -12,15 +12,16 @@ function activate(context) {
                 const config = vscode.workspace.getConfiguration('cortex.format');
                 const indentSize = config.get('indentSize', 2);
                 
-                // Get the formatter script path
-                const formatterPath = path.join(__dirname, '..', 'format_cortex.py');
+                // Get the Rust compiler path for formatting
+                const rustDir = path.join(__dirname, '..', 'rust');
+                const rustCompiler = path.join(rustDir, 'target', 'debug', 'cortexc');
                 
                 // Create a temporary file with the document content
                 const tempFile = path.join(__dirname, 'temp_format.ctx');
                 require('fs').writeFileSync(tempFile, document.getText());
                 
-                // Run the formatter
-                const command = `python3 "${formatterPath}" "${tempFile}" --indent ${indentSize}`;
+                // Run the Rust formatter
+                const command = `cd "${rustDir}" && cargo run -- format "${tempFile}" --indent ${indentSize}`;
                 
                 exec(command, (error, stdout, stderr) => {
                     if (error) {

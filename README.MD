@@ -274,7 +274,34 @@ If you have the Cortex VS Code extension installed:
 
 ### Try the Working Examples
 
-**Rust Implementation:**
+**Shorthand Commands (Recommended):**
+
+```bash
+# From project root - use the shorthand scripts
+./ctx hello_world
+./ctx function_demo
+./ctx arithmetic
+./ctx simple_algorithms
+./ctx fibonacci
+./ctx factorial
+./ctx prime_numbers
+./ctx bubble_sort
+./ctx comprehensive_features
+./ctx ai_ml_comprehensive
+./ctx simple_loops
+./ctx loops
+./ctx printing
+./ctx simple_arithmetic
+
+# Check syntax
+./ctxc hello_world
+
+# Run any .ctx file
+./ctx run examples/hello_world.ctx
+./ctxc check examples/hello_world.ctx
+```
+
+**Full Commands:**
 
 ```bash
 # Navigate to the rust directory

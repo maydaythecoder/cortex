@@ -20,6 +20,14 @@ cd rust
 
 #### 1. Hello World
 
+**Shorthand:**
+
+```bash
+./ctx hello_world
+```
+
+**Full Command:**
+
 ```bash
 cargo run -- run ../examples/hello_world.ctx
 ```
@@ -33,6 +41,14 @@ Welcome to Cortex - the AI/ML programming language!
 
 #### 2. Function Demo
 
+**Shorthand:**
+
+```bash
+./ctx function_demo
+```
+
+**Full Command:**
+
 ```bash
 cargo run -- run ../examples/function_demo.ctx
 ```
@@ -45,6 +61,14 @@ Hello from Cortex!
 ```
 
 #### 3. Arithmetic Operations
+
+**Shorthand:**
+
+```bash
+./ctx arithmetic
+```
+
+**Full Command:**
 
 ```bash
 cargo run -- run ../examples/arithmetic.ctx
@@ -66,11 +90,27 @@ a ** b = 1000
 
 #### 4. Simple Algorithms
 
+**Shorthand:**
+
+```bash
+./ctx simple_algorithms
+```
+
+**Full Command:**
+
 ```bash
 cargo run -- run ../examples/simple_algorithms.ctx
 ```
 
 #### 5. Fibonacci Sequence
+
+**Shorthand:**
+
+```bash
+./ctx fibonacci
+```
+
+**Full Command:**
 
 ```bash
 cargo run -- run ../examples/fibonacci.ctx
@@ -78,11 +118,27 @@ cargo run -- run ../examples/fibonacci.ctx
 
 #### 6. Factorial Calculation
 
+**Shorthand:**
+
+```bash
+./ctx factorial
+```
+
+**Full Command:**
+
 ```bash
 cargo run -- run ../examples/factorial.ctx
 ```
 
 #### 7. Prime Number Checking
+
+**Shorthand:**
+
+```bash
+./ctx prime_numbers
+```
+
+**Full Command:**
 
 ```bash
 cargo run -- run ../examples/prime_numbers.ctx
@@ -90,11 +146,27 @@ cargo run -- run ../examples/prime_numbers.ctx
 
 #### 8. Bubble Sort Demo
 
+**Shorthand:**
+
+```bash
+./ctx bubble_sort
+```
+
+**Full Command:**
+
 ```bash
 cargo run -- run ../examples/bubble_sort.ctx
 ```
 
 #### 9. Comprehensive Features
+
+**Shorthand:**
+
+```bash
+./ctx comprehensive_features
+```
+
+**Full Command:**
 
 ```bash
 cargo run -- run ../examples/comprehensive_features.ctx
@@ -102,11 +174,27 @@ cargo run -- run ../examples/comprehensive_features.ctx
 
 #### 10. AI/ML Comprehensive
 
+**Shorthand:**
+
+```bash
+./ctx ai_ml_comprehensive
+```
+
+**Full Command:**
+
 ```bash
 cargo run -- run ../examples/ai_ml_comprehensive.ctx
 ```
 
 #### 11. Simple Loops
+
+**Shorthand:**
+
+```bash
+./ctx simple_loops
+```
+
+**Full Command:**
 
 ```bash
 cargo run -- run ../examples/simple_loops.ctx
@@ -114,17 +202,41 @@ cargo run -- run ../examples/simple_loops.ctx
 
 #### 12. Loops
 
+**Shorthand:**
+
+```bash
+./ctx loops
+```
+
+**Full Command:**
+
 ```bash
 cargo run -- run ../examples/loops.ctx
 ```
 
 #### 13. Printing
 
+**Shorthand:**
+
+```bash
+./ctx printing
+```
+
+**Full Command:**
+
 ```bash
 cargo run -- run ../examples/printing.ctx
 ```
 
 #### 14. Simple Arithmetic
+
+**Shorthand:**
+
+```bash
+./ctx simple_arithmetic
+```
+
+**Full Command:**
 
 ```bash
 cargo run -- run ../examples/simple_arithmetic.ctx
@@ -134,8 +246,15 @@ cargo run -- run ../examples/simple_arithmetic.ctx
 
 You can check the syntax of any example without running it:
 
+**Shorthand:**
+
 ```bash
-# Check syntax
+./ctxc hello_world
+```
+
+**Full Command:**
+
+```bash
 cargo run -- check ../examples/hello_world.ctx
 ```
 
@@ -145,11 +264,19 @@ cargo run -- check ../examples/hello_world.ctx
 # From the project root directory
 cd /path/to/cortex
 
-# Run any example
-cd rust && cargo run -- run ../examples/hello_world.ctx
+# Use shorthand commands (recommended)
+./ctx hello_world
+./ctxc hello_world
+
+# Run any .ctx file
+./ctx run examples/hello_world.ctx
+./ctxc check examples/hello_world.ctx
 
 # Or use the provided shell script
 ./run_cortex.sh examples/hello_world.ctx
+
+# Or use full commands
+cd rust && cargo run -- run ../examples/hello_world.ctx
 ```
 
 ## VS Code Integration

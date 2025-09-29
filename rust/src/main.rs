@@ -50,6 +50,17 @@ enum Commands {
         /// Input Cortex source file
         input: PathBuf,
     },
+    /// Format a Cortex source file
+    Format {
+        /// Input Cortex source file
+        input: PathBuf,
+        /// Output file (if not specified, overwrites input)
+        #[arg(short, long)]
+        output: Option<PathBuf>,
+        /// Number of spaces for indentation
+        #[arg(short, long, default_value = "2")]
+        indent: usize,
+    },
 }
 
 fn main() -> Result<()> {
@@ -66,6 +77,9 @@ fn main() -> Result<()> {
         }
         Commands::Check { input } => {
             check_file(&input)
+        }
+        Commands::Format { input, output, indent } => {
+            format_file(&input, output, indent)
         }
     }
 }
@@ -148,6 +162,110 @@ fn interpret_source(source: &str) -> Result<()> {
     interpreter.interpret(&ast)?;
     
     Ok(())
+}
+
+fn format_file(input: &PathBuf, output: Option<PathBuf>, indent: usize) -> Result<()> {
+    let source = fs::read_to_string(input)
+        .with_context(|| format!("Failed to read input file: {}", input.display()))?;
+    
+    // Determine output path
+    let output_path = match output {
+        Some(path) => path.clone(),
+        None => input.clone(),
+    };
+    
+    println!("Formatting {}...", input.display());
+    
+    // Parse the source to validate it
+    let _ast = parse_source(&source)
+        .with_context(|| format!("Failed to parse {}", input.display()))?;
+    
+    // Format the source code
+    let formatted = format_cortex_code(&source, indent);
+    
+    // Write the formatted code
+    fs::write(&output_path, formatted)
+        .with_context(|| format!("Failed to write formatted file: {}", output_path.display()))?;
+    
+    if output_path == *input {
+        println!("Formatted: {}", input.display());
+    } else {
+        println!("Formatted: {} -> {}", input.display(), output_path.display());
+    }
+    
+    Ok(())
+}
+
+fn format_cortex_code(source: &str, indent_size: usize) -> String {
+    let lines: Vec<&str> = source.lines().collect();
+    let mut formatted_lines = Vec::new();
+    let mut current_indent = 0;
+    
+    for line in lines {
+        let trimmed = line.trim();
+        
+        // Skip empty lines but preserve them
+        if trimmed.is_empty() {
+            formatted_lines.push(String::new());
+            continue;
+        }
+        
+        // Handle comments
+        if trimmed.starts_with("//") {
+            formatted_lines.push(format!("{}{}", " ".repeat(current_indent * indent_size), trimmed));
+            continue;
+        }
+        
+        // Handle block comments
+        if trimmed.starts_with("/*") {
+            formatted_lines.push(format!("{}{}", " ".repeat(current_indent * indent_size), trimmed));
+            continue;
+        }
+        
+        // Handle function definitions
+        if trimmed.starts_with("func ") {
+            formatted_lines.push(format!("{}{}", " ".repeat(current_indent * indent_size), trimmed));
+            if trimmed.ends_with(" |") {
+                current_indent += 1;
+            }
+            continue;
+        }
+        
+        // Handle variable declarations
+        if trimmed.starts_with("let ") {
+            formatted_lines.push(format!("{}{}", " ".repeat(current_indent * indent_size), trimmed));
+            continue;
+        }
+        
+        // Handle control flow
+        if trimmed.starts_with("if ") || trimmed.starts_with("while ") || trimmed.starts_with("for ") {
+            formatted_lines.push(format!("{}{}", " ".repeat(current_indent * indent_size), trimmed));
+            if trimmed.ends_with(" |") {
+                current_indent += 1;
+            }
+            continue;
+        }
+        
+        // Handle block endings
+        if trimmed == "^" {
+            if current_indent > 0 {
+                current_indent -= 1;
+            }
+            formatted_lines.push(format!("{}{}", " ".repeat(current_indent * indent_size), trimmed));
+            continue;
+        }
+        
+        // Handle return statements
+        if trimmed.starts_with("return") {
+            formatted_lines.push(format!("{}{}", " ".repeat(current_indent * indent_size), trimmed));
+            continue;
+        }
+        
+        // Handle function calls and other statements
+        formatted_lines.push(format!("{}{}", " ".repeat(current_indent * indent_size), trimmed));
+    }
+    
+    formatted_lines.join("\n")
 }
 
 fn parse_source(source: &str) -> Result<ast::Program> {

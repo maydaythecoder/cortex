@@ -3,12 +3,29 @@
     "displayName": "Cortex Language",
     "description": "Syntax highlighting and formatting for Cortex programming language",
     "version": "0.2.0",
-    "publisher": "cortex-team",
+    "publisher": "muhyadinmohamed",
     "engines": {
         "vscode": "^1.74.0"
     },
     "categories": [
         "Programming Languages"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/muhyadinmohamed/cortex.git"
+    },
+    "homepage": "https://github.com/muhyadinmohamed/cortex",
+    "bugs": {
+        "url": "https://github.com/muhyadinmohamed/cortex/issues"
+    },
+    "license": "CC-BY-NC-4.0",
+    "keywords": [
+        "cortex",
+        "programming-language",
+        "ai",
+        "ml",
+        "syntax-highlighting",
+        "formatter"
     ],
     "contributes": {
         "languages": [
@@ -28,6 +45,14 @@
                 }
             }
         ],
+        "fileExtensions": {
+            ".ctx": {
+                "icon": {
+                    "light": "./icons/cortex-light.svg",
+                    "dark": "./icons/cortex-dark.svg"
+                }
+            }
+        },
         "grammars": [
             {
                 "language": "cortex",
