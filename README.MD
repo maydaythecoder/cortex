@@ -1,4 +1,4 @@
-# Cortex 🧠
+
 
 ![Cortex Logo](assets/cortex-with-text.svg)
 
