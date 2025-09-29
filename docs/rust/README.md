@@ -33,6 +33,9 @@ cargo build
 ## Running
 
 ```bash
+# Navigate to the rust directory
+cd rust
+
 # Run a Cortex program
 cargo run -- run program.ctx
 
@@ -41,6 +44,56 @@ cargo run -- check program.ctx
 
 # Build executable
 cargo run -- build program.ctx -o output
+```
+
+## Running Examples
+
+```bash
+# Navigate to the rust directory
+cd rust
+
+# Basic hello world
+cargo run -- run ../examples/hello_world.ctx
+
+# Functions and variables
+cargo run -- run ../examples/function_demo.ctx
+
+# Arithmetic operations
+cargo run -- run ../examples/arithmetic.ctx
+
+# Simple algorithms (prime, factorial, fibonacci, GCD)
+cargo run -- run ../examples/simple_algorithms.ctx
+
+# Fibonacci sequence
+cargo run -- run ../examples/fibonacci.ctx
+
+# Factorial calculation
+cargo run -- run ../examples/factorial.ctx
+
+# Prime number checking
+cargo run -- run ../examples/prime_numbers.ctx
+
+# Bubble sort demo
+cargo run -- run ../examples/bubble_sort.ctx
+
+# Comprehensive features showcase
+cargo run -- run ../examples/comprehensive_features.ctx
+
+# AI/ML algorithms demo
+cargo run -- run ../examples/ai_ml_comprehensive.ctx
+
+# Loop examples
+cargo run -- run ../examples/simple_loops.ctx
+cargo run -- run ../examples/loops.ctx
+
+# Printing examples
+cargo run -- run ../examples/printing.ctx
+
+# Simple arithmetic
+cargo run -- run ../examples/simple_arithmetic.ctx
+
+# Check syntax of any example
+cargo run -- check ../examples/hello_world.ctx
 ```
 
 ## Development
