@@ -1,8 +1,8 @@
 {
     "name": "cortex-language",
     "displayName": "Cortex Language",
-    "description": "Syntax highlighting for Cortex programming language",
-    "version": "0.1.0",
+    "description": "Syntax highlighting and formatting for Cortex programming language",
+    "version": "0.2.0",
     "publisher": "cortex-team",
     "engines": {
         "vscode": "^1.74.0"
@@ -21,7 +21,11 @@
                 "extensions": [
                     ".ctx"
                 ],
-                "configuration": "./language-configuration.json"
+                "configuration": "./language-configuration.json",
+                "icon": {
+                    "light": "./icons/cortex-light.svg",
+                    "dark": "./icons/cortex-dark.svg"
+                }
             }
         ],
         "grammars": [
@@ -30,6 +34,49 @@
                 "scopeName": "source.cortex",
                 "path": "./syntaxes/cortex.tmLanguage.json"
             }
+        ],
+        "configuration": {
+            "title": "Cortex",
+            "properties": {
+                "cortex.format.indentSize": {
+                    "type": "number",
+                    "default": 2,
+                    "description": "Number of spaces for indentation"
+                },
+                "cortex.format.formatOnSave": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Format Cortex files on save"
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "cortex.format",
+                "title": "Format Cortex File",
+                "category": "Cortex"
+            },
+            {
+                "command": "cortex.run",
+                "title": "Run Cortex File",
+                "category": "Cortex"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "cortex.format",
+                "key": "ctrl+shift+f",
+                "when": "editorTextFocus && editorLangId == cortex"
+            },
+            {
+                "command": "cortex.run",
+                "key": "ctrl+shift+r",
+                "when": "editorTextFocus && editorLangId == cortex"
+            }
         ]
-    }
+    },
+    "activationEvents": [
+        "onLanguage:cortex"
+    ],
+    "main": "./extension.js"
 }
