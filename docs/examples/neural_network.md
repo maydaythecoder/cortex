@@ -34,6 +34,19 @@ study_bot = compose_network[medical_layer, educational_layer]
 
 The fundamental building block - each neuron is a self-contained processing unit:
 
+#### Basic Neuron Creation
+
+```cortex
+neuron = Neuron |
+  weights: random_normal[size: 64],
+  bias: 0.1,
+  activation: "relu",
+  custom_vars: |
+    "learning_rate": 0.001
+  ^
+^
+```
+
 ```cortex
 struct Neuron |
   weights: tensor              // Core neural learning parameters
@@ -63,6 +76,19 @@ medical_neuron = Neuron |
 ### Layer Design
 
 Layers encapsulate collections of neurons with specialized learning algorithms:
+
+#### Basic Layer Creation
+```cortex
+layer = Layer |
+  neurons: [neuron1, neuron2],
+  learning_curve: LearningAlgorithm |
+    optimizer: "adam",
+    learning_rate: 0.001
+  ^,
+  name: "BasicLayer",
+  domain: "general"
+^
+```
 
 ```cortex
 struct Layer |
@@ -112,6 +138,15 @@ medical_layer = Layer |
 ### Neural Network Composition
 
 The final network assembles multiple specialized layers:
+
+#### Basic Network Creation
+```cortex
+network = NeuralNetwork |
+  layers: [layer1, layer2],
+  global_optimizer: "adam",
+  architecture_type: "sequential"
+^
+```
 
 ```cortex
 struct NeuralNetwork |
@@ -172,6 +207,27 @@ study_assistant = NeuralNetwork |
 
 ### Layer Creation and Packaging
 
+#### Minimal Layer Creation
+
+```cortex
+my_layer = create_layer[
+  domain: "education",
+  neurons: [neuron],
+  learning_curve: LearningAlgorithm |
+    optimizer: "adam"
+  ^
+]
+```
+
+#### Minimal Packaging
+
+```cortex
+package_layer | 
+  layer: my_layer,
+  version: "v1.0.0"
+^
+```
+
 ```cortex
 // Create specialized educational layer with adaptive learning capabilities
 educational_layer = create_layer[
@@ -213,6 +269,17 @@ package_layer |
 
 ### Layer Import and Usage
 
+#### Minimal Import and Compose
+```cortex
+medical = import_layer["medical:v1.0.0"]
+education = import_layer["education:v1.0.0"]
+
+bot = compose_network[
+  layers: [medical, education],
+  global_optimizer: "adam"
+]
+```
+
 ```cortex
 // Import specialized layers from registry
 medical_analysis = import_layer["registry://medical/analyzer:v2.1.0"]
@@ -238,6 +305,15 @@ response = study_bot.process[
 ### Auto-Generated Layer Blending
 
 The `blend_layers` function solves the critical challenge of connecting heterogeneous layers with different domains, architectures, and feature spaces:
+
+#### Basic Layer Blending
+
+```cortex
+bridge = blend_layers[
+  layer_a: medical_layer,
+  layer_b: educational_layer
+]
+```
 
 ```cortex
 // Without blending - problematic feature space misalignment
@@ -504,6 +580,35 @@ Bridge performance metrics:
 ```
 
 ## Core Functions
+
+### Minimal Function Examples
+
+#### Neuron Creation
+
+```cortex
+neuron = create_neuron[
+  weights: random_normal[size: 32],
+  bias: 0.0,
+  activation: "relu"
+]
+```
+
+#### Layer Creation  
+
+```cortex
+layer = create_layer[
+  neurons: [neuron],
+  learning_curve: LearningAlgorithm |
+    optimizer: "adam"
+  ^
+]
+```
+
+#### Layer Blending
+
+```cortex
+bridge = blend_layers[layer_a, layer_b]
+```
 
 ### Neuron Management
 
