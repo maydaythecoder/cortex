@@ -83,7 +83,7 @@ cargo run -- build program.ctx -o program
 - Functions with parameters
 - Arithmetic operations (+, -, *, /, %, **)
 - Comparison operators (==, !=, <, <=, >, >=)
-- Logical operators (&&, ||, !)
+- Logical operators (&&, \|, !)
 - Control flow (if/else, while loops)
 - Built-in functions (`print`)
 - String operations

@@ -79,7 +79,7 @@ The Python implementation uses `llvmlite` for LLVM integration:
 - Functions with parameters and return values
 - Arithmetic operations (+, -, *, /, %, **)
 - Comparison operators (==, !=, <, <=, >, >=)
-- Logical operators (&&, ||, !)
+- Logical operators (&&, \|, !)
 - Control flow (if/else, while loops)
 - Built-in functions (`print`, `str`)
 - String concatenation

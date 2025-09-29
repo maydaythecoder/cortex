@@ -3,7 +3,7 @@
 //! Interprets Cortex AST directly without LLVM compilation.
 
 use crate::ast::*;
-use anyhow::Result;
+use anyhow::{Result, anyhow};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -12,6 +12,8 @@ pub enum Value {
     String(String),
     Boolean(bool),
     Null,
+    Array(Vec<Value>),
+    Dictionary(HashMap<String, Value>),
 }
 
 impl std::fmt::Display for Value {
@@ -21,6 +23,28 @@ impl std::fmt::Display for Value {
             Value::String(s) => write!(f, "{}", s),
             Value::Boolean(b) => write!(f, "{}", b),
             Value::Null => write!(f, "null"),
+            Value::Array(arr) => {
+                write!(f, "[")?;
+                for (i, val) in arr.iter().enumerate() {
+                    if i > 0 {
+                        write!(f, ", ")?;
+                    }
+                    write!(f, "{}", val)?;
+                }
+                write!(f, "]")
+            }
+            Value::Dictionary(dict) => {
+                write!(f, "{{")?;
+                let mut first = true;
+                for (key, val) in dict.iter() {
+                    if !first {
+                        write!(f, ", ")?;
+                    }
+                    write!(f, "\"{}\": {}", key, val)?;
+                    first = false;
+                }
+                write!(f, "}}")
+            }
         }
     }
 }
@@ -28,6 +52,7 @@ impl std::fmt::Display for Value {
 pub struct Interpreter {
     variables: HashMap<String, Value>,
     functions: HashMap<String, Function>,
+    current_return_value: Option<Value>,
 }
 
 impl Interpreter {
@@ -35,6 +60,7 @@ impl Interpreter {
         Self {
             variables: HashMap::new(),
             functions: HashMap::new(),
+            current_return_value: None,
         }
     }
     
@@ -52,11 +78,16 @@ impl Interpreter {
         Ok(())
     }
     
+    
     fn interpret_statement(&mut self, statement: &Statement) -> Result<()> {
         match statement {
             Statement::Block(block) => {
                 for stmt in &block.statements {
                     self.interpret_statement(stmt)?;
+                    // If we hit a return statement, stop processing the block
+                    if self.current_return_value.is_some() {
+                        break;
+                    }
                 }
             }
             Statement::Function(function) => {
@@ -72,7 +103,9 @@ impl Interpreter {
                 self.interpret_for_loop(for_loop)?;
             }
             Statement::ReturnStatement(return_stmt) => {
-                self.interpret_return_statement(return_stmt)?;
+                let result = self.interpret_return_statement(return_stmt)?;
+                self.current_return_value = Some(result);
+                return Ok(());  // Exit current function scope
             }
             Statement::Assignment(assignment) => {
                 self.interpret_assignment(assignment)?;
@@ -117,21 +150,50 @@ impl Interpreter {
     }
     
     fn interpret_for_loop(&mut self, for_loop: &ForLoop) -> Result<()> {
-        // For now, implement as a simple infinite loop with break
-        // TODO: Implement proper for loop semantics
-        loop {
-            self.interpret_block(&for_loop.body)?;
-            break; // Simple implementation - just run once
+        // Implement for loop with iterable support
+        if let Some(iterable) = &for_loop.iterable {
+            // Iterate over array or other iterable
+            let iterable_value = self.interpret_expression(iterable)?;
+            
+            match iterable_value {
+                Value::Array(arr) => {
+                    for (index, element) in arr.iter().enumerate() {
+                        // Set both index and element variables
+                        self.variables.insert(format!("{}_index", for_loop.variable), Value::Number(index as f64));
+                        self.variables.insert(for_loop.variable.clone(), element.clone());
+                        
+                        // Interpret the loop body
+                        self.interpret_block(&for_loop.body)?;
+                    }
+                }
+                Value::Number(n) => {
+                    // Range loop: for [i] | ... ^ with implicit 0 to n range
+                    for i in 0..(n as usize) {
+                        self.variables.insert(for_loop.variable.clone(), Value::Number(i as f64));
+                        self.interpret_block(&for_loop.body)?;
+                    }
+                }
+                _ => {
+                    return Err(anyhow::anyhow!("Cannot iterate over non-array value"));
+                }
+            }
+        } else {
+            // Simple counter loop - iterate 10 times by default
+            for i in 0..10 {
+                self.variables.insert(for_loop.variable.clone(), Value::Number(i as f64));
+                self.interpret_block(&for_loop.body)?;
+            }
         }
+        
         Ok(())
     }
     
-    fn interpret_return_statement(&mut self, return_stmt: &ReturnStatement) -> Result<()> {
+    fn interpret_return_statement(&mut self, return_stmt: &ReturnStatement) -> Result<Value> {
         if let Some(value) = &return_stmt.value {
-            let _result = self.interpret_expression(value)?;
-            // TODO: Handle return value properly
+            let result = self.interpret_expression(value)?;
+            return Ok(result);
         }
-        Ok(())
+        Ok(Value::Null)
     }
     
     fn interpret_assignment(&mut self, assignment: &Assignment) -> Result<()> {
@@ -182,6 +244,7 @@ impl Interpreter {
                     ">=" => self.compare_values(&left, &right, |a, b| a >= b),
                     "&&" => Ok(Value::Boolean(self.is_truthy(&left) && self.is_truthy(&right))),
                     "||" => Ok(Value::Boolean(self.is_truthy(&left) || self.is_truthy(&right))),
+                    "@" => self.access_element(&left, &right),
                     _ => Err(anyhow::anyhow!("Unsupported binary operator: {}", binary_op.operator))
                 }
             }
@@ -202,9 +265,110 @@ impl Interpreter {
             }
             Expression::Call(call) => {
                 if let Expression::Identifier(func_name) = &*call.function {
-                    if func_name.name == "print" {
+                    // Built-in math functions
+                    if func_name.name == "sqrt" {
+                        if call.arguments.len() != 1 {
+                            return Err(anyhow::anyhow!("sqrt() takes exactly one argument"));
+                        }
+                        let value = self.interpret_expression(&call.arguments[0])?;
+                        match value {
+                            Value::Number(n) => Ok(Value::Number(n.sqrt())),
+                            _ => Err(anyhow::anyhow!("sqrt() requires a number argument"))
+                        }
+                    } else if func_name.name == "exp" {
+                        if call.arguments.len() != 1 {
+                            return Err(anyhow::anyhow!("exp() takes exactly one argument"));
+                        }
+                        let value = self.interpret_expression(&call.arguments[0])?;
+                        match value {
+                            Value::Number(n) => Ok(Value::Number(n.exp())),
+                            _ => Err(anyhow::anyhow!("exp() requires a number argument"))
+                        }
+                    } else if func_name.name == "ln" {
+                        if call.arguments.len() != 1 {
+                            return Err(anyhow::anyhow!("ln() takes exactly one argument"));
+                        }
+                        let value = self.interpret_expression(&call.arguments[0])?;
+                        match value {
+                            Value::Number(n) => {
+                                if n <= 0.0 {
+                                    return Err(anyhow::anyhow!("ln() requires a positive number"));
+                                }
+                                Ok(Value::Number(n.ln()))
+                            },
+                            _ => Err(anyhow::anyhow!("ln() requires a number argument"))
+                        }
+                    } else if func_name.name == "sin" {
+                        if call.arguments.len() != 1 {
+                            return Err(anyhow::anyhow!("sin() takes exactly one argument"));
+                        }
+                        let value = self.interpret_expression(&call.arguments[0])?;
+                        match value {
+                            Value::Number(n) => Ok(Value::Number(n.sin())),
+                            _ => Err(anyhow::anyhow!("sin() requires a number argument"))
+                        }
+                    } else if func_name.name == "cos" {
+                        if call.arguments.len() != 1 {
+                            return Err(anyhow::anyhow!("cos() takes exactly one argument"));
+                        }
+                        let value = self.interpret_expression(&call.arguments[0])?;
+                        match value {
+                            Value::Number(n) => Ok(Value::Number(n.cos())),
+                            _ => Err(anyhow::anyhow!("cos() requires a number argument"))
+                        }
+                    } else if func_name.name == "abs" {
+                        if call.arguments.len() != 1 {
+                            return Err(anyhow::anyhow!("abs() takes exactly one argument"));
+                        }
+                        let value = self.interpret_expression(&call.arguments[0])?;
+                        match value {
+                            Value::Number(n) => Ok(Value::Number(n.abs())),
+                            _ => Err(anyhow::anyhow!("abs() requires a number argument"))
+                        }
+                    } else if func_name.name == "min" {
+                        if call.arguments.len() != 2 {
+                            return Err(anyhow::anyhow!("min() takes exactly two arguments"));
+                        }
+                        let val1 = self.interpret_expression(&call.arguments[0])?;
+                        let val2 = self.interpret_expression(&call.arguments[1])?;
+                        match (&val1, &val2) {
+                            (Value::Number(n1), Value::Number(n2)) => Ok(Value::Number(n1.min(*n2))),
+                            _ => Err(anyhow::anyhow!("min() requires two number arguments"))
+                        }
+                    } else if func_name.name == "max" {
+                        if call.arguments.len() != 2 {
+                            return Err(anyhow::anyhow!("max() takes exactly two arguments"));
+                        }
+                        let val1 = self.interpret_expression(&call.arguments[0])?;
+                        let val2 = self.interpret_expression(&call.arguments[1])?;
+                        match (&val1, &val2) {
+                            (Value::Number(n1), Value::Number(n2)) => Ok(Value::Number(n1.max(*n2))),
+                            _ => Err(anyhow::anyhow!("max() requires two number arguments"))
+                        }
+                    } else if func_name.name == "len" {
+                        if call.arguments.len() != 1 {
+                            return Err(anyhow::anyhow!("len() takes exactly one argument"));
+                        }
+                        let value = self.interpret_expression(&call.arguments[0])?;
+                        match value {
+                            Value::Array(arr) => Ok(Value::Number(arr.len() as f64)),
+                            Value::Dictionary(dict) => Ok(Value::Number(dict.len() as f64)),
+                            Value::String(s) => Ok(Value::Number(s.len() as f64)),
+                            _ => Err(anyhow::anyhow!("len() requires an array, dictionary, or string"))
+                        }
+                    } else if func_name.name == "print" {
                         // Handle print function
-                        self.interpret_print_call(&call.arguments)?;
+                        if !call.arguments.is_empty() {
+                            let mut output = String::new();
+                            for (i, arg) in call.arguments.iter().enumerate() {
+                                if i > 0 {
+                                    output.push(' ');
+                                }
+                                let value = self.interpret_expression(arg)?;
+                                output.push_str(&format!("{}", value));
+                            }
+                            println!("{}", output);
+                        }
                         Ok(Value::Null)
                     } else if func_name.name == "str" {
                         // Handle str function
@@ -225,13 +389,35 @@ impl Interpreter {
                     Err(anyhow::anyhow!("Invalid function call"))
                 }
             }
-            Expression::Array(_) => {
-                // TODO: Implement array support
-                Err(anyhow::anyhow!("Array literals not yet implemented"))
+            Expression::Array(array) => {
+                // Implement array support
+                let mut values = Vec::new();
+                for element in &array.elements {
+                    let value = self.interpret_expression(element)?;
+                    values.push(value);
+                }
+                Ok(Value::Array(values))
             }
-            Expression::Dictionary(_) => {
-                // TODO: Implement dictionary support
-                Err(anyhow::anyhow!("Dictionary literals not yet implemented"))
+            Expression::Dictionary(dict) => {
+                // Implement dictionary support
+                let mut map = std::collections::HashMap::new();
+                for (key, value) in &dict.pairs {
+                    let key_value = self.interpret_expression(key)?;
+                    let value_value = self.interpret_expression(value)?;
+                    
+                    // Convert key to string for HashMap
+                    let key_str = match key_value {
+                        Value::String(s) => s,
+                        Value::Number(n) => n.to_string(),
+                        Value::Boolean(b) => b.to_string(),
+                        Value::Null => "null".to_string(),
+                        Value::Array(_) => "array".to_string(), // Simplified approach
+                        Value::Dictionary(_) => "dict".to_string(), // Simplified approach
+                    };
+                    
+                    map.insert(key_str, value_value);
+                }
+                Ok(Value::Dictionary(map))
             }
         }
     }
@@ -243,6 +429,8 @@ impl Interpreter {
                 Statement::ReturnStatement(return_stmt) => {
                     if let Some(expr) = &return_stmt.value {
                         result = self.interpret_expression(expr)?;
+                    } else {
+                        result = Value::Null;
                     }
                     break; // Return immediately
                 }
@@ -280,6 +468,7 @@ impl Interpreter {
         // Restore variables
         self.variables = old_variables;
         
+        // Return the result from the block
         Ok(result)
     }
 
@@ -378,8 +567,42 @@ impl Interpreter {
             Value::String(s) => !s.is_empty(),
             Value::Boolean(b) => *b,
             Value::Null => false,
+            Value::Array(arr) => !arr.is_empty(),
+            Value::Dictionary(dict) => !dict.is_empty(),
         }
     }
+    
+    fn access_element(&self, container: &Value, index: &Value) -> Result<Value> {
+        match container {
+            Value::Array(arr) => {
+                match index {
+                    Value::Number(n) => {
+                        let idx = *n as usize;
+                        if idx < arr.len() {
+                            Ok(arr[idx].clone())
+                        } else {
+                            Err(anyhow::anyhow!("Array index {} out of bounds (length: {})", idx, arr.len()))
+                        }
+                    }
+                    _ => Err(anyhow::anyhow!("Array index must be a number, got: {:?}", index))
+                }
+            }
+            Value::Dictionary(map) => {
+                match index {
+                    Value::String(s) => {
+                        map.get(s).cloned().ok_or_else(|| anyhow::anyhow!("Key '{}' not found in dictionary", s))
+                    }
+                    Value::Number(n) => {
+                        let key = n.to_string();
+                        map.get(&key).cloned().ok_or_else(|| anyhow::anyhow!("Key '{}' not found in dictionary", key))
+                    }
+                    _ => Err(anyhow::anyhow!("Dictionary key must be a string or number, got: {:?}", index))
+                }
+            }
+            _ => Err(anyhow::anyhow!("Cannot access elements of non-container type: {:?}", container))
+        }
+    }
+    
 }
 
 #[cfg(test)]

@@ -49,7 +49,7 @@ impl Parser {
     }
     
     fn is_at_end(&self) -> bool {
-        self.position >= self.tokens.len() || 
+        self.position >= self.tokens.len() ||
         matches!(self.current_token().map(|t| &t.token), Some(Token::Error))
     }
     
@@ -393,7 +393,7 @@ impl Parser {
         
         while self.match_token(Token::Or) {
             let right = self.parse_logical_and()?;
-            left = Expression::BinaryOp(BinaryOp::new(left, "||".to_string(), right));
+            left = Expression::BinaryOp(BinaryOp::new(left, "|".to_string(), right));
         }
         
         Ok(left)
@@ -413,7 +413,7 @@ impl Parser {
     fn parse_equality(&mut self) -> Result<Expression> {
         let mut left = self.parse_comparison()?;
         
-        while self.match_token(Token::Equals) || self.match_token(Token::NotEquals) {
+        while self.match_token(Token::Equals) | self.match_token(Token::NotEquals) {
             let operator = match self.tokens.get(self.position - 1) {
                 Some(token) => match &token.token {
                     Token::Equals => "==".to_string(),
@@ -432,9 +432,9 @@ impl Parser {
     fn parse_comparison(&mut self) -> Result<Expression> {
         let mut left = self.parse_term()?;
         
-        while self.match_token(Token::LessThan) || 
-              self.match_token(Token::LessEqual) || 
-              self.match_token(Token::GreaterThan) || 
+        while self.match_token(Token::LessThan) | 
+              self.match_token(Token::LessEqual) | 
+              self.match_token(Token::GreaterThan) | 
               self.match_token(Token::GreaterEqual) {
             let operator = match self.tokens.get(self.position - 1) {
                 Some(token) => match &token.token {
@@ -456,7 +456,7 @@ impl Parser {
     fn parse_term(&mut self) -> Result<Expression> {
         let mut left = self.parse_factor()?;
         
-        while self.match_token(Token::Plus) || self.match_token(Token::Minus) {
+        while self.match_token(Token::Plus) | self.match_token(Token::Minus) {
             let operator = match self.tokens.get(self.position - 1) {
                 Some(token) => match &token.token {
                     Token::Plus => "+".to_string(),
@@ -475,9 +475,9 @@ impl Parser {
     fn parse_factor(&mut self) -> Result<Expression> {
         let mut left = self.parse_unary()?;
         
-        while self.match_token(Token::Multiply) || 
-              self.match_token(Token::Divide) || 
-              self.match_token(Token::Modulo) || 
+        while self.match_token(Token::Multiply) | 
+              self.match_token(Token::Divide) | 
+              self.match_token(Token::Modulo) | 
               self.match_token(Token::Power) {
             let operator = match self.tokens.get(self.position - 1) {
                 Some(token) => match &token.token {
@@ -546,9 +546,11 @@ impl Parser {
                 let name = name.clone();
                 self.advance();
                 
-                // Check if it's a function call
-                if self.match_token(Token::LeftBracket) {
-                    self.parse_call(name)
+                // Check if it's a function call first
+                if self.peek_token(0).map(|t| &t.token) == Some(&Token::LeftBracket) {
+                    // Consume the LeftBracket token since parse_call expects it
+                    self.advance(); // Consume the '['
+                    self.parse_call_argless(name)
                 } else {
                     Ok(Expression::Identifier(Identifier::new(name)))
                 }
@@ -556,9 +558,34 @@ impl Parser {
             
             Token::LeftBracket => {
                 self.advance();
-                let expr = self.parse_expression()?;
-                self.expect(Token::RightBracket)?;
-                Ok(expr)
+                
+                if self.match_token(Token::RightBracket) {
+                    // Empty array
+                    Ok(Expression::Array(Array::new(vec![])))
+                } else {
+                    // Parse array elements
+                    let mut elements = Vec::new();
+                    
+                    loop {
+                        let element = self.parse_expression()?;
+                        elements.push(element);
+                        
+                        if self.match_token(Token::RightBracket) {
+                            break;
+                        }
+                        
+                        if !self.match_token(Token::Comma) {
+                            return Err(ParseError::UnexpectedToken {
+                                expected: "comma or closing bracket".to_string(),
+                                actual: format!("{:?}", self.current_token().map(|t| &t.token).unwrap_or(&Token::Error)),
+                                line: self.current_token().map(|t| t.line).unwrap_or(0),
+                                column: self.current_token().map(|t| t.column).unwrap_or(0),
+                            }.into());
+                        }
+                    }
+                    
+                    Ok(Expression::Array(Array::new(elements)))
+                }
             }
             
             Token::LeftBrace => {
@@ -575,6 +602,28 @@ impl Parser {
     }
     
     fn parse_call(&mut self, function_name: String) -> Result<Expression> {
+        let mut arguments = Vec::new();
+        
+        if !self.match_token(Token::RightBracket) {
+            loop {
+                let arg = self.parse_expression()?;
+                arguments.push(arg);
+                
+                if !self.match_token(Token::Comma) {
+                    break;
+                }
+            }
+            
+            self.expect(Token::RightBracket)?;
+        }
+        
+        Ok(Expression::Call(Call::new(
+            Expression::Identifier(Identifier::new(function_name)),
+            arguments,
+        )))
+    }
+    
+    fn parse_call_argless(&mut self, function_name: String) -> Result<Expression> {
         let mut arguments = Vec::new();
         
         if !self.match_token(Token::RightBracket) {

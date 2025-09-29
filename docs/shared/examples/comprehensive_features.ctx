@@ -121,7 +121,7 @@ func boolean_logic[] |
   
   // Logical operators
   let logic_and := (x > 5) && (y < 10)
-  let logic_or := (x < 5) || (y > 3)
+  let logic_or := (x < 5) \| (y > 3)
   let logic_not := !(x == 0)
   
   print["Logical AND: " + logic_and]
@@ -129,7 +129,7 @@ func boolean_logic[] |
   print["Logical NOT: " + logic_not]
   
   // Complex boolean expressions
-  let complex_bool := !((x > y) && (z == x)) || (y <= 5)
+  let complex_bool := !((x > y) && (z == x)) \| (y <= 5)
   print["Complex boolean: " + complex_bool]
 ^
 
@@ -207,7 +207,7 @@ func conditional_statements[] |
   if [(temperature > 80) && (humidity < 70)] |
     print["Perfect weather!"]
   ^ else |
-    if [(temperature < 60) || (humidity > 80)] |
+    if [(temperature < 60) \| (humidity > 80)] |
       print["Uncomfortable weather"]
     ^ else |
       print["Average weather"]

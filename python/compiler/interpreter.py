@@ -223,7 +223,7 @@ class Interpreter:
             return left >= right
         elif op.operator == '&&':
             return self._is_truthy(left) and self._is_truthy(right)
-        elif op.operator == '||':
+        elif op.operator == '\|':
             return self._is_truthy(left) or self._is_truthy(right)
         else:
             raise RuntimeError(f"Unknown binary operator: {op.operator}")

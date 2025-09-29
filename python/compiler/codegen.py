@@ -419,7 +419,7 @@ class CodeGenerator:
         elif op.operator == '&&':
             # Logical AND
             return self.builder.and_(self._bool_to_int(left), self._bool_to_int(right))
-        elif op.operator == '||':
+        elif op.operator == '\|':
             # Logical OR
             return self.builder.or_(self._bool_to_int(left), self._bool_to_int(right))
         else:

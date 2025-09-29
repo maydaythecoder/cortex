@@ -313,7 +313,7 @@ class Lexer:
             self._advance(2)
             return
         elif char == '|' and self._peek() == '|':
-            self._add_token(TokenType.OR, '||')
+            self._add_token(TokenType.OR, '\|')
             self._advance(2)
             return
         elif char == '*' and self._peek() == '*':
