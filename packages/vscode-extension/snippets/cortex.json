@@ -1,0 +1,196 @@
+{
+  "Function Definition": {
+    "prefix": "func",
+    "body": [
+      "func ${1:name}[${2:params}] |",
+      "  ${3:// function body}",
+      "^"
+    ],
+    "description": "Create a new function"
+  },
+  "Function with Return": {
+    "prefix": "funcr",
+    "body": [
+      "func ${1:name}[${2:params}]: ${3:returnType} |",
+      "  ${4:// function body}",
+      "  return[${5:value}]",
+      "^"
+    ],
+    "description": "Create a function with return type"
+  },
+  "Main Function": {
+    "prefix": "main",
+    "body": [
+      "func main[] |",
+      "  ${1:// main code}",
+      "^",
+      "",
+      "main[]"
+    ],
+    "description": "Create main function entry point"
+  },
+  "Variable Declaration (Mutable)": {
+    "prefix": "let",
+    "body": "let ${1:name} := ${2:value}",
+    "description": "Declare a mutable variable"
+  },
+  "Variable with Type": {
+    "prefix": "lett",
+    "body": "let ${1:name}: ${2:type} := ${3:value}",
+    "description": "Declare a typed variable"
+  },
+  "Constant Declaration": {
+    "prefix": "const",
+    "body": "let ${1:name} :: ${2:value}",
+    "description": "Declare a constant (immutable)"
+  },
+  "If Statement": {
+    "prefix": "if",
+    "body": [
+      "if [${1:condition}] |",
+      "  ${2:// code}",
+      "^"
+    ],
+    "description": "If statement"
+  },
+  "If-Else Statement": {
+    "prefix": "ife",
+    "body": [
+      "if [${1:condition}] |",
+      "  ${2:// true branch}",
+      "^ else |",
+      "  ${3:// false branch}",
+      "^"
+    ],
+    "description": "If-else statement"
+  },
+  "While Loop": {
+    "prefix": "while",
+    "body": [
+      "while [${1:condition}] |",
+      "  ${2:// loop body}",
+      "^"
+    ],
+    "description": "While loop"
+  },
+  "For Loop": {
+    "prefix": "for",
+    "body": [
+      "for [${1:i} in range[${2:start}, ${3:end}]] |",
+      "  ${4:// loop body}",
+      "^"
+    ],
+    "description": "For loop with range"
+  },
+  "Array Declaration": {
+    "prefix": "arr",
+    "body": "let ${1:name} := [${2:elements}]",
+    "description": "Create an array"
+  },
+  "Matrix Declaration": {
+    "prefix": "mat",
+    "body": "let ${1:name} := [[${2:row1}], [${3:row2}]]",
+    "description": "Create a matrix"
+  },
+  "Tensor Declaration": {
+    "prefix": "tensor",
+    "body": "let ${1:name} := tensor[shape: [${2:dimensions}], data: [${3:values}]]",
+    "description": "Create a tensor"
+  },
+  "Print Statement": {
+    "prefix": "print",
+    "body": "print[${1:value}]",
+    "description": "Print to console"
+  },
+  "Return Statement": {
+    "prefix": "ret",
+    "body": "return[${1:value}]",
+    "description": "Return from function"
+  },
+  "Comment Block": {
+    "prefix": "com",
+    "body": [
+      "// ${1:description}",
+      "// ${2:additional info}"
+    ],
+    "description": "Multi-line comment"
+  },
+  "Neural Network Layer": {
+    "prefix": "layer",
+    "body": [
+      "let ${1:layer} := layer[",
+      "  type: \"${2|dense,conv,pool,dropout|}\",",
+      "  units: ${3:128},",
+      "  activation: \"${4|relu,sigmoid,tanh,softmax|}\"",
+      "]"
+    ],
+    "description": "Create a neural network layer"
+  },
+  "Model Definition": {
+    "prefix": "model",
+    "body": [
+      "let ${1:model} := model[",
+      "  layers: [${2:layer_list}],",
+      "  optimizer: \"${3|adam,sgd,rmsprop|}\",",
+      "  loss: \"${4|mse,crossentropy,binary_crossentropy|}\"",
+      "]"
+    ],
+    "description": "Define a machine learning model"
+  },
+  "Train Model": {
+    "prefix": "train",
+    "body": [
+      "train[",
+      "  model: ${1:model},",
+      "  data: ${2:X_train},",
+      "  labels: ${3:y_train},",
+      "  epochs: ${4:100},",
+      "  batch_size: ${5:32}",
+      "]"
+    ],
+    "description": "Train a model"
+  },
+  "Gradient Descent": {
+    "prefix": "gd",
+    "body": [
+      "let ${1:weights} := gradient_descent[",
+      "  loss_fn: ${2:loss_function},",
+      "  initial: ${3:initial_weights},",
+      "  learning_rate: ${4:0.01},",
+      "  iterations: ${5:1000}",
+      "]"
+    ],
+    "description": "Perform gradient descent optimization"
+  },
+  "Matrix Multiplication": {
+    "prefix": "matmul",
+    "body": "let ${1:result} := matmul[${2:matrix1}, ${3:matrix2}]",
+    "description": "Matrix multiplication"
+  },
+  "Dot Product": {
+    "prefix": "dot",
+    "body": "let ${1:result} := dot[${2:vector1}, ${3:vector2}]",
+    "description": "Dot product of vectors"
+  },
+  "Activation Function": {
+    "prefix": "activate",
+    "body": "let ${1:output} := ${2|relu,sigmoid,tanh,softmax|}[${3:input}]",
+    "description": "Apply activation function"
+  },
+  "Import/Load Data": {
+    "prefix": "load",
+    "body": "let ${1:data} := load[\"${2:filename.csv}\"]",
+    "description": "Load data from file"
+  },
+  "Try-Catch (Error Handling)": {
+    "prefix": "try",
+    "body": [
+      "try |",
+      "  ${1:// code that might fail}",
+      "^ catch [${2:error}] |",
+      "  ${3:// error handling}",
+      "^"
+    ],
+    "description": "Try-catch error handling"
+  }
+}
