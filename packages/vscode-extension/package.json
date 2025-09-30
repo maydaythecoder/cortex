@@ -128,7 +128,8 @@
             {
                 "command": "cortex.run",
                 "title": "Run Cortex File",
-                "category": "Cortex"
+                "category": "Cortex",
+                "icon": "$(play)"
             },
             {
                 "command": "cortex.debug",
@@ -247,7 +248,38 @@
                 "language": "cortex",
                 "path": "./snippets/cortex.json"
             }
-        ]
+        ],
+        "menus": {
+            "editor/title/run": [
+                {
+                    "command": "cortex.run",
+                    "when": "resourceLangId == cortex",
+                    "group": "navigation@1"
+                }
+            ],
+            "editor/context": [
+                {
+                    "command": "cortex.run",
+                    "when": "resourceLangId == cortex",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "cortex.debug",
+                    "when": "resourceLangId == cortex",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "cortex.check",
+                    "when": "resourceLangId == cortex",
+                    "group": "cortex@1"
+                },
+                {
+                    "command": "cortex.build",
+                    "when": "resourceLangId == cortex",
+                    "group": "cortex@2"
+                }
+            ]
+        }
     },
     "activationEvents": [
         "onLanguage:cortex",
@@ -260,14 +292,11 @@
         "onCommand:cortex.lint",
         "onCommand:cortex.restartLanguageServer"
     ],
-    "main": "./out/extension.js",
+    "main": "./extension.js",
     "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "pretest": "npm run compile && npm run lint",
-        "lint": "eslint src --ext ts",
-        "test": "node ./out/test/runTest.js"
+        "vscode:prepublish": "echo 'Using JavaScript - no compilation needed'",
+        "package": "vsce package",
+        "publish": "vsce publish"
     },
     "devDependencies": {
         "@types/vscode": "^1.74.0",

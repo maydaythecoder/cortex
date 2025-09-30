@@ -161,7 +161,41 @@ function activate(context) {
         }
     });
 
-    context.subscriptions.push(formatter, formatCommand, runCommand, debugCommand, buildCompiler, checkCommand, buildCommand);
+    // Register code lens provider for run/debug buttons in editor
+    const codeLensProvider = vscode.languages.registerCodeLensProvider('cortex', {
+        provideCodeLenses(document) {
+            const codeLenses = [];
+            const topOfDocument = new vscode.Range(0, 0, 0, 0);
+            
+            // Add "▶ Run" button at top of file
+            const runLens = new vscode.CodeLens(topOfDocument, {
+                title: '▶ Run',
+                command: 'cortex.run',
+                tooltip: 'Run this Cortex file'
+            });
+            
+            // Add "🐛 Debug" button at top of file
+            const debugLens = new vscode.CodeLens(topOfDocument, {
+                title: '🐛 Debug',
+                command: 'cortex.debug',
+                tooltip: 'Debug this Cortex file'
+            });
+            
+            codeLenses.push(runLens, debugLens);
+            return codeLenses;
+        }
+    });
+
+    context.subscriptions.push(
+        formatter, 
+        formatCommand, 
+        runCommand, 
+        debugCommand, 
+        buildCompiler, 
+        checkCommand, 
+        buildCommand,
+        codeLensProvider
+    );
 }
 
 function deactivate() {}
