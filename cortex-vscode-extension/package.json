@@ -1,8 +1,8 @@
 {
     "name": "cortex-language",
     "displayName": "Cortex Language",
-    "description": "Syntax highlighting and formatting for Cortex programming language",
-    "version": "0.2.3",
+    "description": "Complete Cortex language support with bundled compiler, syntax highlighting, and formatting",
+    "version": "0.2.4",
     "publisher": "muhyadinmohamed",
     "engines": {
         "vscode": "^1.74.0"
@@ -10,6 +10,10 @@
     "categories": [
         "Programming Languages"
     ],
+    "galleryBanner": {
+        "color": "#6366f1",
+        "theme": "dark"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/muhyadinmohamed/cortex.git"
@@ -19,7 +23,7 @@
         "url": "https://github.com/muhyadinmohamed/cortex/issues"
     },
     "icon": "cortexlogo.png",
-    "license": "CC-BY-NC-4.0",
+    "license": "MIT",
     "keywords": [
         "cortex",
         "programming-language",
@@ -28,6 +32,8 @@
         "syntax-highlighting",
         "formatter"
     ],
+    "preview": false,
+    "qna": "https://github.com/muhyadinmohamed/cortex/issues",
     "contributes": {
         "languages": [
             {
@@ -77,12 +83,7 @@
                 "cortex.compiler.binaryPath": {
                     "type": "string",
                     "default": "",
-                    "description": "Absolute path to the Cortex compiler binary (cortexc). If empty, the extension will try rust/target first, then fallback to cargo run."
-                },
-                "cortex.compiler.preferBinary": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Prefer using a compiled cortexc binary when available instead of cargo run."
+                    "description": "Absolute path to a custom Cortex compiler binary (cortexc). If empty, uses the bundled compiler."
                 }
             }
         },
@@ -106,6 +107,16 @@
                 "command": "cortex.buildCompiler",
                 "title": "Build Cortex Compiler (Rust)",
                 "category": "Cortex"
+            },
+            {
+                "command": "cortex.check",
+                "title": "Check Cortex File Syntax",
+                "category": "Cortex"
+            },
+            {
+                "command": "cortex.build",
+                "title": "Build Cortex File to Executable",
+                "category": "Cortex"
             }
         ],
         "keybindings": [
@@ -124,7 +135,9 @@
     "activationEvents": [
         "onLanguage:cortex",
         "onCommand:cortex.debug",
-        "onCommand:cortex.buildCompiler"
+        "onCommand:cortex.buildCompiler",
+        "onCommand:cortex.check",
+        "onCommand:cortex.build"
     ],
     "main": "./extension.js"
 }

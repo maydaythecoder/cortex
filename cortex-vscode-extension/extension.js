@@ -13,16 +13,15 @@ function activate(context) {
                 const config = vscode.workspace.getConfiguration('cortex.format');
                 const indentSize = config.get('indentSize', 2);
                 
-                // Get the Rust compiler path for formatting
-                const rustDir = path.join(__dirname, '..', 'rust');
-                const rustCompiler = path.join(rustDir, 'target', 'debug', 'cortexc');
+                // Get the bundled compiler path for formatting
+                const bundledCompiler = path.join(__dirname, 'cortexc');
                 
                 // Create a temporary file with the document content
                 const tempFile = path.join(__dirname, 'temp_format.ctx');
                 require('fs').writeFileSync(tempFile, document.getText());
                 
-                // Run the Rust formatter
-                const command = `cd "${rustDir}" && cargo run -- format "${tempFile}" --indent ${indentSize}`;
+                // Run the bundled compiler formatter
+                const command = `"${bundledCompiler}" format "${tempFile}" --indent ${indentSize}`;
                 
                 exec(command, (error, stdout, stderr) => {
                     if (error) {
@@ -68,25 +67,15 @@ function activate(context) {
         const editor = vscode.window.activeTextEditor;
         if (editor && editor.document.languageId === 'cortex') {
             const filePath = editor.document.fileName;
-            const rustDir = path.join(__dirname, '..', 'rust');
             const config = vscode.workspace.getConfiguration('cortex.compiler');
-            const preferBinary = config.get('preferBinary', true);
             const configuredBinary = config.get('binaryPath', '').trim();
 
-            const fallbackCargo = `cd "${rustDir}" && cargo run -- run "${filePath}"`;
-
-            let command = fallbackCargo;
+            // Use bundled compiler by default
+            const bundledCompiler = path.join(__dirname, 'cortexc');
+            let command = `"${bundledCompiler}" run "${filePath}"`;
+            
             if (configuredBinary) {
                 command = `"${configuredBinary}" run "${filePath}"`;
-            } else if (preferBinary) {
-                // Try built binary in rust/target/debug or release
-                const debugBin = path.join(rustDir, 'target', 'debug', 'cortexc');
-                const releaseBin = path.join(rustDir, 'target', 'release', 'cortexc');
-                if (fs.existsSync(debugBin)) {
-                    command = `"${debugBin}" run "${filePath}"`;
-                } else if (fs.existsSync(releaseBin)) {
-                    command = `"${releaseBin}" run "${filePath}"`;
-                }
             }
 
             const terminal = vscode.window.createTerminal('Cortex');
@@ -103,23 +92,15 @@ function activate(context) {
             return;
         }
         const filePath = editor.document.fileName;
-        const rustDir = path.join(__dirname, '..', 'rust');
         const config = vscode.workspace.getConfiguration('cortex.compiler');
-        const preferBinary = config.get('preferBinary', true);
         const configuredBinary = config.get('binaryPath', '').trim();
 
-        const fallbackCargo = `cd "${rustDir}" && cargo run -- run "${filePath}"`;
-        let cmd = fallbackCargo;
+        // Use bundled compiler by default
+        const bundledCompiler = path.join(__dirname, 'cortexc');
+        let cmd = `"${bundledCompiler}" run "${filePath}"`;
+        
         if (configuredBinary) {
             cmd = `"${configuredBinary}" run "${filePath}"`;
-        } else if (preferBinary) {
-            const debugBin = path.join(rustDir, 'target', 'debug', 'cortexc');
-            const releaseBin = path.join(rustDir, 'target', 'release', 'cortexc');
-            if (fs.existsSync(debugBin)) {
-                cmd = `"${debugBin}" run "${filePath}"`;
-            } else if (fs.existsSync(releaseBin)) {
-                cmd = `"${releaseBin}" run "${filePath}"`;
-            }
         }
 
         const terminal = vscode.window.createTerminal({ name: 'Cortex Debug', env: { CORTEX_DEBUG: '1' } });
@@ -131,11 +112,56 @@ function activate(context) {
     const buildCompiler = vscode.commands.registerCommand('cortex.buildCompiler', async () => {
         const rustDir = path.join(__dirname, '..', 'rust');
         const terminal = vscode.window.createTerminal('Cortex Build');
-        terminal.sendText(`cd "${rustDir}" && cargo build`);
+        terminal.sendText(`cd "${rustDir}" && cargo build && cp target/debug/cortexc "${__dirname}/cortexc"`);
         terminal.show();
     });
 
-    context.subscriptions.push(formatter, formatCommand, runCommand, debugCommand, buildCompiler);
+    // Register command for checking Cortex file syntax
+    const checkCommand = vscode.commands.registerCommand('cortex.check', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor && editor.document.languageId === 'cortex') {
+            const filePath = editor.document.fileName;
+            const config = vscode.workspace.getConfiguration('cortex.compiler');
+            const configuredBinary = config.get('binaryPath', '').trim();
+
+            // Use bundled compiler by default
+            const bundledCompiler = path.join(__dirname, 'cortexc');
+            let command = `"${bundledCompiler}" check "${filePath}"`;
+            
+            if (configuredBinary) {
+                command = `"${configuredBinary}" check "${filePath}"`;
+            }
+
+            const terminal = vscode.window.createTerminal('Cortex Check');
+            terminal.sendText(command);
+            terminal.show();
+        }
+    });
+
+    // Register command for building Cortex files to executable
+    const buildCommand = vscode.commands.registerCommand('cortex.build', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor && editor.document.languageId === 'cortex') {
+            const filePath = editor.document.fileName;
+            const config = vscode.workspace.getConfiguration('cortex.compiler');
+            const configuredBinary = config.get('binaryPath', '').trim();
+
+            // Use bundled compiler by default
+            const bundledCompiler = path.join(__dirname, 'cortexc');
+            const outputPath = filePath.replace('.ctx', '');
+            let command = `"${bundledCompiler}" build "${filePath}" --output "${outputPath}"`;
+            
+            if (configuredBinary) {
+                command = `"${configuredBinary}" build "${filePath}" --output "${outputPath}"`;
+            }
+
+            const terminal = vscode.window.createTerminal('Cortex Build');
+            terminal.sendText(command);
+            terminal.show();
+        }
+    });
+
+    context.subscriptions.push(formatter, formatCommand, runCommand, debugCommand, buildCompiler, checkCommand, buildCommand);
 }
 
 function deactivate() {}
