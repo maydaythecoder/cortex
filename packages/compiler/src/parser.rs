@@ -393,7 +393,7 @@ impl Parser {
         
         while self.match_token(Token::Or) {
             let right = self.parse_logical_and()?;
-            left = Expression::BinaryOp(BinaryOp::new(left, "|".to_string(), right));
+            left = Expression::BinaryOp(BinaryOp::new(left, "||".to_string(), right));
         }
         
         Ok(left)

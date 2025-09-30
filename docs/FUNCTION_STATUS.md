@@ -135,7 +135,7 @@ This document provides a comprehensive overview of which functions and language 
 | `>=` (greater or equal) | ✅ Working | ✅ Working | Numbers and strings |
 | **Logical** | | | |
 | `&&` (and) | ✅ Working | ✅ Working | Boolean logic |
-| `\|` (or) | ✅ Working | ✅ Working | Boolean logic |
+| `||` (or) | ✅ Working | ✅ Working | Boolean logic |
 | `!` (not) | ❌ Not Implemented | ❌ Not Implemented | Negation |
 
 ### Operator Details

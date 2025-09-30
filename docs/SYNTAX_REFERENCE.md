@@ -137,7 +137,7 @@ let greater_equal := a >= b
 
 ```cortex
 let and_result := condition1 && condition2
-let or_result := condition1 \| condition2
+let or_result := condition1 || condition2
 let not_result := !condition
 ```
 
@@ -145,7 +145,7 @@ let not_result := !condition
 
 ```cortex
 let complex := (a + b) * (c - d) + e ** f
-let ternary_logic := (a > 5) && (b < 10) \| (c == 42)
+let ternary_logic := (a > 5) && (b < 10) || (c == 42)
 ```
 
 ---
@@ -413,7 +413,7 @@ func documented_function[] |
 | Operator | Description | Example |
 |----------|-------------|---------|
 | `&&` | Logical AND | `a && b` |
-| `\|` | Logical OR | `a \| b` |
+| `||` | Logical OR | `a || b` |
 | `!` | Logical NOT | `!a` |
 
 ### Assignment Operators
@@ -457,7 +457,7 @@ let logical_not := !condition
 5. **Comparison**: `<`, `<=`, `>`, `>=`
 6. **Equality**: `==`, `!=`
 7. **Logical AND**: `&&`
-8. **Logical OR**: `\|`
+8. **Logical OR**: `||`
 
 ### String Concatenation
 

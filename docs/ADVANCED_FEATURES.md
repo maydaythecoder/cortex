@@ -71,7 +71,7 @@ Based on codebase analysis of AST definitions, lexer tokens, and parser implemen
 5. Comparison (`<`, `<=`, `>`, `>=`)
 6. Equality (`==`, `!=`)
 7. Logical AND (`&&`)
-8. Logical OR (`\|`)
+8. Logical OR (`||`)
 
 ---
 
@@ -86,7 +86,7 @@ Based on codebase analysis of AST definitions, lexer tokens, and parser implemen
 
 ```cortex
         &&    // Logical AND
-        \|    // Logical OR  
+        ||    // Logical OR  
         !     // Logical NOT
 ```
 
@@ -240,7 +240,7 @@ Based on codebase analysis of AST definitions, lexer tokens, and parser implemen
 1. **Type Annotations**: No examples show `: number`, `: string` syntax
 2. **Constant Assignment**: No examples of `::` vs `:=`
 3. **Scientific Notation**: No `1e5`, `2e-3` examples
-4. **Complex Boolean Logic**: Limited `&&`, `\|`, `!` usage
+4. **Complex Boolean Logic**: Limited `&&`, `||`, `!` usage
 5. **Nested Control Flow**: No complex if-else-if chains
 6. **Dictionary Creation**: No `{"key": value}` examples
 7. **Function Type Annotations**: No `func name[params]: type` examples

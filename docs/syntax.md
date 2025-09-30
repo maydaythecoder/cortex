@@ -70,15 +70,15 @@ let is_greater_equal := x >= y // true
 
 ### ✅ Logical Operations
 
-**Operators**: `and`, `or`, `not`
+**Operators**: `&&`, `||`, `!`
 
 ```cortex
 let a := true
 let b := false
 
-let result1 := a and b    // false
-let result2 := a or b     // true
-let result3 := not a      // false
+let result1 := a && b     // false
+let result2 := a || b     // true
+let result3 := !a         // false
 ```
 
 ### ✅ Conditional Statements
