@@ -164,8 +164,19 @@ impl Interpreter {
                         self.interpret_block(&for_loop.body)?;
                     }
                 }
+                Value::Dictionary(dict) => {
+                    // Dictionary iteration: iterate over keys
+                    for (key, value) in dict.iter() {
+                        // Set both key and value variables
+                        self.variables.insert(for_loop.variable.clone(), Value::String(key.clone()));
+                        self.variables.insert(format!("{}_value", for_loop.variable), value.clone());
+                        
+                        // Interpret the loop body
+                        self.interpret_block(&for_loop.body)?;
+                    }
+                }
                 _ => {
-                    return Err(anyhow::anyhow!("Cannot iterate over non-array value"));
+                    return Err(anyhow::anyhow!("Cannot iterate over non-array, number, or dictionary value"));
                 }
             }
         } else {
@@ -249,6 +260,13 @@ impl Interpreter {
                             Ok(Value::Number(-n))
                         } else {
                             Err(anyhow::anyhow!("Cannot negate non-number value"))
+                        }
+                    }
+                    "+" => {
+                        if let Value::Number(n) = operand {
+                            Ok(Value::Number(n))
+                        } else {
+                            Err(anyhow::anyhow!("Cannot apply unary plus to non-number value"))
                         }
                     }
                     _ => Err(anyhow::anyhow!("Unsupported unary operator: {}", unary_op.operator))
@@ -409,6 +427,23 @@ impl Interpreter {
                     map.insert(key_str, value_value);
                 }
                 Ok(Value::Dictionary(map))
+            }
+            Expression::Range(range_expr) => {
+                let start = self.interpret_expression(&range_expr.start)?;
+                let end = self.interpret_expression(&range_expr.end)?;
+                
+                // Convert to numbers and create range
+                if let (Value::Number(start_num), Value::Number(end_num)) = (start, end) {
+                    let mut range_array = Vec::new();
+                    let mut current = start_num;
+                    while current < end_num {
+                        range_array.push(Value::Number(current));
+                        current += 1.0;
+                    }
+                    Ok(Value::Array(range_array))
+                } else {
+                    Err(anyhow::anyhow!("Range expressions require numbers"))
+                }
             }
             Expression::Index(index_expr) => {
                 // Check if this is a function call

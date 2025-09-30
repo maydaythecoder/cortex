@@ -48,6 +48,14 @@ pub enum Token {
     #[token("null")]
     Null,
     
+    // Keywords for iteration
+    #[token("in")]
+    In,
+    
+    // Range operator
+    #[token("..")]
+    Range,
+    
     // Operators
     #[token("+")]
     Plus,

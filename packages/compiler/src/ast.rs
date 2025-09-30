@@ -62,6 +62,7 @@ pub enum Expression {
     Array(Array),
     Dictionary(Dictionary),
     Index(IndexExpression),
+    Range(RangeExpression),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -204,6 +205,21 @@ impl IndexExpression {
         Self {
             container: Box::new(container),
             index: Box::new(index),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct RangeExpression {
+    pub start: Box<Expression>,
+    pub end: Box<Expression>,
+}
+
+impl RangeExpression {
+    pub fn new(start: Expression, end: Expression) -> Self {
+        Self {
+            start: Box::new(start),
+            end: Box::new(end),
         }
     }
 }

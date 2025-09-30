@@ -367,9 +367,48 @@ impl Parser {
         
         let then_block = self.parse_block()?;
         
-        // Parse else block (optional)
+        // Parse else block (optional) - handle else if chains
         let else_block = if self.match_token(Token::Else) {
-            Some(self.parse_block()?)
+            // Check if this is an "else if" by looking ahead
+            if let Some(next_token) = self.current_token() {
+                if next_token.token == Token::If {
+                    // This is an "else if", parse it manually
+                    self.advance(); // Consume the 'if' token
+                    
+                    self.expect(Token::LeftBracket)?;
+                    let else_condition = self.parse_expression()?;
+                    self.expect(Token::RightBracket)?;
+                    
+                    let else_then_block = self.parse_block()?;
+                    
+                    // Recursively parse else block for the else-if
+                    let else_else_block = if self.match_token(Token::Else) {
+                        // Check if this is another "else if"
+                        if let Some(next_token) = self.current_token() {
+                            if next_token.token == Token::If {
+                                self.advance(); // Consume the 'if' token
+                                let nested_else_if_statement = self.parse_if_statement()?;
+                                Some(Block::new(vec![nested_else_if_statement]))
+                            } else {
+                                Some(self.parse_block()?)
+                            }
+                        } else {
+                            Some(self.parse_block()?)
+                        }
+                    } else {
+                        None
+                    };
+                    
+                    let else_if_statement = Statement::IfStatement(IfStatement::new(else_condition, else_then_block, else_else_block));
+                    Some(Block::new(vec![else_if_statement]))
+                } else {
+                    // This is a regular "else" block
+                    Some(self.parse_block()?)
+                }
+            } else {
+                // This is a regular "else" block
+                Some(self.parse_block()?)
+            }
         } else {
             None
         };
@@ -392,7 +431,7 @@ impl Parser {
     fn parse_for_loop(&mut self) -> Result<Statement> {
         self.expect(Token::For)?;
         
-        self.expect(Token::LeftBracket)?;
+        // Parse variable name
         let variable = match self.current_token() {
             Some(token) => match &token.token {
                 Token::Identifier(name) => {
@@ -409,11 +448,22 @@ impl Parser {
             }
             None => return Err(ParseError::UnexpectedEof.into()),
         };
-        self.expect(Token::RightBracket)?;
+        
+        // Check if this is a modern for loop with 'in' keyword
+        let iterable = if self.match_token(Token::In) {
+            // Parse the iterable expression
+            Some(self.parse_expression()?)
+        } else {
+            // Legacy for loop - check if there's a bracket
+            if self.match_token(Token::LeftBracket) {
+                self.expect(Token::RightBracket)?;
+            }
+            None
+        };
         
         let body = self.parse_block()?;
         
-        Ok(Statement::ForLoop(ForLoop::new(variable, None, body)))
+        Ok(Statement::ForLoop(ForLoop::new(variable, iterable, body)))
     }
     
     fn parse_return_statement(&mut self) -> Result<Statement> {
@@ -441,7 +491,18 @@ impl Parser {
     }
     
     fn parse_expression(&mut self) -> Result<Expression> {
-        self.parse_logical_or()
+        self.parse_range()
+    }
+    
+    fn parse_range(&mut self) -> Result<Expression> {
+        let mut left = self.parse_logical_or()?;
+        
+        if self.match_token(Token::Range) {
+            let right = self.parse_logical_or()?;
+            left = Expression::Range(RangeExpression::new(left, right));
+        }
+        
+        Ok(left)
     }
     
     fn parse_logical_or(&mut self) -> Result<Expression> {
@@ -559,6 +620,9 @@ impl Parser {
         } else if self.match_token(Token::Minus) {
             let operand = self.parse_unary()?;
             Ok(Expression::UnaryOp(UnaryOp::new("-".to_string(), operand)))
+        } else if self.match_token(Token::Plus) {
+            let operand = self.parse_unary()?;
+            Ok(Expression::UnaryOp(UnaryOp::new("+".to_string(), operand)))
         } else {
             self.parse_postfix()
         }
