@@ -74,6 +74,7 @@ pub enum Statement {
     ReturnStatement(ReturnStatement),
     Assignment(Assignment),
     ConstantAssignment(ConstantAssignment),
+    IndexAssignment(IndexAssignment),
     Expression(Expression),
 }
 
@@ -328,6 +329,23 @@ pub struct ConstantAssignment {
 impl ConstantAssignment {
     pub fn new(variable: String, value: Expression) -> Self {
         Self { variable, value }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct IndexAssignment {
+    pub container: Box<Expression>,
+    pub index: Box<Expression>,
+    pub value: Box<Expression>,
+}
+
+impl IndexAssignment {
+    pub fn new(container: Expression, index: Expression, value: Expression) -> Self {
+        Self {
+            container: Box::new(container),
+            index: Box::new(index),
+            value: Box::new(value),
+        }
     }
 }
 

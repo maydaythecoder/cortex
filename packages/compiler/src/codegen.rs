@@ -104,6 +104,9 @@ impl Interpreter {
             Statement::ConstantAssignment(constant_assignment) => {
                 self.interpret_constant_assignment(constant_assignment)?;
             }
+            Statement::IndexAssignment(index_assignment) => {
+                self.interpret_index_assignment(index_assignment)?;
+            }
             Statement::Expression(expr) => {
                 self.interpret_expression(expr)?;
             }
@@ -207,6 +210,40 @@ impl Interpreter {
     fn interpret_constant_assignment(&mut self, constant_assignment: &ConstantAssignment) -> Result<()> {
         let value = self.interpret_expression(&constant_assignment.value)?;
         self.variables.insert(constant_assignment.variable.clone(), value);
+        Ok(())
+    }
+    
+    fn interpret_index_assignment(&mut self, index_assignment: &IndexAssignment) -> Result<()> {
+        let container_value = self.interpret_expression(&index_assignment.container)?;
+        let index_value = self.interpret_expression(&index_assignment.index)?;
+        let new_value = self.interpret_expression(&index_assignment.value)?;
+        
+        match (container_value, index_value) {
+            (Value::Array(mut arr), Value::Number(index)) => {
+                let idx = index as usize;
+                if idx >= arr.len() {
+                    return Err(anyhow::anyhow!("Array index {} out of bounds (length: {})", idx, arr.len()));
+                }
+                arr[idx] = new_value;
+                
+                // Update the variable if it's an identifier
+                if let Expression::Identifier(identifier) = &*index_assignment.container {
+                    self.variables.insert(identifier.name.clone(), Value::Array(arr));
+                }
+            }
+            (Value::Dictionary(mut dict), Value::String(key)) => {
+                dict.insert(key, new_value);
+                
+                // Update the variable if it's an identifier
+                if let Expression::Identifier(identifier) = &*index_assignment.container {
+                    self.variables.insert(identifier.name.clone(), Value::Dictionary(dict));
+                }
+            }
+            _ => {
+                return Err(anyhow::anyhow!("Cannot assign to non-array or non-dictionary value"));
+            }
+        }
+        
         Ok(())
     }
     

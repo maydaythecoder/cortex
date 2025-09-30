@@ -115,14 +115,60 @@ impl Parser {
                 return Ok(None);
             }
             Some(Token::Identifier(_)) => {
-                // Check if this is a reassignment statement (identifier := expression)
-                if let Some(next_token) = self.peek_token(1) {
+                // Check if this is a reassignment statement first
+                if let Some(next_token) = self.current_token() {
                     if next_token.token == Token::Assign {
-                        self.parse_reassignment()?
+                        // This is a reassignment - parse it as such
+                        let variable = match self.current_token() {
+                            Some(token) => match &token.token {
+                                Token::Identifier(name) => {
+                                    let name = name.clone();
+                                    self.advance();
+                                    name
+                                }
+                                _ => return Err(ParseError::UnexpectedToken {
+                                    expected: "variable name".to_string(),
+                                    actual: format!("{:?}", token.token),
+                                    line: token.line,
+                                    column: token.column,
+                                }.into()),
+                            }
+                            None => return Err(ParseError::UnexpectedEof.into()),
+                        };
+                        
+                        self.expect(Token::Assign)?;
+                        let value = self.parse_expression()?;
+                        Statement::Assignment(Assignment::new(variable, value))
                     } else {
-                        // Try to parse as expression statement
+                        // Try to parse as expression (could be IndexExpression)
                         let expr = self.parse_expression()?;
-                        Statement::Expression(expr)
+                        
+                        // Check if there's an assignment after the expression
+                        let is_assignment = if let Some(next_token) = self.current_token() {
+                            next_token.token == Token::Assign
+                        } else {
+                            false
+                        };
+                        
+                        if is_assignment {
+                            self.advance(); // Consume the := token
+                            let value = self.parse_expression()?;
+                            
+                            // Create appropriate assignment based on left-hand side
+                            match expr {
+                                Expression::Index(index_expr) => {
+                                    Statement::IndexAssignment(IndexAssignment::new(*index_expr.container.clone(), *index_expr.index.clone(), value))
+                                }
+                                _ => return Err(ParseError::UnexpectedToken {
+                                    expected: "array or dictionary index".to_string(),
+                                    actual: format!("{:?}", expr),
+                                    line: 0, // We can't get line info here due to borrowing
+                                    column: 0,
+                                }.into())
+                            }
+                        } else {
+                            Statement::Expression(expr)
+                        }
                     }
                 } else {
                     // Try to parse as expression statement
