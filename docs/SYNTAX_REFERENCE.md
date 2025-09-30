@@ -410,11 +410,11 @@ func documented_function[] |
 
 ### Logical Operators
 
-| Operator | Description | Example |
-|----------|-------------|---------|
-| `&&` | Logical AND | `a && b` |
-| `||` | Logical OR | `a || b` |
-| `!` | Logical NOT | `!a` |
+ Operator  Description  Example 
+--------------------------------
+ `&&`  Logical AND  `a && b` 
+ `||`  Logical OR  `a || b` 
+ `!`  Logical NOT  `!a` 
 
 ### Assignment Operators
 
