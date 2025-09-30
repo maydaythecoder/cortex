@@ -502,6 +502,7 @@ impl Interpreter {
                             Value::Array(arr) => arr.len(),
                             Value::Dictionary(dict) => dict.len(),
                             Value::String(s) => s.len(),
+                            Value::Null => return Err(anyhow::anyhow!("len() requires an argument - provide an array, dictionary, or string")),
                             _ => return Err(anyhow::anyhow!("len() expects array, dictionary, or string, got {:?}", value)),
                         };
                         Ok(Value::Number(length as f64))

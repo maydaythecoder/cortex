@@ -159,6 +159,10 @@ impl Parser {
                                 Expression::Index(index_expr) => {
                                     Statement::IndexAssignment(IndexAssignment::new(*index_expr.container.clone(), *index_expr.index.clone(), value))
                                 }
+                                Expression::Identifier(identifier) => {
+                                    // This is actually a regular assignment, not an index assignment
+                                    Statement::Assignment(Assignment::new(identifier.name, value))
+                                }
                                 _ => return Err(ParseError::UnexpectedToken {
                                     expected: "array or dictionary index".to_string(),
                                     actual: format!("{:?}", expr),

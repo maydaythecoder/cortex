@@ -29,7 +29,7 @@ func main[] |
   ^
   
   // 5. Test nested for loops
-  print["\n5. Nested for loops:")
+  print["\n5. Nested for loops:"]
   for outer in 1..3 |
     for inner in 1..3 |
       let result := outer * inner
@@ -38,7 +38,7 @@ func main[] |
   ^
   
   // 6. Test for loop with calculations
-  print["\n6. For loop with calculations:")
+  print["\n6. For loop with calculations:"]
   let sum := 0
   for num in 1..6 |
     sum := sum + num
@@ -46,7 +46,7 @@ func main[] |
   print["  Sum of 1 to 5: " + str[sum]]
   
   // 7. Test range with variables
-  print["\n7. Range with variables:")
+  print["\n7. Range with variables:"]
   let start := 5
   let end := 8
   for i in start..end |
