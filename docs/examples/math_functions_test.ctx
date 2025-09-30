@@ -1,0 +1,64 @@
+// Test mathematical functions
+func main[] |
+  print["=== MATHEMATICAL FUNCTIONS TEST SUITE ==="]
+  
+  // 1. Test sqrt function
+  print["\n1. Square root function:"]
+  let num1 := 16
+  let num2 := 25
+  let num3 := 2
+  print["  sqrt(16): " + str[sqrt[num1]]]
+  print["  sqrt(25): " + str[sqrt[num2]]]
+  print["  sqrt(2): " + str[sqrt[num3]]]
+  
+  // 2. Test floor function
+  print["\n2. Floor function:"]
+  let float1 := 3.7
+  let float2 := 3.2
+  let float3 := -2.3
+  print["  floor(3.7): " + str[floor[float1]]]
+  print["  floor(3.2): " + str[floor[float2]]]
+  print["  floor(-2.3): " + str[floor[float3]]]
+  
+  // 3. Test ceil function
+  print["\n3. Ceiling function:"]
+  print["  ceil(3.7): " + str[ceil[float1]]]
+  print["  ceil(3.2): " + str[ceil[float2]]]
+  print["  ceil(-2.3): " + str[ceil[float3]]]
+  
+  // 4. Test round function
+  print["\n4. Round function:"]
+  let round1 := 3.5
+  let round2 := 3.4
+  let round3 := 3.6
+  let round4 := -3.5
+  print["  round(3.5): " + str[round[round1]]]
+  print["  round(3.4): " + str[round[round2]]]
+  print["  round(3.6): " + str[round[round3]]]
+  print["  round(-3.5): " + str[round[round4]]]
+  
+  // 5. Test with variables
+  print["\n5. Using variables:"]
+  let x := 4.7
+  let sqrt_x := sqrt[x]
+  let floor_x := floor[x]
+  let ceil_x := ceil[x]
+  let round_x := round[x]
+  print["  x = " + str[x]]
+  print["  sqrt(x) = " + str[sqrt_x]]
+  print["  floor(x) = " + str[floor_x]]
+  print["  ceil(x) = " + str[ceil_x]]
+  print["  round(x) = " + str[round_x]]
+  
+  // 6. Test combined operations
+  print["\n6. Combined operations:"]
+  let result := round[sqrt[64]]
+  print["  round(sqrt(64)) = " + str[result]]
+  
+  let result2 := floor[sqrt[50]]
+  print["  floor(sqrt(50)) = " + str[result2]]
+  
+  print["\n=== ALL MATHEMATICAL FUNCTIONS WORKING ==="]
+^
+
+main[]

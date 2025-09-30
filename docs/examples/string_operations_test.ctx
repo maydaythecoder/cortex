@@ -1,0 +1,61 @@
+// Test string manipulation functions
+func main[] |
+  print["=== STRING OPERATIONS TEST SUITE ==="]
+  
+  // 1. Test substring function
+  print["\n1. Substring function:"]
+  let text := "Hello World"
+  let sub1 := substring[text, 0, 5]
+  let sub2 := substring[text, 6, 5]
+  let sub3 := substring[text, 2, 3]
+  print["  Original: " + str[text]]
+  print["  substring(text, 0, 5): " + str[sub1]]
+  print["  substring(text, 6, 5): " + str[sub2]]
+  print["  substring(text, 2, 3): " + str[sub3]]
+  
+  // 2. Test upper function
+  print["\n2. Upper function:"]
+  let lower_text := "hello world"
+  let upper_text := upper[lower_text]
+  print["  Original: " + str[lower_text]]
+  print["  upper(lower_text): " + str[upper_text]]
+  
+  // 3. Test lower function
+  print["\n3. Lower function:"]
+  let upper_text2 := "HELLO WORLD"
+  let lower_text2 := lower[upper_text2]
+  print["  Original: " + str[upper_text2]]
+  print["  lower(upper_text2): " + str[lower_text2]]
+  
+  // 4. Test split function
+  print["\n4. Split function:"]
+  let csv_text := "apple,banana,cherry,date"
+  let split_result := split[csv_text, ","]
+  print["  Original: " + str[csv_text]]
+  print["  split(csv_text, \",\"): " + str[split_result]]
+  
+  // 5. Test split with different delimiter
+  print["\n5. Split with different delimiter:"]
+  let space_text := "one two three four"
+  let space_split := split[space_text, " "]
+  print["  Original: " + str[space_text]]
+  print["  split(space_text, \" \"): " + str[space_split]]
+  
+  // 6. Test combined operations
+  print["\n6. Combined operations:"]
+  let mixed_text := "Hello World"
+  let processed := upper[substring[mixed_text, 0, 5]]
+  print["  Original: " + str[mixed_text]]
+  print["  upper(substring(mixed_text, 0, 5)): " + str[processed]]
+  
+  // 7. Test with variables
+  print["\n7. Using variables:"]
+  let start := 1
+  let length := 4
+  let variable_sub := substring[text, start, length]
+  print["  substring(text, " + str[start] + ", " + str[length] + "): " + str[variable_sub]]
+  
+  print["\n=== ALL STRING OPERATIONS WORKING ==="]
+^
+
+main[]

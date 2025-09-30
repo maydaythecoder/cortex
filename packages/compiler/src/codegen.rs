@@ -576,6 +576,98 @@ impl Interpreter {
                         } else {
                             Err(anyhow::anyhow!("max() expects array of numbers"))
                         }
+                    } else if identifier.name == "substring" {
+                        // Handle substring function (string, start, length)
+                        let index_value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::Array(args) = index_value {
+                            if args.len() != 3 {
+                                return Err(anyhow::anyhow!("substring() expects exactly 3 arguments: string, start, length"));
+                            }
+                            if let (Value::String(s), Value::Number(start), Value::Number(length)) = (&args[0], &args[1], &args[2]) {
+                                let start_idx = *start as usize;
+                                let len = *length as usize;
+                                if start_idx >= s.len() {
+                                    Ok(Value::String(String::new()))
+                                } else {
+                                    let end_idx = (start_idx + len).min(s.len());
+                                    Ok(Value::String(s[start_idx..end_idx].to_string()))
+                                }
+                            } else {
+                                Err(anyhow::anyhow!("substring() expects string, number, number arguments"))
+                            }
+                        } else {
+                            Err(anyhow::anyhow!("substring() expects array of arguments"))
+                        }
+                    } else if identifier.name == "upper" {
+                        // Handle upper function
+                        let value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::String(s) = value {
+                            Ok(Value::String(s.to_uppercase()))
+                        } else {
+                            Err(anyhow::anyhow!("upper() expects a string"))
+                        }
+                    } else if identifier.name == "lower" {
+                        // Handle lower function
+                        let value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::String(s) = value {
+                            Ok(Value::String(s.to_lowercase()))
+                        } else {
+                            Err(anyhow::anyhow!("lower() expects a string"))
+                        }
+                    } else if identifier.name == "split" {
+                        // Handle split function (string, delimiter)
+                        let index_value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::Array(args) = index_value {
+                            if args.len() != 2 {
+                                return Err(anyhow::anyhow!("split() expects exactly 2 arguments: string, delimiter"));
+                            }
+                            if let (Value::String(s), Value::String(delimiter)) = (&args[0], &args[1]) {
+                                let parts: Vec<Value> = s.split(delimiter)
+                                    .map(|part| Value::String(part.to_string()))
+                                    .collect();
+                                Ok(Value::Array(parts))
+                            } else {
+                                Err(anyhow::anyhow!("split() expects string, string arguments"))
+                            }
+                        } else {
+                            Err(anyhow::anyhow!("split() expects array of arguments"))
+                        }
+                    } else if identifier.name == "sqrt" {
+                        // Handle sqrt function
+                        let value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::Number(n) = value {
+                            if n < 0.0 {
+                                Err(anyhow::anyhow!("sqrt() of negative number is not defined"))
+                            } else {
+                                Ok(Value::Number(n.sqrt()))
+                            }
+                        } else {
+                            Err(anyhow::anyhow!("sqrt() expects a number"))
+                        }
+                    } else if identifier.name == "floor" {
+                        // Handle floor function
+                        let value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::Number(n) = value {
+                            Ok(Value::Number(n.floor()))
+                        } else {
+                            Err(anyhow::anyhow!("floor() expects a number"))
+                        }
+                    } else if identifier.name == "ceil" {
+                        // Handle ceil function
+                        let value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::Number(n) = value {
+                            Ok(Value::Number(n.ceil()))
+                        } else {
+                            Err(anyhow::anyhow!("ceil() expects a number"))
+                        }
+                    } else if identifier.name == "round" {
+                        // Handle round function
+                        let value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::Number(n) = value {
+                            Ok(Value::Number(n.round()))
+                        } else {
+                            Err(anyhow::anyhow!("round() expects a number"))
+                        }
                     } else if self.functions.contains_key(&identifier.name) {
                         // This is a user-defined function call
                         let index_value = self.interpret_expression(&index_expr.index)?;

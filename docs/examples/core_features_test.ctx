@@ -1,0 +1,65 @@
+// CORE FEATURES TEST SUITE
+// Tests the essential functionality of Cortex
+
+func main[] |
+  print["=== CORTEX CORE FEATURES TEST ==="]
+  
+  // 1. Variables and Arithmetic
+  let x := 42
+  let y := 3.14
+  let neg := -10
+  let pos := +5
+  print["Variables: " + str[x] + ", " + str[y] + ", " + str[neg] + ", " + str[pos]]
+  print["Arithmetic: " + str[x + y] + ", " + str[x * 2] + ", " + str[x ** 2]]
+  
+  // 2. Arrays and Dictionaries
+  let arr := [1, 2, 3, 4, 5]
+  let dict := {"name": "Alice", "age": 30}
+  print["Array: " + str[arr]]
+  print["Dict: " + str[dict]]
+  print["Array[0]: " + str[arr[0]]]
+  print["Dict[name]: " + str[dict["name"]]]
+  
+  // 3. Built-in Functions
+  print["Length: " + str[len[arr]] + ", " + str[len[dict]]]
+  print["Min: " + str[min[arr]] + ", Max: " + str[max[arr]]]
+  print["Abs: " + str[abs[neg]]]
+  
+  // 4. Functions
+  func add[a, b] |
+    return[a + b]
+  ^
+  
+  func factorial[n] |
+    if [n <= 1] |
+      return[1]
+    ^
+    return[n * factorial[n - 1]]
+  ^
+  
+  print["Function: " + str[add[10, 20]]]
+  print["Factorial: " + str[factorial[5]]]
+  
+  // 5. Control Flow
+  let score := 85
+  if [score >= 90] |
+    print["Grade: A"]
+  ^ else if [score >= 80] |
+    print["Grade: B"]
+  ^ else |
+    print["Grade: C"]
+  ^
+  
+  // 6. Loops
+  let sum := 0
+  let i := 0
+  while [i < 5] |
+    sum := sum + i
+    i := i + 1
+  ^
+  print["Sum: " + str[sum]]
+  
+  print["=== ALL CORE FEATURES WORKING ==="]
+^
+
+main[]

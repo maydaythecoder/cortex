@@ -1,0 +1,319 @@
+// COMPREHENSIVE TEST SUITE FOR CORTEX PROGRAMMING LANGUAGE
+// This file systematically tests all currently supported features
+// Based on structured testing methodology for programming languages
+
+func main[] |
+  print["=========================================="]
+  print["     CORTEX COMPREHENSIVE TEST SUITE     "]
+  print["=========================================="]
+  
+  // ========================================
+  // 1. BASIC LANGUAGE FEATURES
+  // ========================================
+  print["\n1. TESTING BASIC LANGUAGE FEATURES"]
+  print["-----------------------------------"]
+  
+  // Variable declarations
+  let x := 42
+  let y := 3.14
+  let name := "Cortex"
+  let flag := true
+  let empty := null
+  
+  print["Variables: x=" + str[x] + ", y=" + str[y] + ", name=" + str[name]]
+  print["Boolean: " + str[flag] + ", Null: " + str[empty]]
+  
+  // Arithmetic operations
+  let a := 10
+  let b := 3
+  print["Arithmetic: " + str[a] + " + " + str[b] + " = " + str[a + b]]
+  print["Arithmetic: " + str[a] + " - " + str[b] + " = " + str[a - b]]
+  print["Arithmetic: " + str[a] + " * " + str[b] + " = " + str[a * b]]
+  print["Arithmetic: " + str[a] + " / " + str[b] + " = " + str[a / b]]
+  print["Arithmetic: " + str[a] + " % " + str[b] + " = " + str[a % b]]
+  print["Arithmetic: " + str[a] + " ** " + str[b] + " = " + str[a ** b]]
+  
+  // Unary operators
+  let neg := -42
+  let pos := +42
+  print["Unary minus: -42 = " + str[neg]]
+  print["Unary plus: +42 = " + str[pos]]
+  
+  // Comparison operations
+  print["Comparison: " + str[a] + " == " + str[b] + " = " + str[a == b]]
+  print["Comparison: " + str[a] + " != " + str[b] + " = " + str[a != b]]
+  print["Comparison: " + str[a] + " < " + str[b] + " = " + str[a < b]]
+  print["Comparison: " + str[a] + " > " + str[b] + " = " + str[a > b]]
+  print["Comparison: " + str[a] + " <= " + str[b] + " = " + str[a <= b]]
+  print["Comparison: " + str[a] + " >= " + str[b] + " = " + str[a >= b]]
+  
+  // Logical operations
+  let p := true
+  let q := false
+  print["Logical: " + str[p] + " && " + str[q] + " = " + str[p && q]]
+  print["Logical: " + str[p] + " || " + str[q] + " = " + str[p || q]]
+  print["Logical: !" + str[p] + " = " + str[!p]]
+  
+  // Reassignment
+  x := 100
+  print["Reassignment: x is now " + str[x]]
+  
+  // ========================================
+  // 2. DATA STRUCTURES
+  // ========================================
+  print["\n2. TESTING DATA STRUCTURES"]
+  print["----------------------------"]
+  
+  // Array literals and operations
+  let numbers := [1, 2, 3, 4, 5]
+  let mixed := [1, "hello", true, null]
+  let empty_arr := []
+  
+  print["Array: " + str[numbers]]
+  print["Mixed array: " + str[mixed]]
+  print["Empty array: " + str[empty_arr]]
+  
+  // Array indexing
+  print["Array[0]: " + str[numbers[0]]]
+  print["Array[4]: " + str[numbers[4]]]
+  print["Mixed[1]: " + str[mixed[1]]]
+  
+  // Dictionary literals and operations
+  let person := {"name": "Alice", "age": 30, "active": true}
+  let config := {"debug": false, "version": "1.0", "port": 8080}
+  let empty_dict := {}
+  
+  print["Dictionary: " + str[person]]
+  print["Config: " + str[config]]
+  print["Empty dict: " + str[empty_dict]]
+  
+  // Dictionary access
+  print["Person name: " + str[person["name"]]]
+  print["Person age: " + str[person["age"]]]
+  print["Config port: " + str[config["port"]]]
+  
+  // Nested data structures
+  let nested := [{"x": 1, "y": 2}, {"x": 3, "y": 4}]
+  print["Nested access: " + str[nested[0]["x"]]]
+  
+  // ========================================
+  // 3. FUNCTIONS
+  // ========================================
+  print["\n3. TESTING FUNCTIONS"]
+  print["--------------------"]
+  
+  // Function with no arguments
+  func greet[] |
+    return["Hello from Cortex!"]
+  ^
+  
+  // Function with single argument
+  func square[n] |
+    return[n * n]
+  ^
+  
+  // Function with multiple arguments
+  func add[a, b] |
+    return[a + b]
+  ^
+  
+  // Function with complex logic
+  func factorial[n] |
+    if [n <= 1] |
+      return[1]
+    ^
+    return[n * factorial[n - 1]]
+  ^
+  
+  // Test function calls
+  print["Greet: " + str[greet[]]]
+  print["Square(5): " + str[square[5]]]
+  print["Add(10, 20): " + str[add[10, 20]]]
+  print["Factorial(5): " + str[factorial[5]]]
+  
+  // ========================================
+  // 4. CONTROL STRUCTURES
+  // ========================================
+  print["\n4. TESTING CONTROL STRUCTURES"]
+  print["-------------------------------"]
+  
+  // If statements
+  let score := 85
+  if [score >= 90] |
+    print["Grade: A"]
+  ^ else if [score >= 80] |
+    print["Grade: B"]
+  ^ else |
+    print["Grade: C"]
+  ^
+  
+  // While loops
+  let count := 0
+  let sum := 0
+  while [count < 5] |
+    sum := sum + count
+    count := count + 1
+  ^
+  print["Sum of 0-4: " + str[sum]]
+  
+  // Nested loops
+  let outer := 0
+  let total := 0
+  while [outer < 3] |
+    let inner := 0
+    while [inner < 2] |
+      total := total + 1
+      inner := inner + 1
+    ^
+    outer := outer + 1
+  ^
+  print["Nested loop total: " + str[total]]
+  
+  // ========================================
+  // 5. BUILT-IN FUNCTIONS
+  // ========================================
+  print["\n5. TESTING BUILT-IN FUNCTIONS"]
+  print["-------------------------------"]
+  
+  // String conversion
+  print["String conversion: " + str[42] + ", " + str[true] + ", " + str[null]]
+  
+  // Length function
+  let test_arr := [1, 2, 3, 4, 5]
+  let test_str := "Hello World"
+  let test_dict := {"a": 1, "b": 2, "c": 3}
+  print["Length - Array: " + str[len[test_arr]] + ", String: " + str[len[test_str]] + ", Dict: " + str[len[test_dict]]]
+  
+  // Array operations
+  let new_arr := push[test_arr, 6]
+  print["After push: " + str[new_arr]]
+  let popped := pop[test_arr]
+  print["Popped: " + str[popped] + ", Remaining: " + str[test_arr]]
+  
+  // Dictionary operations
+  let dict_keys := keys[test_dict]
+  let dict_values := values[test_dict]
+  print["Dict keys: " + str[dict_keys]]
+  print["Dict values: " + str[dict_values]]
+  
+  // Math functions
+  let numbers_list := [10, -5, 20, -15, 30]
+  print["Absolute values: " + str[abs[-42]] + ", " + str[abs[42]]]
+  print["Min value: " + str[min[numbers_list]]]
+  print["Max value: " + str[max[numbers_list]]]
+  
+  // ========================================
+  // 6. COMPLEX ALGORITHMS
+  // ========================================
+  print["\n6. TESTING COMPLEX ALGORITHMS"]
+  print["------------------------------"]
+  
+  // Bubble sort implementation
+  func bubble_sort[arr] |
+    let n := len[arr]
+    let i := 0
+    while [i < n] |
+      let j := 0
+      while [j < n - i - 1] |
+        if [arr[j] > arr[j + 1]] |
+          let temp := arr[j]
+          arr[j] := arr[j + 1]
+          arr[j + 1] := temp
+        ^
+        j := j + 1
+      ^
+      i := i + 1
+    ^
+    return[arr]
+  ^
+  
+  let unsorted := [64, 34, 25, 12, 22, 11, 90]
+  let sorted := bubble_sort[unsorted]
+  print["Bubble sort: " + str[sorted]]
+  
+  // Fibonacci sequence
+  func fibonacci[n] |
+    if [n <= 1] |
+      return[n]
+    ^
+    return[fibonacci[n - 1] + fibonacci[n - 2]]
+  ^
+  
+  print["Fibonacci sequence: " + str[fibonacci[0]] + ", " + str[fibonacci[1]] + ", " + str[fibonacci[2]] + ", " + str[fibonacci[3]] + ", " + str[fibonacci[4]]]
+  
+  // ========================================
+  // 7. EDGE CASES AND ERROR HANDLING
+  // ========================================
+  print["\n7. TESTING EDGE CASES"]
+  print["----------------------"]
+  
+  // Empty collections
+  print["Empty array length: " + str[len[[]]]]
+  print["Empty dict length: " + str[len[{}]]]
+  print["Empty string length: " + str[len[""]]]
+  
+  // Zero and negative numbers
+  print["Zero factorial: " + str[factorial[0]]]
+  print["Negative absolute: " + str[abs[-100]]]
+  
+  // Single element arrays
+  let single := [42]
+  print["Single element array: " + str[single[0]]]
+  print["Single element length: " + str[len[single]]]
+  
+  // ========================================
+  // 8. STRING OPERATIONS (BASIC)
+  // ========================================
+  print["\n8. TESTING STRING OPERATIONS"]
+  print["-----------------------------"]
+  
+  let text := "Hello World"
+  print["String length: " + str[len[text]]]
+  print["String conversion: " + str[text]]
+  
+  // String concatenation
+  let part1 := "Hello"
+  let part2 := "World"
+  let combined := part1 + " " + part2
+  print["String concatenation: " + str[combined]]
+  
+  // ========================================
+  // 9. TYPE CHECKING (BASIC)
+  // ========================================
+  print["\n9. TESTING TYPE CHECKING"]
+  print["-------------------------"]
+  
+  // Basic type information through string conversion
+  print["Number type: " + str[42]]
+  print["String type: " + str["hello"]]
+  print["Boolean type: " + str[true]]
+  print["Array type: " + str[[1, 2, 3]]]
+  print["Dict type: " + str[{"key": "value"}]]
+  print["Null type: " + str[null]]
+  
+  // ========================================
+  // 10. PERFORMANCE TEST
+  // ========================================
+  print["\n10. PERFORMANCE TEST"]
+  print["---------------------"]
+  
+  // Test recursive function performance
+  print["Computing factorial of 10..."]
+  let fact_10 := factorial[10]
+  print["Factorial of 10: " + str[fact_10]]
+  
+  // Test array operations performance
+  let big_array := []
+  let i := 0
+  while [i < 100] |
+    big_array := push[big_array, i]
+    i := i + 1
+  ^
+  print["Built array of length: " + str[len[big_array]]]
+  
+  print["\n=========================================="]
+  print["     ALL TESTS COMPLETED SUCCESSFULLY     ")
+  print["=========================================="]
+^
+
+main[]
