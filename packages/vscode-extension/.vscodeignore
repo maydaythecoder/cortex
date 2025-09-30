@@ -4,9 +4,15 @@ node_modules/**
 *.map
 *.ts
 .gitignore
-../../.git/**
 tsconfig.json
 .eslintrc.json
 **/.DS_Store
 src/**
 out/test/**
+DEVELOPMENT.md
+**/.git/**
+.git/**
+../**
+../cli/**
+../compiler/**
+../language-server/**
