@@ -188,13 +188,35 @@ main[]
 - **For Loops**: `for [i in range[10]] | body ^`
 - **Advanced Types**: Enhanced type system
 
-### 📋 **Planned Features**
+### 📋 **Planned AI/ML Primitives**
 
-- **Numerical computing**: tensors, vectors, matrices
-- **Data structures**: Arrays → tensors, Dictionaries → datasets
-- **Built-in ML operators**: `∇[loss, params]`, `@` (dot product), `⊗` (outer product)
-- **GPU compilation support**: CUDA/OpenCL backends
-- **Package system**: Import and modules
+#### **Tensor Primitives**
+
+- **Multi-dimensional tensors**: `tensor[[1,2],[3,4]]` with shape inference
+- **Tensor operations**: `A @ B` (matrix multiplication), `∇[loss]` (gradients)
+- **Memory optimization**: Contiguous storage, lazy evaluation, sparse tensors
+- **Device support**: CPU/GPU/TPU tensor operations
+
+#### **Neural Network Primitives**
+
+- **Modular neurons**: `Neuron { weights, bias, activation, domain }`
+- **Composable layers**: `Layer { neurons, learning_curve, capabilities }`
+- **Network assembly**: `compose_network[medical_layer, educational_layer]`
+- **Layer registry**: Import/export specialized domain layers
+
+#### **Automatic Differentiation**
+
+- **Computational graphs**: Forward/backward pass infrastructure
+- **Gradient operators**: `∇[loss, params]`, `∂[f, x]` (partial derivatives)
+- **Chain rule**: Automatic gradient computation for all operations
+- **Optimization**: SGD, Adam, RMSprop with learning rate scheduling
+
+#### **Advanced Features**
+
+- **GPU acceleration**: CUDA/OpenCL backends for tensor operations
+- **Distributed training**: Multi-GPU/multi-node support
+- **Model serving**: High-performance inference with sub-millisecond latency
+- **Package system**: Community-driven layer and model sharing
 
 ---
 
@@ -369,9 +391,11 @@ cargo run -- check ../examples/hello_world.ctx
 - [x] **Rust Interpreter**: High-performance execution with memory safety
 - [x] **VS Code Extension**: Syntax highlighting and code formatting
 - [x] **Standard Library**: Math, string operations
-- [ ] **Tensor Operations**: Full numerical computing stack
-- [ ] **GPU Support**: CUDA/OpenCL backends
-- [ ] **Package System**: Import and modules
+- [ ] **Tensor Primitives**: Multi-dimensional arrays with shape inference
+- [ ] **Neural Network Primitives**: Modular neurons, layers, and networks
+- [ ] **Automatic Differentiation**: Computational graphs and gradient operators
+- [ ] **GPU Support**: CUDA/OpenCL backends for tensor operations
+- [ ] **Layer Registry**: Community-driven specialized layer sharing
 
 ---
 
@@ -386,12 +410,13 @@ cargo run -- check ../examples/hello_world.ctx
 - [x] **Rust interpreter** ✅ **COMPLETED!**
 - [x] **VS Code extension** ✅ **COMPLETED!**
 
-### Phase 2: AI/ML Features (In Progress)
+### Phase 2: AI/ML Primitives (In Progress)
 
-- [ ] Tensor data types and operations
-- [ ] Automatic differentiation
-- [ ] Neural network primitives
-- [ ] Training loop utilities
+- [ ] **Tensor Primitives**: Multi-dimensional arrays with shape inference
+- [ ] **Neural Network Primitives**: Modular neurons, layers, and networks
+- [ ] **Automatic Differentiation**: Computational graphs and gradient operators
+- [ ] **Optimization Framework**: SGD, Adam, RMSprop with scheduling
+- [ ] **Layer Registry**: Community-driven specialized layer sharing
 
 ### Phase 3: Performance (In Progress)
 

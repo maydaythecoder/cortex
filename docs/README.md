@@ -20,9 +20,10 @@ Welcome to the comprehensive documentation for the Cortex programming language -
 
 ### AI/ML Features
 
-- [Tensors](tensors.md) - Multi-dimensional arrays for ML
-- [Neural Networks](neural-networks.md) - Building and training models
-- [Automatic Differentiation](automatic-differentiation.md) - Gradient computation
+- [Tensor Primitives](TENSOR_PRIMITIVES.md) - Multi-dimensional arrays with shape inference and automatic differentiation
+- [Neural Network Primitives](NEURAL_NETWORK_PRIMITIVES.md) - Modular neurons, layers, and network assembly
+- [AI/ML Implementation Guide](AI_ML_IMPLEMENTATION_GUIDE.md) - Comprehensive technical implementation roadmap
+- [Automatic Differentiation](automatic-differentiation.md) - Gradient computation and computational graphs
 - [Optimization](optimization.md) - Training algorithms and optimizers
 
 ### Development Tools
@@ -77,10 +78,10 @@ Welcome to the comprehensive documentation for the Cortex programming language -
 
 ### For AI/ML Developers
 
-1. Review [AI/ML Features](ai-ml-features.md)
-2. Check out [Tensors](tensors.md) and [Neural Networks](neural-networks.md)
-3. See [AI/ML Examples](examples/ai-ml.md)
-4. Learn about [Performance Optimization](performance.md)
+1. Review [Tensor Primitives](TENSOR_PRIMITIVES.md) and [Neural Network Primitives](NEURAL_NETWORK_PRIMITIVES.md)
+2. Check out [AI/ML Implementation Guide](AI_ML_IMPLEMENTATION_GUIDE.md) for technical details
+3. See [AI/ML Examples](examples/ai-ml.md) for practical usage
+4. Learn about [Performance Optimization](performance.md) for production deployment
 
 ### For Language Developers
 

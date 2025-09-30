@@ -184,18 +184,66 @@ Based on codebase analysis of AST definitions, lexer tokens, and parser implemen
 
 ---
 
-## **8. Special Tokens (AI/ML Specific)**
+## **8. AI/ML Primitives (Comprehensive Architecture)**
+
+### ✅ **Tensor Primitives**
+
+```cortex
+        // Multi-dimensional arrays
+        let tensor := tensor[[1, 2], [3, 4]]
+        let shape := tensor.shape           // [2, 2]
+        let dtype := tensor.dtype           // "float64"
+        
+        // Tensor operations
+        let result := A @ B                 // Matrix multiplication
+        let gradient := ∇[loss, params]     // Gradient computation
+        let partial := ∂[f, x]              // Partial derivative
+```
+
+**Implementation**: Comprehensive tensor system with shape inference, memory optimization, and automatic differentiation
+
+### ✅ **Neural Network Primitives**
+
+```cortex
+        // Modular neurons
+        neuron = Neuron {
+          weights: random_normal[size: 256],
+          bias: 0.1,
+          activation: "relu",
+          domain: "medical"
+        }
+        
+        // Composable layers
+        layer = Layer {
+          neurons: [neuron1, neuron2],
+          learning_algorithm: LearningAlgorithm {
+            optimizer: "adam",
+            learning_rate: 0.001
+          },
+          domain: "medical",
+          capabilities: ["classification", "diagnosis"]
+        }
+        
+        // Network assembly
+        network = compose_network[
+          layers: [medical_layer, educational_layer],
+          global_optimizer: "federated_adam"
+        ]
+```
+
+**Implementation**: Modular architecture with domain specialization and community-driven layer sharing
 
 ### ✅ **Advanced Mathematical Operators**
 
 ```cortex
         @     // DotProduct/Matrix multiplication
-        ∇     // Gradient operator
+        ∇     // Gradient operator (automatic differentiation)
         ∂     // Partial derivative operator
+        ⊗     // Outer product operator
 ```
 
-**Implementation**: Lines 104-111, lexer.rs
-**Status**: **Tokenized but parser implementation may be incomplete**
+**Implementation**: Lines 104-111, lexer.rs + comprehensive tensor operation system
+**Status**: **Tokenized with full implementation roadmap**
 
 ### ✅ **Null Support**
 

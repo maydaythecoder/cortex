@@ -76,34 +76,36 @@
 - Memory usage is optimized and garbage collection works properly
 - Module system allows for code organization and reuse
 
-### Phase 3: ML Primitives & Performance (Months 7-12)
+### Phase 3: AI/ML Primitives & Performance (Months 7-12)
 
-**Goal**: Native ML operations with high-performance compilation
+**Goal**: Native AI/ML primitives with high-performance compilation
 
 **Technical Plan**:
 
-- **Tensor Operations**: Native tensor data type with element-wise operations
-- **Automatic Differentiation**: Forward and reverse-mode autodiff system
-- **Neural Network Primitives**: Layers, activations, loss functions
-- **Training Infrastructure**: Optimizers, schedulers, training loops
-- **Advanced Optimization**: Custom LLVM optimization passes for ML workloads
-- **GPU Support**: CUDA/OpenCL backend for tensor operations
+- **Tensor Primitives**: Multi-dimensional arrays with shape inference and memory optimization
+- **Neural Network Primitives**: Modular neurons, composable layers, network assembly
+- **Automatic Differentiation**: Computational graphs with forward/reverse-mode autodiff
+- **Optimization Framework**: SGD, Adam, RMSprop with learning rate scheduling
+- **Layer Registry**: Community-driven specialized layer sharing and validation
+- **GPU Support**: CUDA/OpenCL backend for tensor operations and neural networks
 
 **Key Deliverables**:
 
-- **Tensor System**: Native tensor data type with BLAS/LAPACK integration
-- **Autodiff Engine**: Complete automatic differentiation system
-- **Neural Network Library**: Built-in layers, activations, and loss functions
-- **Training Framework**: Optimizers, learning rate schedulers, callbacks
-- **GPU Backend**: CUDA/OpenCL compilation for tensor operations
-- **Performance Optimization**: Advanced LLVM passes for ML-specific optimizations
+- **Tensor System**: Multi-dimensional arrays with contiguous storage and lazy evaluation
+- **Neural Network Primitives**: Modular neurons, layers, and composable networks
+- **Autodiff Engine**: Computational graphs with automatic gradient computation
+- **Optimization Framework**: Complete optimizer and scheduler implementations
+- **Layer Registry**: Community-driven layer sharing with domain specialization
+- **GPU Backend**: CUDA/OpenCL compilation for tensor operations and neural networks
 
 **Success Metrics**:
 
 - Can train neural networks from scratch with competitive performance
 - Tensor operations are 10x+ faster than interpreter
+- Modular layer composition enables domain-specific AI systems
 - GPU kernels competitive with PyTorch/CuPy
-- Memory usage optimized for large models
+- Layer registry with 50+ specialized domain layers
+- Memory usage optimized for large models with lazy evaluation
 - Type safety with zero runtime type errors
 
 ### Phase 4: Ecosystem & Tooling (Months 13-18)
@@ -304,11 +306,13 @@ cortex/
 
 ### Medium-term (12 months)
 
-- [ ] **Tensor Operations**: Native tensor data type with BLAS/LAPACK integration
-- [ ] **Automatic Differentiation**: Complete autodiff system for neural networks
-- [ ] **GPU Support**: CUDA/OpenCL backend for tensor operations
+- [ ] **Tensor Primitives**: Multi-dimensional arrays with shape inference and memory optimization
+- [ ] **Neural Network Primitives**: Modular neurons, composable layers, network assembly
+- [ ] **Automatic Differentiation**: Computational graphs with automatic gradient computation
+- [ ] **Optimization Framework**: SGD, Adam, RMSprop with learning rate scheduling
+- [ ] **Layer Registry**: Community-driven specialized layer sharing with domain specialization
+- [ ] **GPU Support**: CUDA/OpenCL backend for tensor operations and neural networks
 - [ ] **Advanced Type System**: Full type inference and checking
-- [ ] **Neural Network Library**: Built-in layers, activations, and loss functions
 - [ ] **Basic IDE Support**: Language Server Protocol and syntax highlighting
 
 ### Long-term (24 months)
