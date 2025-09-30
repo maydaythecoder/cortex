@@ -312,7 +312,7 @@ func main[] |
   print["Built array of length: " + str[len[big_array]]]
   
   print["\n=========================================="]
-  print["     ALL TESTS COMPLETED SUCCESSFULLY     ")
+  print["     ALL TESTS COMPLETED SUCCESSFULLY     "]
   print["=========================================="]
 ^
 

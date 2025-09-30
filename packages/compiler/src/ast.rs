@@ -58,7 +58,6 @@ pub enum Expression {
     Identifier(Identifier),
     BinaryOp(BinaryOp),
     UnaryOp(UnaryOp),
-    Call(Call),
     Array(Array),
     Dictionary(Dictionary),
     Index(IndexExpression),
@@ -158,20 +157,6 @@ impl UnaryOp {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
-pub struct Call {
-    pub function: Box<Expression>,
-    pub arguments: Vec<Expression>,
-}
-
-impl Call {
-    pub fn new(function: Expression, arguments: Vec<Expression>) -> Self {
-        Self {
-            function: Box::new(function),
-            arguments,
-        }
-    }
-}
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Array {
@@ -357,7 +342,6 @@ pub trait Visitor<T> {
     fn visit_variable(&mut self, variable: &Variable) -> T;
     fn visit_binary_op(&mut self, binary_op: &BinaryOp) -> T;
     fn visit_unary_op(&mut self, unary_op: &UnaryOp) -> T;
-    fn visit_call(&mut self, call: &Call) -> T;
     fn visit_array(&mut self, array: &Array) -> T;
     fn visit_dictionary(&mut self, dictionary: &Dictionary) -> T;
     fn visit_index(&mut self, index: &IndexExpression) -> T;

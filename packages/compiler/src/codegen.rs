@@ -221,8 +221,8 @@ impl Interpreter {
         match (container_value, index_value) {
             (Value::Array(mut arr), Value::Number(index)) => {
                 let idx = index as usize;
-                if idx >= arr.len() {
-                    return Err(anyhow::anyhow!("Array index {} out of bounds (length: {})", idx, arr.len()));
+                if idx >= arr.len() || index < 0.0 {
+                    return Err(anyhow::anyhow!("Array index {} out of bounds (length: {}) - cannot assign to out-of-bounds index", idx, arr.len()));
                 }
                 arr[idx] = new_value;
                 
@@ -309,8 +309,8 @@ impl Interpreter {
                     _ => Err(anyhow::anyhow!("Unsupported unary operator: {}", unary_op.operator))
                 }
             }
-            Expression::Call(call) => {
-                if let Expression::Identifier(func_name) = &*call.function {
+            /* Expression::Call(call) => {
+                // if let Expression::Identifier(func_name) = &*call.function {
                     // Built-in math functions
                     if func_name.name == "sqrt" {
                         if call.arguments.len() != 1 {
@@ -434,7 +434,7 @@ impl Interpreter {
                 } else {
                     Err(anyhow::anyhow!("Invalid function call"))
                 }
-            }
+            } */
             Expression::Array(array) => {
                 // Implement array support
                 let mut values = Vec::new();
@@ -468,7 +468,7 @@ impl Interpreter {
             Expression::Range(range_expr) => {
                 let start = self.interpret_expression(&range_expr.start)?;
                 let end = self.interpret_expression(&range_expr.end)?;
-                
+
                 // Convert to numbers and create range
                 if let (Value::Number(start_num), Value::Number(end_num)) = (start, end) {
                     let mut range_array = Vec::new();
@@ -509,7 +509,7 @@ impl Interpreter {
                     } else if identifier.name == "push" {
                         // Handle push function (array, value)
                         let index_value = self.interpret_expression(&index_expr.index)?;
-                        if let Value::Array(mut args) = index_value {
+                        if let Value::Array(args) = index_value {
                             if args.len() != 2 {
                                 return Err(anyhow::anyhow!("push() expects exactly 2 arguments: array and value"));
                             }
@@ -675,7 +675,8 @@ impl Interpreter {
                         let value = self.interpret_expression(&index_expr.index)?;
                         if let Value::Number(n) = value {
                             if n < 0.0 {
-                                Err(anyhow::anyhow!("sqrt() of negative number is not defined"))
+                                // Graceful handling: return null for sqrt of negative numbers
+                                Ok(Value::Null)
                             } else {
                                 Ok(Value::Number(n.sqrt()))
                             }
@@ -714,9 +715,28 @@ impl Interpreter {
                         if matches!(index_value, Value::Null) {
                             // Function call with no arguments
                             self.call_function(&identifier.name, vec![])
-                        } else if let Value::Array(arguments) = index_value {
-                            // Multi-argument function call
-                            self.call_function(&identifier.name, arguments)
+                        } else if let Value::Array(ref arguments) = index_value {
+                            // Check if this is a multi-argument call or a single array argument
+                            // The key insight: if the index_expr.index is an Array expression,
+                            // it was parsed from comma-separated arguments (multi-arg call).
+                            // If the index_expr.index is an Identifier, it's a single array argument.
+                            
+                            match &*index_expr.index {
+                                Expression::Array(_) => {
+                                    // This was parsed from comma-separated arguments like add[10, 20]
+                                    // Treat as multi-argument call
+                                    self.call_function(&identifier.name, arguments.clone())
+                                }
+                                Expression::Identifier(_) => {
+                                    // This was parsed from a single identifier like bubble_sort[unsorted]
+                                    // Treat as single-argument call with array argument
+                                    self.call_function(&identifier.name, vec![index_value])
+                                }
+                                _ => {
+                                    // For other cases, treat as single-argument call
+                                    self.call_function(&identifier.name, vec![index_value])
+                                }
+                            }
                         } else {
                             // Single argument function call
                             self.call_function(&identifier.name, vec![index_value])
@@ -805,7 +825,7 @@ impl Interpreter {
         }
     }
     
-    fn interpret_function_call(&mut self, function: &Function, arguments: &[Expression]) -> Result<Value> {
+    /* fn interpret_function_call(&mut self, function: &Function, arguments: &[Expression]) -> Result<Value> {
         // Check argument count
         if arguments.len() != function.parameters.len() {
             return Err(anyhow::anyhow!(
@@ -843,7 +863,7 @@ impl Interpreter {
         
         // Return the result (not wrapped in array)
         Ok(final_result)
-    }
+    } */
 
     // fn interpret_print_call(&mut self, args: &[Expression]) -> Result<()> {
     //     for (i, arg) in args.iter().enumerate() {
@@ -885,7 +905,8 @@ impl Interpreter {
         match (left, right) {
             (Value::Number(a), Value::Number(b)) => {
                 if *b == 0.0 {
-                    Err(anyhow::anyhow!("Division by zero"))
+                    // Graceful handling: return null for division by zero
+                    Ok(Value::Null)
                 } else {
                     Ok(Value::Number(a / b))
                 }
@@ -898,7 +919,8 @@ impl Interpreter {
         match (left, right) {
             (Value::Number(a), Value::Number(b)) => {
                 if *b == 0.0 {
-                    Err(anyhow::anyhow!("Modulo by zero"))
+                    // Graceful handling: return null for modulo by zero
+                    Ok(Value::Null)
                 } else {
                     Ok(Value::Number(a % b))
                 }
@@ -951,10 +973,11 @@ impl Interpreter {
                 match index {
                     Value::Number(n) => {
                         let idx = *n as usize;
-                        if idx < arr.len() {
+                        if idx < arr.len() && *n >= 0.0 {
                             Ok(arr[idx].clone())
                         } else {
-                            Err(anyhow::anyhow!("Array index {} out of bounds (length: {})", idx, arr.len()))
+                            // Graceful handling: return null for out-of-bounds access
+                            Ok(Value::Null)
                         }
                     }
                     _ => Err(anyhow::anyhow!("Array index must be a number, got: {:?}", index))

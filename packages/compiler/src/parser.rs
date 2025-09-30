@@ -44,9 +44,6 @@ impl Parser {
         self.tokens.get(self.position)
     }
     
-    fn peek_token(&self, offset: usize) -> Option<&TokenInfo> {
-        self.tokens.get(self.position + offset)
-    }
     
     fn is_at_end(&self) -> bool {
         self.position >= self.tokens.len() ||
@@ -250,33 +247,6 @@ impl Parser {
         }
     }
     
-    fn parse_reassignment(&mut self) -> Result<Statement> {
-        // Parse identifier (variable name)
-        let var_name = match self.current_token() {
-            Some(token) => match &token.token {
-                Token::Identifier(name) => {
-                    let name = name.clone();
-                    self.advance();
-                    name
-                }
-                _ => return Err(ParseError::UnexpectedToken {
-                    expected: "identifier".to_string(),
-                    actual: format!("{:?}", token.token),
-                    line: token.line,
-                    column: token.column,
-                }.into()),
-            }
-            None => return Err(ParseError::UnexpectedEof.into()),
-        };
-        
-        // Expect assignment operator
-        self.expect(Token::Assign)?;
-        
-        // Parse the value
-        let value = self.parse_expression()?;
-        
-        Ok(Statement::Assignment(Assignment::new(var_name, value)))
-    }
     
     fn parse_function(&mut self) -> Result<Statement> {
         self.expect(Token::Func)?;
@@ -714,13 +684,12 @@ impl Parser {
                             }
                         }
                         
-                        // For now, we'll use the first argument as the index
-                        // TODO: This needs to be changed to support proper multi-argument function calls
+                        // Handle function call arguments properly
                         let index = if arguments.len() == 1 {
+                            // Single argument - use it directly
                             arguments[0].clone()
                         } else {
-                            // For multi-argument calls, we need a different approach
-                            // For now, create an array with all arguments
+                            // Multiple arguments - wrap in array
                             Expression::Array(Array::new(arguments))
                         };
                         
@@ -844,27 +813,6 @@ impl Parser {
     //     )))
     // }
     
-    fn parse_call_argless(&mut self, function_name: String) -> Result<Expression> {
-        let mut arguments = Vec::new();
-        
-        if !self.match_token(Token::RightBracket) {
-            loop {
-                let arg = self.parse_expression()?;
-                arguments.push(arg);
-                
-                if !self.match_token(Token::Comma) {
-                    break;
-                }
-            }
-            
-            self.expect(Token::RightBracket)?;
-        }
-        
-        Ok(Expression::Call(Call::new(
-            Expression::Identifier(Identifier::new(function_name)),
-            arguments,
-        )))
-    }
     
     fn parse_dictionary(&mut self) -> Result<Expression> {
         self.expect(Token::LeftBrace)?;
