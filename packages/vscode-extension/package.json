@@ -1,0 +1,280 @@
+{
+    "name": "cortex-language",
+    "displayName": "Cortex Language",
+    "description": "Complete Cortex language support with bundled compiler, syntax highlighting, formatting, debugging, and IntelliSense",
+    "version": "1.0.0",
+    "publisher": "cortex-team",
+    "engines": {
+        "vscode": "^1.74.0"
+    },
+    "categories": [
+        "Programming Languages",
+        "Debuggers",
+        "Linters",
+        "Formatters"
+    ],
+    "galleryBanner": {
+        "color": "#6366f1",
+        "theme": "dark"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/muhyadinmohamed/cortex.git"
+    },
+    "homepage": "https://github.com/muhyadinmohamed/cortex",
+    "bugs": {
+        "url": "https://github.com/muhyadinmohamed/cortex/issues"
+    },
+    "icon": "cortexlogo.png",
+    "license": "MIT",
+    "keywords": [
+        "cortex",
+        "programming-language",
+        "ai",
+        "ml",
+        "machine-learning",
+        "syntax-highlighting",
+        "formatter",
+        "debugger",
+        "intellisense",
+        "lsp"
+    ],
+    "preview": false,
+    "qna": "https://github.com/muhyadinmohamed/cortex/issues",
+    "contributes": {
+        "languages": [
+            {
+                "id": "cortex",
+                "aliases": [
+                    "Cortex",
+                    "cortex"
+                ],
+                "extensions": [
+                    ".ctx"
+                ],
+                "configuration": "./language-configuration.json",
+                "icon": {
+                    "light": "./icons/cortex-light.svg",
+                    "dark": "./icons/cortex-dark.svg"
+                }
+            }
+        ],
+        "fileExtensions": {
+            ".ctx": {
+                "icon": {
+                    "light": "./icons/cortex-light.svg",
+                    "dark": "./icons/cortex-dark.svg"
+                }
+            }
+        },
+        "grammars": [
+            {
+                "language": "cortex",
+                "scopeName": "source.cortex",
+                "path": "./syntaxes/cortex.tmLanguage.json"
+            }
+        ],
+        "configuration": {
+            "title": "Cortex",
+            "properties": {
+                "cortex.format.indentSize": {
+                    "type": "number",
+                    "default": 2,
+                    "description": "Number of spaces for indentation"
+                },
+                "cortex.format.formatOnSave": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Format Cortex files on save"
+                },
+                "cortex.compiler.binaryPath": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Absolute path to a custom Cortex compiler binary (cortexc). If empty, uses the bundled compiler."
+                },
+                "cortex.languageServer.enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable Cortex Language Server for advanced features"
+                },
+                "cortex.languageServer.path": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to Cortex Language Server binary"
+                },
+                "cortex.debugging.enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable debugging features"
+                },
+                "cortex.linting.enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable linting features"
+                },
+                "cortex.completion.enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable code completion"
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "cortex.format",
+                "title": "Format Cortex File",
+                "category": "Cortex"
+            },
+            {
+                "command": "cortex.run",
+                "title": "Run Cortex File",
+                "category": "Cortex"
+            },
+            {
+                "command": "cortex.debug",
+                "title": "Debug Cortex File",
+                "category": "Cortex"
+            },
+            {
+                "command": "cortex.buildCompiler",
+                "title": "Build Cortex Compiler (Rust)",
+                "category": "Cortex"
+            },
+            {
+                "command": "cortex.check",
+                "title": "Check Cortex File Syntax",
+                "category": "Cortex"
+            },
+            {
+                "command": "cortex.build",
+                "title": "Build Cortex File to Executable",
+                "category": "Cortex"
+            },
+            {
+                "command": "cortex.newProject",
+                "title": "Create New Cortex Project",
+                "category": "Cortex"
+            },
+            {
+                "command": "cortex.test",
+                "title": "Run Tests",
+                "category": "Cortex"
+            },
+            {
+                "command": "cortex.lint",
+                "title": "Lint Cortex File",
+                "category": "Cortex"
+            },
+            {
+                "command": "cortex.restartLanguageServer",
+                "title": "Restart Language Server",
+                "category": "Cortex"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "cortex.format",
+                "key": "ctrl+shift+f",
+                "when": "editorTextFocus && editorLangId == cortex"
+            },
+            {
+                "command": "cortex.run",
+                "key": "ctrl+shift+r",
+                "when": "editorTextFocus && editorLangId == cortex"
+            },
+            {
+                "command": "cortex.debug",
+                "key": "f5",
+                "when": "editorTextFocus && editorLangId == cortex"
+            },
+            {
+                "command": "cortex.test",
+                "key": "ctrl+shift+t",
+                "when": "editorTextFocus && editorLangId == cortex"
+            }
+        ],
+        "debuggers": [
+            {
+                "type": "cortex",
+                "label": "Cortex Debugger",
+                "configurationAttributes": {
+                    "launch": {
+                        "required": [
+                            "program"
+                        ],
+                        "properties": {
+                            "program": {
+                                "type": "string",
+                                "description": "Path to the Cortex program to debug"
+                            },
+                            "args": {
+                                "type": "array",
+                                "description": "Command line arguments"
+                            },
+                            "cwd": {
+                                "type": "string",
+                                "description": "Working directory"
+                            },
+                            "env": {
+                                "type": "object",
+                                "description": "Environment variables"
+                            },
+                            "stopOnEntry": {
+                                "type": "boolean",
+                                "description": "Stop at the entry point",
+                                "default": false
+                            },
+                            "breakpoints": {
+                                "type": "array",
+                                "description": "Initial breakpoints"
+                            }
+                        }
+                    }
+                },
+                "initialConfigurations": [
+                    {
+                        "name": "Launch Cortex Program",
+                        "type": "cortex",
+                        "request": "launch",
+                        "program": "${workspaceFolder}/src/main.ctx",
+                        "stopOnEntry": false
+                    }
+                ]
+            }
+        ],
+        "snippets": [
+            {
+                "language": "cortex",
+                "path": "./snippets/cortex.json"
+            }
+        ]
+    },
+    "activationEvents": [
+        "onLanguage:cortex",
+        "onCommand:cortex.debug",
+        "onCommand:cortex.buildCompiler",
+        "onCommand:cortex.check",
+        "onCommand:cortex.build",
+        "onCommand:cortex.newProject",
+        "onCommand:cortex.test",
+        "onCommand:cortex.lint",
+        "onCommand:cortex.restartLanguageServer"
+    ],
+    "main": "./out/extension.js",
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.74.0",
+        "@types/node": "16.x",
+        "@typescript-eslint/eslint-plugin": "^5.45.0",
+        "@typescript-eslint/parser": "^5.45.0",
+        "eslint": "^8.28.0",
+        "typescript": "^4.9.4"
+    }
+}

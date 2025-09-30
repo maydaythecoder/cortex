@@ -1,8 +1,0 @@
-// Simple test
-func main[] |
-  let x := 42
-  print["Hello, World!"]
-  print[x]
-^
-
-main[]

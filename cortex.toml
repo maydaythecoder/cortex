@@ -1,0 +1,84 @@
+# Cortex Project Configuration
+# This file defines the project settings and dependencies
+
+[package]
+name = "cortex"
+version = "1.0.0"
+description = "A high-performance AI/ML programming language built in Rust"
+authors = ["Cortex Team"]
+license = "MIT"
+repository = "https://github.com/muhyadinmohamed/cortex"
+homepage = "https://github.com/muhyadinmohamed/cortex"
+keywords = ["programming-language", "ai", "ml", "machine-learning", "compiler"]
+categories = ["programming-languages", "artificial-intelligence"]
+
+# Build configuration
+[build]
+target = "native"  # native, wasm, gpu
+optimization = "balanced"  # debug, balanced, release
+debug_info = true
+warnings_as_errors = false
+
+# Formatting configuration
+[format]
+indent_size = 2
+max_line_length = 100
+tab_width = 2
+use_tabs = false
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Linting configuration
+[lint]
+strict = false
+warnings_as_errors = false
+unused_variables = "warn"
+unused_imports = "warn"
+dead_code = "warn"
+missing_docs = "warn"
+
+# Testing configuration
+[test]
+parallel = true
+timeout = 30
+coverage = true
+benchmark = true
+
+# Documentation configuration
+[docs]
+theme = "default"
+include_examples = true
+include_tests = true
+include_private = false
+
+# Package management
+[dependencies]
+# Core dependencies
+# Add your project dependencies here
+
+[dev-dependencies]
+# Development dependencies
+# Add your development dependencies here
+
+# Workspace configuration
+[workspace]
+members = [
+    "packages/compiler",
+    "packages/cli", 
+    "packages/language-server",
+    "packages/vscode-extension"
+]
+
+# CI/CD configuration
+[ci]
+rust_version = "1.70.0"
+node_version = "18.0.0"
+test_coverage_threshold = 80
+benchmark_regression_threshold = 5.0
+
+# Release configuration
+[release]
+version_scheme = "semver"
+auto_tag = true
+changelog = true
+github_release = true

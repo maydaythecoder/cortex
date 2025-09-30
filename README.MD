@@ -8,6 +8,7 @@ Its goal is to make building, training, and experimenting with models **simpler 
 - **Readable, bracket-based syntax** → focused on clarity and flow  
 - **Rust-powered performance** → memory-safe and blazingly fast  
 - **AI-first primitives** → tensors, datasets, models, training utilities  
+- **Professional tooling** → CLI, VSCode extension, language server, debugger
 
 Instead of writing AI in bloated frameworks, Cortex gives you a **language designed from the ground up for machine intelligence**.  
 
@@ -19,6 +20,7 @@ Instead of writing AI in bloated frameworks, Cortex gives you a **language desig
 - **Concise syntax** → `if [x > 5] | print[x] ^`  
 - **Rust-powered** → memory-safe, zero-cost abstractions, and blazingly fast  
 - **Integrated ML stack** → arrays → tensors, objects → models, dicts → datasets  
+- **Professional tooling** → Complete development environment with debugging, IntelliSense, and testing
 - **Extendable** → pluggable backend (CPU now, GPU later)  
 
 ---
@@ -27,36 +29,36 @@ Instead of writing AI in bloated frameworks, Cortex gives you a **language desig
 
 ### Prerequisites
 
-**Rust Implementation (Recommended):**
-
 - Rust 1.70+
+- Node.js 16+ (for VSCode extension)
 - Git
-- Cargo (comes with Rust)
 
 ### Installation
 
-**Rust Implementation:**
-
 ```bash
-git clone https://github.com/yourname/cortex
-cd cortex/rust
-cargo build --release
+# Clone the repository
+git clone https://github.com/muhyadinmohamed/cortex
+cd cortex
+
+# Install dependencies
+npm install
+
+# Build all components
+npm run build
 ```
 
 ### Hello World
 
-**Rust Implementation:**
-
 ```bash
-# Create hello_world.ctx
-echo 'print["Hello, Cortex!"]' > hello_world.ctx
+# Create a new project
+cortex new hello-world
+cd hello-world
 
-# Run it (interpreted)
-cd rust
-cargo run -- run hello_world.ctx
+# Run the program
+cortex run src/main.ctx
 
-# Check syntax
-cargo run -- check hello_world.ctx
+# Or run directly
+cortex run examples/hello_world.ctx
 ```
 
 ---
@@ -200,34 +202,42 @@ main[]
 
 ``` txt
 cortex/
-├─ rust/            # Rust implementation
-│  ├─ src/          # Rust source code
-│  │  ├─ main.rs    # CLI interface
-│  │  ├─ lexer.rs   # Tokenizer
-│  │  ├─ parser.rs  # Parser
-│  │  ├─ ast.rs     # AST definitions
-│  │  ├─ codegen.rs # Interpreter
-│  │  └─ error.rs   # Error handling
-│  ├─ Cargo.toml    # Rust dependencies
-│  └─ target/       # Rust build artifacts
-├─ cortex-vscode-extension/ # VS Code extension
-│  ├─ package.json  # Extension manifest
-│  ├─ extension.js  # Extension logic
-│  ├─ syntaxes/     # Syntax highlighting
-│  └─ language-configuration.json
-├─ assets/          # Logos and branding
-│  ├─ cortex.svg    # Logo icon
-│  └─ cortex-with-text.svg # Logo with text
-├─ examples/        # Example .ctx files
-├─ docs/            # Documentation
-│  ├─ shared/       # Shared documentation
-│  │  ├─ examples/  # Example .ctx files
-│  │  ├─ syntax.md
-│  │  ├─ functions.md
-│  │  └─ *.md       # Core documentation
-│  └─ rust/         # Rust-specific docs
-├─ .vscode/         # VS Code workspace settings
-└─ format_cortex.py # Code formatter
+├─ packages/                    # Core packages
+│  ├─ compiler/                # Rust compiler/interpreter
+│  │  ├─ src/                 # Source code
+│  │  │  ├─ main.rs           # CLI interface
+│  │  │  ├─ lexer.rs          # Tokenizer
+│  │  │  ├─ parser.rs         # Parser
+│  │  │  ├─ ast.rs            # AST definitions
+│  │  │  ├─ codegen.rs        # Interpreter
+│  │  │  ├─ error.rs          # Error handling
+│  │  │  └─ debugger.rs       # Debugger
+│  │  └─ Cargo.toml           # Rust dependencies
+│  ├─ cli/                     # Command-line interface
+│  │  ├─ src/                 # CLI source code
+│  │  └─ Cargo.toml           # CLI dependencies
+│  ├─ language-server/         # Language Server Protocol
+│  │  ├─ src/                 # LSP implementation
+│  │  └─ Cargo.toml           # LSP dependencies
+│  └─ vscode-extension/        # VSCode extension
+│     ├─ src/                 # Extension source (TypeScript)
+│     ├─ package.json         # Extension manifest
+│     └─ syntaxes/            # Syntax highlighting
+├─ tools/                      # Development tools
+│  ├─ formatter/              # Code formatter
+│  ├─ debugger/               # Debugging tools
+│  └─ linter/                 # Code linter
+├─ docs/                       # Documentation
+│  ├─ api/                    # API reference
+│  ├─ examples/               # Example programs
+│  └─ tutorials/              # Step-by-step guides
+├─ tests/                      # Test suites
+│  ├─ unit/                   # Unit tests
+│  ├─ integration/            # Integration tests
+│  └─ benchmarks/             # Performance benchmarks
+├─ assets/                     # Logos and branding
+├─ .github/                    # GitHub workflows
+└─ package.json               # Root package configuration
 ```
 
 ---

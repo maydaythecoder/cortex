@@ -1,0 +1,61 @@
+{
+  "name": "cortex",
+  "version": "1.0.0",
+  "description": "A high-performance AI/ML programming language built in Rust",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "tools/*"
+  ],
+  "scripts": {
+    "build": "npm run build:compiler && npm run build:extension",
+    "build:compiler": "cd packages/compiler && cargo build --release",
+    "build:extension": "cd packages/vscode-extension && npm run build",
+    "test": "npm run test:compiler && npm run test:extension",
+    "test:compiler": "cd packages/compiler && cargo test",
+    "test:extension": "cd packages/vscode-extension && npm test",
+    "lint": "npm run lint:compiler && npm run lint:extension",
+    "lint:compiler": "cd packages/compiler && cargo clippy",
+    "lint:extension": "cd packages/vscode-extension && npm run lint",
+    "format": "npm run format:compiler && npm run format:extension",
+    "format:compiler": "cd packages/compiler && cargo fmt",
+    "format:extension": "cd packages/vscode-extension && npm run format",
+    "dev": "npm run dev:compiler",
+    "dev:compiler": "cd packages/compiler && cargo run",
+    "package": "npm run build && npm run package:extension",
+    "package:extension": "cd packages/vscode-extension && npm run package",
+    "clean": "npm run clean:compiler && npm run clean:extension",
+    "clean:compiler": "cd packages/compiler && cargo clean",
+    "clean:extension": "cd packages/vscode-extension && npm run clean"
+  },
+  "keywords": [
+    "programming-language",
+    "ai",
+    "ml",
+    "machine-learning",
+    "artificial-intelligence",
+    "compiler",
+    "rust",
+    "vscode-extension"
+  ],
+  "author": "Cortex Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muhyadinmohamed/cortex.git"
+  },
+  "bugs": {
+    "url": "https://github.com/muhyadinmohamed/cortex/issues"
+  },
+  "homepage": "https://github.com/muhyadinmohamed/cortex#readme",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  }
+}
