@@ -501,8 +501,36 @@ impl Parser {
             let operand = self.parse_unary()?;
             Ok(Expression::UnaryOp(UnaryOp::new("!".to_string(), operand)))
         } else {
-            self.parse_primary()
+            self.parse_postfix()
         }
+    }
+    
+    fn parse_postfix(&mut self) -> Result<Expression> {
+        let mut left = self.parse_primary()?;
+        
+        // Handle postfix operations (function calls and array indexing)
+        while let Some(current) = self.current_token() {
+            match &current.token {
+                Token::LeftBracket => {
+                    self.advance(); // Consume '['
+                    
+                    // Check if this is an empty function call
+                    if self.match_token(Token::RightBracket) {
+                        // This is a function call with no arguments
+                        // For now, we'll treat this as an index expression with a null index
+                        left = Expression::Index(IndexExpression::new(left, Expression::Literal(Literal::new(LiteralValue::Null, "null".to_string()))));
+                    } else {
+                        // Parse the index expression
+                        let index = self.parse_expression()?;
+                        self.expect(Token::RightBracket)?;
+                        left = Expression::Index(IndexExpression::new(left, index));
+                    }
+                }
+                _ => break,
+            }
+        }
+        
+        Ok(left)
     }
     
     fn parse_primary(&mut self) -> Result<Expression> {
@@ -545,15 +573,7 @@ impl Parser {
             Token::Identifier(name) => {
                 let name = name.clone();
                 self.advance();
-                
-                // Check if it's a function call first
-                if self.peek_token(0).map(|t| &t.token) == Some(&Token::LeftBracket) {
-                    // Consume the LeftBracket token since parse_call expects it
-                    self.advance(); // Consume the '['
-                    self.parse_call_argless(name)
-                } else {
-                    Ok(Expression::Identifier(Identifier::new(name)))
-                }
+                Ok(Expression::Identifier(Identifier::new(name)))
             }
             
             Token::LeftBracket => {

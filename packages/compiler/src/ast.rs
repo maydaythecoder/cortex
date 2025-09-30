@@ -61,6 +61,7 @@ pub enum Expression {
     Call(Call),
     Array(Array),
     Dictionary(Dictionary),
+    Index(IndexExpression),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -193,6 +194,21 @@ impl Dictionary {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct IndexExpression {
+    pub container: Box<Expression>,
+    pub index: Box<Expression>,
+}
+
+impl IndexExpression {
+    pub fn new(container: Expression, index: Expression) -> Self {
+        Self {
+            container: Box::new(container),
+            index: Box::new(index),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct Literal {
     pub value: LiteralValue,
     pub literal_type: String,
@@ -310,6 +326,7 @@ pub trait Visitor<T> {
     fn visit_call(&mut self, call: &Call) -> T;
     fn visit_array(&mut self, array: &Array) -> T;
     fn visit_dictionary(&mut self, dictionary: &Dictionary) -> T;
+    fn visit_index(&mut self, index: &IndexExpression) -> T;
     fn visit_literal(&mut self, literal: &Literal) -> T;
     fn visit_identifier(&mut self, identifier: &Identifier) -> T;
     fn visit_block(&mut self, block: &Block) -> T;

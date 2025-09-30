@@ -410,6 +410,44 @@ impl Interpreter {
                 }
                 Ok(Value::Dictionary(map))
             }
+            Expression::Index(index_expr) => {
+                // Check if this is a function call
+                if let Expression::Identifier(identifier) = &*index_expr.container {
+                    // Check if this is a built-in function
+                    if identifier.name == "print" {
+                        // Handle print function
+                        let value = self.interpret_expression(&index_expr.index)?;
+                        println!("{}", value);
+                        Ok(Value::Null)
+                    } else if identifier.name == "str" {
+                        // Handle str function
+                        let value = self.interpret_expression(&index_expr.index)?;
+                        Ok(Value::String(value.to_string()))
+                    } else if self.functions.contains_key(&identifier.name) {
+                        // This is a user-defined function call
+                        let index_value = self.interpret_expression(&index_expr.index)?;
+                        
+                        // Check if this is a function call with no arguments (index is null)
+                        if matches!(index_value, Value::Null) {
+                            // Function call with no arguments
+                            self.call_function(&identifier.name, vec![])
+                        } else {
+                            // Function call with single argument
+                            self.call_function(&identifier.name, vec![index_value])
+                        }
+                    } else {
+                        // This is array/dictionary indexing - the identifier refers to a variable
+                        let container = self.interpret_expression(&index_expr.container)?;
+                        let index = self.interpret_expression(&index_expr.index)?;
+                        self.access_element(&container, &index)
+                    }
+                } else {
+                    // This is array/dictionary indexing
+                    let container = self.interpret_expression(&index_expr.container)?;
+                    let index = self.interpret_expression(&index_expr.index)?;
+                    self.access_element(&container, &index)
+                }
+            }
         }
     }
     
@@ -437,6 +475,48 @@ impl Interpreter {
             }
         }
         Ok(result)
+    }
+    
+    fn call_function(&mut self, function_name: &str, arguments: Vec<Value>) -> Result<Value> {
+        if let Some(function) = self.functions.get(function_name).cloned() {
+            // Check argument count
+            if arguments.len() != function.parameters.len() {
+                return Err(anyhow::anyhow!(
+                    "Function {} expects {} arguments, got {}",
+                    function.name,
+                    function.parameters.len(),
+                    arguments.len()
+                ));
+            }
+            
+            // Save current variables and return value
+            let old_variables = self.variables.clone();
+            let old_return_value = self.current_return_value.clone();
+            self.current_return_value = None;
+            
+            // Bind parameters to arguments
+            for (param, arg_value) in function.parameters.iter().zip(arguments.iter()) {
+                self.variables.insert(param.name.clone(), arg_value.clone());
+            }
+            
+            // Execute function body
+            let result = self.interpret_block(&function.body)?;
+            
+            // Check if we have a return value
+            let final_result = if let Some(return_val) = &self.current_return_value {
+                return_val.clone()
+            } else {
+                result
+            };
+            
+            // Restore old variables and return value
+            self.variables = old_variables;
+            self.current_return_value = old_return_value;
+            
+            Ok(final_result)
+        } else {
+            Err(anyhow::anyhow!("Undefined function: {}", function_name))
+        }
     }
     
     fn interpret_function_call(&mut self, function: &Function, arguments: &[Expression]) -> Result<Value> {
