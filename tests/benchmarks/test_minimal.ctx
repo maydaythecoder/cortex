@@ -1,1 +1,8 @@
- 
+// MINIMAL TEST - Simplest possible valid program
+// Tests basic syntax and execution
+
+func main[] |
+  print["Minimal test passed"]
+^
+
+main[]

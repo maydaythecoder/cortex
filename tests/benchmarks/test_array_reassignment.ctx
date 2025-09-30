@@ -1,0 +1,80 @@
+// ARRAY REASSIGNMENT TEST
+// Tests array element reassignment and modification
+
+func main[] |
+  print["=== ARRAY REASSIGNMENT TEST ==="]
+  
+  // Basic array element reassignment
+  let arr := [1, 2, 3, 4, 5]
+  print["Original array: " + str[arr]]
+  
+  arr[0] := 10
+  print["After arr[0] := 10: " + str[arr]]
+  
+  arr[2] := 30
+  print["After arr[2] := 30: " + str[arr]]
+  
+  arr[4] := 50
+  print["After arr[4] := 50: " + str[arr]]
+  
+  // Multiple reassignments
+  arr[1] := 20
+  arr[3] := 40
+  print["After multiple reassignments: " + str[arr]]
+  
+  // Reassigning with expressions
+  let idx := 0
+  arr[idx] := 100
+  print["After arr[0] := 100: " + str[arr]]
+  
+  arr[idx + 1] := 200
+  print["After arr[1] := 200: " + str[arr]]
+  
+  // Reassigning with variable values
+  let val := 999
+  arr[2] := val
+  print["After arr[2] := val: " + str[arr]]
+  
+  // Reassigning with computed values
+  arr[3] := arr[0] + arr[1]
+  print["After arr[3] := arr[0] + arr[1]: " + str[arr]]
+  
+  // Nested array reassignment
+  let matrix := [[1, 2], [3, 4], [5, 6]]
+  print["\nOriginal matrix: " + str[matrix]]
+  
+  matrix[0][0] := 10
+  print["After matrix[0][0] := 10: " + str[matrix]]
+  
+  matrix[1][1] := 40
+  print["After matrix[1][1] := 40: " + str[matrix]]
+  
+  matrix[2][0] := 50
+  print["After matrix[2][0] := 50: " + str[matrix]]
+  
+  // Array reassignment in loops
+  let numbers := [0, 0, 0, 0, 0]
+  let i := 0
+  print["\nFilling array with loop:"]
+  print["Initial: " + str[numbers]]
+  
+  while [i < len[numbers]] |
+    numbers[i] := i * 10
+    i := i + 1
+  ^
+  print["After loop: " + str[numbers]]
+  
+  // Swapping elements
+  let swap_arr := [1, 2, 3, 4, 5]
+  print["\nSwapping elements:"]
+  print["Before swap: " + str[swap_arr]]
+  
+  let temp := swap_arr[0]
+  swap_arr[0] := swap_arr[4]
+  swap_arr[4] := temp
+  print["After swapping [0] and [4]: " + str[swap_arr]]
+  
+  print["\n=== ARRAY REASSIGNMENT TESTS PASSED ==="]
+^
+
+main[]

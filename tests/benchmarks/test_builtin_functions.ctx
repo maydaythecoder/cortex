@@ -1,1 +1,88 @@
- 
+// BUILT-IN FUNCTIONS TEST
+// Tests all available built-in functions
+
+func main[] |
+  print["=== BUILT-IN FUNCTIONS TEST ==="]
+  
+  // print function
+  print["Testing print function"]
+  
+  // str function - string conversion
+  let num := 42
+  let decimal := 3.14
+  let bool_val := true
+  let null_val := null
+  
+  print["str function:"]
+  print["Number: " + str[num]]
+  print["Decimal: " + str[decimal]]
+  print["Boolean: " + str[bool_val]]
+  print["Null: " + str[null_val]]
+  
+  // len function - length of collections
+  let arr := [1, 2, 3, 4, 5]
+  let empty_arr := []
+  let text := "Hello World"
+  let dict := {"a": 1, "b": 2, "c": 3}
+  
+  print["\nlen function:"]
+  print["Array length: " + str[len[arr]]]
+  print["Empty array length: " + str[len[empty_arr]]]
+  print["String length: " + str[len[text]]]
+  print["Dict length: " + str[len[dict]]]
+  
+  // abs function - absolute value
+  let neg := -42
+  let pos := 42
+  
+  print["\nabs function:"]
+  print["abs(-42): " + str[abs[neg]]]
+  print["abs(42): " + str[abs[pos]]]
+  print["abs(0): " + str[abs[0]]]
+  
+  // min function - minimum value
+  let numbers := [10, -5, 20, -15, 30]
+  
+  print["\nmin function:"]
+  print["min([10, -5, 20, -15, 30]): " + str[min[numbers]]]
+  print["min([42]): " + str[min[[42]]]]
+  
+  // max function - maximum value
+  print["\nmax function:"]
+  print["max([10, -5, 20, -15, 30]): " + str[max[numbers]]]
+  print["max([42]): " + str[max[[42]]]]
+  
+  // push function - add to array
+  let test_arr := [1, 2, 3]
+  let new_arr := push[test_arr, 4]
+  
+  print["\npush function:"]
+  print["Original: " + str[test_arr]]
+  print["After push(4): " + str[new_arr]]
+  
+  // pop function - remove from array
+  let pop_arr := [1, 2, 3, 4, 5]
+  let popped := pop[pop_arr]
+  
+  print["\npop function:"]
+  print["Popped value: " + str[popped]]
+  print["Remaining: " + str[pop_arr]]
+  
+  // keys function - dictionary keys
+  let person := {"name": "Alice", "age": 30, "active": true}
+  let dict_keys := keys[person]
+  
+  print["\nkeys function:"]
+  print["Dictionary: " + str[person]]
+  print["Keys: " + str[dict_keys]]
+  
+  // values function - dictionary values
+  let dict_values := values[person]
+  
+  print["\nvalues function:"]
+  print["Values: " + str[dict_values]]
+  
+  print["\n=== ALL BUILT-IN FUNCTIONS TESTED ==="]
+^
+
+main[]

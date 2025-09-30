@@ -1,0 +1,80 @@
+// STRING ESCAPES TEST
+// Tests string escape sequences and special characters
+
+func main[] |
+  print["=== STRING ESCAPES TEST ==="]
+  
+  // Basic string
+  let simple := "Hello World"
+  print["Simple: " + simple]
+  
+  // Escaped quotes
+  let with_quotes := "He said \"Hello\""
+  print["With quotes: " + with_quotes]
+  
+  // Escaped backslash
+  let with_backslash := "Path: C:\\Users\\Documents"
+  print["With backslash: " + with_backslash]
+  
+  // Newline escape
+  let with_newline := "Line 1\nLine 2"
+  print["With newline: " + with_newline]
+  
+  // Tab escape
+  let with_tab := "Column1\tColumn2\tColumn3"
+  print["With tab: " + with_tab]
+  
+  // Carriage return
+  let with_cr := "Before\rAfter"
+  print["With CR: " + with_cr]
+  
+  // Multiple escapes
+  let complex := "Quote: \"Hello\"\nTab:\tHere\nPath: C:\\temp"
+  print["Complex: " + complex]
+  
+  // Empty string
+  let empty := ""
+  print["Empty: '" + empty + "'"]
+  
+  // String with single quotes (no escape needed)
+  let with_single := "It's a test"
+  print["With single quote: " + with_single]
+  
+  // Unicode-like sequences (if supported)
+  let special := "Hello\u0020World"
+  print["Special: " + special]
+  
+  // Concatenation with escapes
+  let part1 := "First \"quoted\" part"
+  let part2 := "Second\npart"
+  let combined := part1 + " " + part2
+  print["Combined: " + combined]
+  
+  // Testing in function
+  func print_escaped[text] |
+    print["Escaped text: " + text]
+  ^
+  
+  print_escaped["Test \"escapes\" here"]
+  print_escaped["Path: C:\\Windows\\System32"]
+  
+  // Escape sequences in arrays
+  let strings := ["First", "Second \"quote\"", "Third\nLine"]
+  print["Array element 0: " + strings[0]]
+  print["Array element 1: " + strings[1]]
+  print["Array element 2: " + strings[2]]
+  
+  // Escape sequences in dictionaries
+  let data := {
+    "message": "Hello \"World\"",
+    "path": "C:\\Users\\Test",
+    "multiline": "Line1\nLine2"
+  }
+  print["Dict message: " + data["message"]]
+  print["Dict path: " + data["path"]]
+  print["Dict multiline: " + data["multiline"]]
+  
+  print["\n=== STRING ESCAPE TESTS PASSED ==="]
+^
+
+main[]

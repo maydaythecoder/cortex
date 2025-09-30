@@ -1,1 +1,67 @@
- 
+// RUNTIME ERROR TEST
+// Tests for potential runtime errors
+// Comment out individual tests to avoid crashing
+
+func main[] |
+  print["=== RUNTIME ERROR TEST ==="]
+  
+  // Valid operations first
+  print["Valid operations:"]
+  let x := 42
+  let arr := [1, 2, 3]
+  let dict := {"key": "value"}
+  print["x = " + str[x]]
+  print["arr = " + str[arr]]
+  print["dict = " + str[dict]]
+  
+  // Potential runtime errors (uncomment one at a time):
+  
+  // ERROR 1: Division by zero
+  // let div_by_zero := 10 / 0
+  // print["Division by zero: " + str[div_by_zero]]
+  
+  // ERROR 2: Array index out of bounds
+  // let out_of_bounds := arr[10]
+  // print["Out of bounds: " + str[out_of_bounds]]
+  
+  // ERROR 3: Negative array index
+  // let negative_idx := arr[-1]
+  // print["Negative index: " + str[negative_idx]]
+  
+  // ERROR 4: Dictionary key not found
+  // let missing_key := dict["nonexistent"]
+  // print["Missing key: " + str[missing_key]]
+  
+  // ERROR 5: Calling undefined function
+  // let result := undefined_function[]
+  // print["Undefined function: " + str[result]]
+  
+  // ERROR 6: Wrong number of arguments
+  // func needs_two[a, b] |
+  //   return[a + b]
+  // ^
+  // let wrong_args := needs_two[1]
+  
+  // ERROR 7: Type mismatch in operation
+  // let type_error := "string" - 10
+  // print["Type error: " + str[type_error]]
+  
+  // ERROR 8: Null pointer access
+  // let null_val := null
+  // let null_access := null_val["key"]
+  
+  // ERROR 9: Stack overflow (infinite recursion)
+  // func infinite[] |
+  //   return[infinite[]]
+  // ^
+  // let overflow := infinite[]
+  
+  // ERROR 10: Modifying constant
+  // let const :: 42
+  // const := 100
+  
+  print["Runtime error test complete"]
+  print["If you see this, no errors occurred"]
+^
+
+main[]

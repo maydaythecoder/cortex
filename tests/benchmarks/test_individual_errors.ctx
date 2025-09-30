@@ -1,1 +1,147 @@
- 
+// INDIVIDUAL ERROR TEST
+// Each test case can be run independently
+// Comment out all but one to test specific error handling
+
+func main[] |
+  print["=== INDIVIDUAL ERROR TESTS ==="]
+  print["Uncomment one error at a time to test"]
+  
+  // Valid baseline
+  let valid := 42
+  print["Baseline valid: " + str[valid]]
+  
+  // ========================================
+  // ARITHMETIC ERRORS
+  // ========================================
+  
+  // Error 1: Division by zero
+  // print["\nError 1: Division by zero"]
+  // let result := 10 / 0
+  // print["Result: " + str[result]]
+  
+  // Error 2: Modulo by zero
+  // print["\nError 2: Modulo by zero"]
+  // let result := 10 % 0
+  // print["Result: " + str[result]]
+  
+  // ========================================
+  // ARRAY ERRORS
+  // ========================================
+  
+  // Error 3: Array index out of bounds (positive)
+  // print["\nError 3: Array out of bounds"]
+  // let arr := [1, 2, 3]
+  // let val := arr[10]
+  // print["Value: " + str[val]]
+  
+  // Error 4: Array index out of bounds (negative)
+  // print["\nError 4: Negative array index"]
+  // let arr := [1, 2, 3]
+  // let val := arr[-1]
+  // print["Value: " + str[val]]
+  
+  // Error 5: Accessing empty array
+  // print["\nError 5: Empty array access"]
+  // let arr := []
+  // let val := arr[0]
+  // print["Value: " + str[val]]
+  
+  // ========================================
+  // DICTIONARY ERRORS
+  // ========================================
+  
+  // Error 6: Dictionary key not found
+  // print["\nError 6: Missing dictionary key"]
+  // let dict := {"a": 1}
+  // let val := dict["nonexistent"]
+  // print["Value: " + str[val]]
+  
+  // Error 7: Accessing empty dictionary
+  // print["\nError 7: Empty dict access"]
+  // let dict := {}
+  // let val := dict["key"]
+  // print["Value: " + str[val]]
+  
+  // ========================================
+  // FUNCTION ERRORS
+  // ========================================
+  
+  // Error 8: Undefined function
+  // print["\nError 8: Undefined function"]
+  // let result := undefined_func[]
+  // print["Result: " + str[result]]
+  
+  // Error 9: Wrong argument count (too few)
+  // print["\nError 9: Too few arguments"]
+  // func needs_two[a, b] |
+  //   return[a + b]
+  // ^
+  // let result := needs_two[1]
+  // print["Result: " + str[result]]
+  
+  // Error 10: Wrong argument count (too many)
+  // print["\nError 10: Too many arguments"]
+  // func needs_one[a] |
+  //   return[a]
+  // ^
+  // let result := needs_one[1, 2, 3]
+  // print["Result: " + str[result]]
+  
+  // ========================================
+  // TYPE ERRORS
+  // ========================================
+  
+  // Error 11: Invalid operation on null
+  // print["\nError 11: Null operation"]
+  // let val := null
+  // let result := val + 10
+  // print["Result: " + str[result]]
+  
+  // Error 12: String in arithmetic
+  // print["\nError 12: String arithmetic"]
+  // let result := "hello" - 5
+  // print["Result: " + str[result]]
+  
+  // ========================================
+  // RECURSION ERRORS
+  // ========================================
+  
+  // Error 13: Infinite recursion (stack overflow)
+  // print["\nError 13: Infinite recursion"]
+  // func infinite[] |
+  //   return[infinite[]]
+  // ^
+  // let result := infinite[]
+  
+  // Error 14: Very deep recursion
+  // print["\nError 14: Deep recursion"]
+  // func deep[n] |
+  //   if [n <= 0] |
+  //     return[0]
+  //   ^
+  //   return[deep[n - 1]]
+  // ^
+  // let result := deep[10000]
+  // print["Result: " + str[result]]
+  
+  // ========================================
+  // NESTED ACCESS ERRORS
+  // ========================================
+  
+  // Error 15: Nested array out of bounds
+  // print["\nError 15: Nested array bounds"]
+  // let matrix := [[1, 2], [3, 4]]
+  // let val := matrix[0][10]
+  // print["Value: " + str[val]]
+  
+  // Error 16: Nested dict missing key
+  // print["\nError 16: Nested dict key"]
+  // let nested := {"a": {"b": 1}}
+  // let val := nested["a"]["c"]
+  // print["Value: " + str[val]]
+  
+  print["\n=== TEST COMPLETE ==="]
+  print["If you see this, the active test passed or no test was active"]
+^
+
+main[]

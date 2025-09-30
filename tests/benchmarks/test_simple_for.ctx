@@ -1,1 +1,68 @@
- 
+// SIMPLE FOR LOOP TEST
+// Tests for loop functionality and iteration
+
+func main[] |
+  print["=== SIMPLE FOR LOOP TEST ==="]
+  
+  // Basic for loop syntax
+  print["Basic for loop:"]
+  for [i] |
+    print["Loop iteration"]
+  ^
+  
+  // For loop with counter
+  print["\nFor loop with counter:"]
+  let count := 0
+  for [i] |
+    print["Count: " + str[count]]
+    count := count + 1
+    if [count >= 5] |
+      print["Stopping at 5"]
+    ^
+  ^
+  
+  // For loop iterating over range
+  print["\nIterating 1 to 5:"]
+  let n := 1
+  while [n <= 5] |
+    print["n = " + str[n]]
+    n := n + 1
+  ^
+  
+  // For loop with array processing
+  print["\nProcessing array elements:"]
+  let arr := [10, 20, 30, 40, 50]
+  let idx := 0
+  while [idx < len[arr]] |
+    print["arr[" + str[idx] + "] = " + str[arr[idx]]]
+    idx := idx + 1
+  ^
+  
+  // For loop with accumulation
+  print["\nSum accumulation:"]
+  let numbers := [1, 2, 3, 4, 5]
+  let sum := 0
+  let i := 0
+  while [i < len[numbers]] |
+    sum := sum + numbers[i]
+    print["After adding " + str[numbers[i]] + ", sum = " + str[sum]]
+    i := i + 1
+  ^
+  
+  // Nested for loops
+  print["\nNested loops - multiplication table:"]
+  let outer := 1
+  while [outer <= 3] |
+    let inner := 1
+    while [inner <= 3] |
+      let result := outer * inner
+      print[str[outer] + " x " + str[inner] + " = " + str[result]]
+      inner := inner + 1
+    ^
+    outer := outer + 1
+  ^
+  
+  print["\n=== FOR LOOP TESTS PASSED ==="]
+^
+
+main[]

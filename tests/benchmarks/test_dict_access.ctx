@@ -1,1 +1,90 @@
- 
+// DICTIONARY ACCESS TEST
+// Tests dictionary key-value access patterns
+
+func main[] |
+  print["=== DICTIONARY ACCESS TEST ==="]
+  
+  // Basic dictionary access
+  let person := {"name": "Alice", "age": 30, "city": "NYC"}
+  print["Dictionary: " + str[person]]
+  print["person['name']: " + str[person["name"]]]
+  print["person['age']: " + str[person["age"]]]
+  print["person['city']: " + str[person["city"]]]
+  
+  // Access with string literals
+  let config := {"debug": true, "version": "1.0.0", "port": 8080}
+  print["\nConfig dictionary: " + str[config]]
+  print["config['debug']: " + str[config["debug"]]]
+  print["config['version']: " + str[config["version"]]]
+  print["config['port']: " + str[config["port"]]]
+  
+  // Access with variables
+  let key := "name"
+  print["\nAccess with variable key:"]
+  print["key = '" + key + "'"]
+  print["person[key]: " + str[person[key]]]
+  
+  key := "age"
+  print["key = '" + key + "'"]
+  print["person[key]: " + str[person[key]]]
+  
+  // Nested dictionary access
+  let nested := {
+    "user": {"name": "Bob", "id": 123},
+    "settings": {"theme": "dark", "notifications": true}
+  }
+  print["\nNested dictionary: " + str[nested]]
+  print["nested['user']: " + str[nested["user"]]]
+  print["nested['user']['name']: " + str[nested["user"]["name"]]]
+  print["nested['user']['id']: " + str[nested["user"]["id"]]]
+  print["nested['settings']['theme']: " + str[nested["settings"]["theme"]]]
+  
+  // Dictionary with array values
+  let data := {
+    "numbers": [1, 2, 3],
+    "words": ["hello", "world"],
+    "mixed": [1, "two", 3.0]
+  }
+  print["\nDictionary with arrays: " + str[data]]
+  print["data['numbers']: " + str[data["numbers"]]]
+  print["data['numbers'][0]: " + str[data["numbers"][0]]]
+  print["data['words'][1]: " + str[data["words"][1]]]
+  print["data['mixed'][1]: " + str[data["mixed"][1]]]
+  
+  // Array of dictionaries access
+  let users := [
+    {"name": "Alice", "score": 95},
+    {"name": "Bob", "score": 87},
+    {"name": "Charlie", "score": 92}
+  ]
+  print["\nArray of dictionaries: " + str[users]]
+  print["users[0]: " + str[users[0]]]
+  print["users[0]['name']: " + str[users[0]["name"]]]
+  print["users[1]['score']: " + str[users[1]["score"]]]
+  print["users[2]['name']: " + str[users[2]["name"]]]
+  
+  // Complex nested access
+  let complex := {
+    "teams": [
+      {"name": "Red", "members": [{"name": "Alice", "role": "leader"}]},
+      {"name": "Blue", "members": [{"name": "Bob", "role": "member"}]}
+    ]
+  }
+  print["\nComplex nested structure: " + str[complex]]
+  print["Team 0 name: " + str[complex["teams"][0]["name"]]]
+  print["Team 0 member 0 name: " + str[complex["teams"][0]["members"][0]["name"]]]
+  print["Team 1 member 0 role: " + str[complex["teams"][1]["members"][0]["role"]]]
+  
+  // Dictionary modification
+  print["\nDictionary modification:"]
+  let mutable := {"a": 1, "b": 2}
+  print["Before: " + str[mutable]]
+  mutable["a"] := 10
+  print["After mutable['a'] := 10: " + str[mutable]]
+  mutable["b"] := 20
+  print["After mutable['b'] := 20: " + str[mutable]]
+  
+  print["\n=== DICTIONARY ACCESS TESTS PASSED ==="]
+^
+
+main[]
