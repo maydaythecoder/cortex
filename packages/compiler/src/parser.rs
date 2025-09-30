@@ -114,6 +114,22 @@ impl Parser {
                 // End of block
                 return Ok(None);
             }
+            Some(Token::Identifier(_)) => {
+                // Check if this is a reassignment statement (identifier := expression)
+                if let Some(next_token) = self.peek_token(1) {
+                    if next_token.token == Token::Assign {
+                        self.parse_reassignment()?
+                    } else {
+                        // Try to parse as expression statement
+                        let expr = self.parse_expression()?;
+                        Statement::Expression(expr)
+                    }
+                } else {
+                    // Try to parse as expression statement
+                    let expr = self.parse_expression()?;
+                    Statement::Expression(expr)
+                }
+            }
             _ => {
                 // Try to parse as expression statement
                 let expr = self.parse_expression()?;
@@ -182,6 +198,34 @@ impl Parser {
                 column: current.column,
             }.into())
         }
+    }
+    
+    fn parse_reassignment(&mut self) -> Result<Statement> {
+        // Parse identifier (variable name)
+        let var_name = match self.current_token() {
+            Some(token) => match &token.token {
+                Token::Identifier(name) => {
+                    let name = name.clone();
+                    self.advance();
+                    name
+                }
+                _ => return Err(ParseError::UnexpectedToken {
+                    expected: "identifier".to_string(),
+                    actual: format!("{:?}", token.token),
+                    line: token.line,
+                    column: token.column,
+                }.into()),
+            }
+            None => return Err(ParseError::UnexpectedEof.into()),
+        };
+        
+        // Expect assignment operator
+        self.expect(Token::Assign)?;
+        
+        // Parse the value
+        let value = self.parse_expression()?;
+        
+        Ok(Statement::Assignment(Assignment::new(var_name, value)))
     }
     
     fn parse_function(&mut self) -> Result<Statement> {
@@ -375,7 +419,19 @@ impl Parser {
     fn parse_return_statement(&mut self) -> Result<Statement> {
         self.expect(Token::Return)?;
         
-        let value = if !self.match_token(Token::Semicolon) {
+        // Check if there's a return value in brackets
+        let value = if self.match_token(Token::LeftBracket) {
+            if self.match_token(Token::RightBracket) {
+                // return[] - no value
+                None
+            } else {
+                // return[value] - parse the value
+                let expr = self.parse_expression()?;
+                self.expect(Token::RightBracket)?;
+                Some(expr)
+            }
+        } else if !self.match_token(Token::Semicolon) {
+            // return value - parse without brackets
             Some(self.parse_expression()?)
         } else {
             None
@@ -500,6 +556,9 @@ impl Parser {
         if self.match_token(Token::Not) {
             let operand = self.parse_unary()?;
             Ok(Expression::UnaryOp(UnaryOp::new("!".to_string(), operand)))
+        } else if self.match_token(Token::Minus) {
+            let operand = self.parse_unary()?;
+            Ok(Expression::UnaryOp(UnaryOp::new("-".to_string(), operand)))
         } else {
             self.parse_postfix()
         }
@@ -520,9 +579,37 @@ impl Parser {
                         // For now, we'll treat this as an index expression with a null index
                         left = Expression::Index(IndexExpression::new(left, Expression::Literal(Literal::new(LiteralValue::Null, "null".to_string()))));
                     } else {
-                        // Parse the index expression
-                        let index = self.parse_expression()?;
-                        self.expect(Token::RightBracket)?;
+                        // Parse the arguments (could be single argument or multiple)
+                        let mut arguments = Vec::new();
+                        
+                        loop {
+                            let arg = self.parse_expression()?;
+                            arguments.push(arg);
+                            
+                            if self.match_token(Token::RightBracket) {
+                                break;
+                            }
+                            
+                            if !self.match_token(Token::Comma) {
+                                return Err(ParseError::UnexpectedToken {
+                                    expected: "comma or closing bracket".to_string(),
+                                    actual: format!("{:?}", self.current_token().map(|t| &t.token).unwrap_or(&Token::Error)),
+                                    line: self.current_token().map(|t| t.line).unwrap_or(0),
+                                    column: self.current_token().map(|t| t.column).unwrap_or(0),
+                                }.into());
+                            }
+                        }
+                        
+                        // For now, we'll use the first argument as the index
+                        // TODO: This needs to be changed to support proper multi-argument function calls
+                        let index = if arguments.len() == 1 {
+                            arguments[0].clone()
+                        } else {
+                            // For multi-argument calls, we need a different approach
+                            // For now, create an array with all arguments
+                            Expression::Array(Array::new(arguments))
+                        };
+                        
                         left = Expression::Index(IndexExpression::new(left, index));
                     }
                 }

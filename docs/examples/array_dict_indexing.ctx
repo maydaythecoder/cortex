@@ -1,0 +1,54 @@
+// Array and Dictionary Indexing Demo
+// Demonstrates array and dictionary access operations
+
+func main[] |
+  print["=== ARRAY INDEXING ==="]
+  
+  // Array indexing
+  let numbers := [10, 20, 30, 40, 50]
+  let fruits := ["apple", "banana", "cherry"]
+  
+  print["Numbers array: " + str[numbers]]
+  print["Fruits array: " + str[fruits]]
+  
+  // Access array elements
+  print["First number: " + str[numbers[0]]]
+  print["Second number: " + str[numbers[1]]]
+  print["Last number: " + str[numbers[4]]]
+  
+  print["First fruit: " + str[fruits[0]]]
+  print["Second fruit: " + str[fruits[1]]]
+  print["Last fruit: " + str[fruits[2]]]
+  
+  print["\n=== DICTIONARY ACCESS ==="]
+  
+  // Dictionary access
+  let person := {"name": "Alice", "age": 30, "city": "New York", "active": true}
+  let scores := {"math": 95, "science": 87, "history": 92}
+  
+  print["Person: " + str[person]]
+  print["Scores: " + str[scores]]
+  
+  // Access dictionary values
+  print["Name: " + str[person["name"]]]
+  print["Age: " + str[person["age"]]]
+  print["City: " + str[person["city"]]]
+  print["Active: " + str[person["active"]]]
+  
+  print["Math score: " + str[scores["math"]]]
+  print["Science score: " + str[scores["science"]]]
+  print["History score: " + str[scores["history"]]]
+  
+  print["\n=== MIXED OPERATIONS ==="]
+  
+  // Mixed operations
+  let matrix := [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+  print["Matrix: " + str[matrix]]
+  
+  let data := {"users": ["Alice", "Bob"], "count": 2}
+  print["Data: " + str[data]]
+  
+  print["\nArray and Dictionary indexing working perfectly!"]
+^
+
+main[]

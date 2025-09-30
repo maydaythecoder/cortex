@@ -423,6 +423,124 @@ impl Interpreter {
                         // Handle str function
                         let value = self.interpret_expression(&index_expr.index)?;
                         Ok(Value::String(value.to_string()))
+                    } else if identifier.name == "len" {
+                        // Handle len function
+                        let value = self.interpret_expression(&index_expr.index)?;
+                        let length = match value {
+                            Value::Array(arr) => arr.len(),
+                            Value::Dictionary(dict) => dict.len(),
+                            Value::String(s) => s.len(),
+                            _ => return Err(anyhow::anyhow!("len() expects array, dictionary, or string, got {:?}", value)),
+                        };
+                        Ok(Value::Number(length as f64))
+                    } else if identifier.name == "push" {
+                        // Handle push function (array, value)
+                        let index_value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::Array(mut args) = index_value {
+                            if args.len() != 2 {
+                                return Err(anyhow::anyhow!("push() expects exactly 2 arguments: array and value"));
+                            }
+                            let array = args[0].clone();
+                            let value = args[1].clone();
+                            if let Value::Array(mut arr) = array {
+                                arr.push(value);
+                                Ok(Value::Array(arr))
+                            } else {
+                                Err(anyhow::anyhow!("push() first argument must be an array"))
+                            }
+                        } else {
+                            Err(anyhow::anyhow!("push() expects array arguments"))
+                        }
+                    } else if identifier.name == "pop" {
+                        // Handle pop function
+                        let value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::Array(mut arr) = value {
+                            if arr.is_empty() {
+                                Ok(Value::Null)
+                            } else {
+                                Ok(arr.pop().unwrap())
+                            }
+                        } else {
+                            Err(anyhow::anyhow!("pop() expects an array"))
+                        }
+                    } else if identifier.name == "keys" {
+                        // Handle keys function
+                        let value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::Dictionary(dict) = value {
+                            let keys: Vec<Value> = dict.keys().map(|k| Value::String(k.clone())).collect();
+                            Ok(Value::Array(keys))
+                        } else {
+                            Err(anyhow::anyhow!("keys() expects a dictionary"))
+                        }
+                    } else if identifier.name == "values" {
+                        // Handle values function
+                        let value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::Dictionary(dict) = value {
+                            let values: Vec<Value> = dict.values().cloned().collect();
+                            Ok(Value::Array(values))
+                        } else {
+                            Err(anyhow::anyhow!("values() expects a dictionary"))
+                        }
+                    } else if identifier.name == "abs" {
+                        // Handle abs function
+                        let value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::Number(n) = value {
+                            Ok(Value::Number(n.abs()))
+                        } else {
+                            Err(anyhow::anyhow!("abs() expects a number"))
+                        }
+                    } else if identifier.name == "min" {
+                        // Handle min function
+                        let index_value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::Array(args) = index_value {
+                            if args.is_empty() {
+                                return Err(anyhow::anyhow!("min() expects at least one argument"));
+                            }
+                            let mut min_val = None;
+                            for arg in args {
+                                if let Value::Number(n) = arg {
+                                    match min_val {
+                                        None => min_val = Some(n),
+                                        Some(current_min) => {
+                                            if n < current_min {
+                                                min_val = Some(n);
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    return Err(anyhow::anyhow!("min() expects all arguments to be numbers"));
+                                }
+                            }
+                            Ok(Value::Number(min_val.unwrap()))
+                        } else {
+                            Err(anyhow::anyhow!("min() expects array of numbers"))
+                        }
+                    } else if identifier.name == "max" {
+                        // Handle max function
+                        let index_value = self.interpret_expression(&index_expr.index)?;
+                        if let Value::Array(args) = index_value {
+                            if args.is_empty() {
+                                return Err(anyhow::anyhow!("max() expects at least one argument"));
+                            }
+                            let mut max_val = None;
+                            for arg in args {
+                                if let Value::Number(n) = arg {
+                                    match max_val {
+                                        None => max_val = Some(n),
+                                        Some(current_max) => {
+                                            if n > current_max {
+                                                max_val = Some(n);
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    return Err(anyhow::anyhow!("max() expects all arguments to be numbers"));
+                                }
+                            }
+                            Ok(Value::Number(max_val.unwrap()))
+                        } else {
+                            Err(anyhow::anyhow!("max() expects array of numbers"))
+                        }
                     } else if self.functions.contains_key(&identifier.name) {
                         // This is a user-defined function call
                         let index_value = self.interpret_expression(&index_expr.index)?;
@@ -431,8 +549,11 @@ impl Interpreter {
                         if matches!(index_value, Value::Null) {
                             // Function call with no arguments
                             self.call_function(&identifier.name, vec![])
+                        } else if let Value::Array(arguments) = index_value {
+                            // Multi-argument function call
+                            self.call_function(&identifier.name, arguments)
                         } else {
-                            // Function call with single argument
+                            // Single argument function call
                             self.call_function(&identifier.name, vec![index_value])
                         }
                     } else {
