@@ -133,10 +133,11 @@ This document provides a comprehensive overview of which functions and language 
 | `<=` (less or equal) | ✅ Working | ✅ Working | Numbers and strings |
 | `>` (greater than) | ✅ Working | ✅ Working | Numbers and strings |
 | `>=` (greater or equal) | ✅ Working | ✅ Working | Numbers and strings |
-| **Logical** | | | |
-| `&&` (and) | ✅ Working | ✅ Working | Boolean logic |
-| `||` (or) | ✅ Working | ✅ Working | Boolean logic |
-| `!` (not) | ❌ Not Implemented | ❌ Not Implemented | Negation |
+
+Logical Operators
+`&&` - Logical AND - `a && b`
+`||` - Logical OR - `a || b`
+`!` - Logical NOT - `!a
 
 ### Operator Details
 
@@ -322,4 +323,5 @@ When adding new functions or features:
 - [Python Implementation Guide](../python/README.md)
 - [Rust Implementation Guide](../rust/README.md)
 - [Development Guidelines](DEVELOPMENT.md)
+- [Language Comparison](COMPARISON.md)
 - [Language Comparison](COMPARISON.md)
