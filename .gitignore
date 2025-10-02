@@ -190,11 +190,6 @@ docs/_build/
 # Cortex Specific
 # =============================================================================
 
-# Cortex source files (keep examples in docs/)
-*.ctx
-!docs/examples/*.ctx
-!tests/**/*.ctx
-
 # Cortex executables
 cortexc
 cortex

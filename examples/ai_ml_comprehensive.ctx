@@ -1,6 +1,6 @@
 // AI/ML Comprehensive Features Showcase
 // Demonstrates AI/ML capabilities in Cortex
-
+// FUNCTIONAL
 func basic_math[] |
   print["=== BASIC MATH FOR AI/ML ==="]
   

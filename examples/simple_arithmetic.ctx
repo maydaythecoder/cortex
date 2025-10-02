@@ -1,6 +1,6 @@
 // Simple arithmetic operations example
 // Demonstrates basic arithmetic operations without string concatenation
-
+//FUNCTIONAL
 func main[] |
   // Basic arithmetic
   let a := 10

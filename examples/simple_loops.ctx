@@ -1,6 +1,6 @@
 // Simple loops example
 // Demonstrates while loops without string concatenation
-
+//FUNCTIONAL
 func main[] |
   // While loop example - count from 1 to 5
   let counter := 1

@@ -1,6 +1,6 @@
 // Fibonacci Sequence Algorithm
 // Demonstrates iterative approach in Cortex
-
+// FUNCTIONAL
 func fibonacci[n] |
   if [n == 0] |
     return[0]

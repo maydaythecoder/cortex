@@ -1,3 +1,4 @@
+// FUNCTIONAL
 let greeting := "Hello"
 
 func add[a, b] |

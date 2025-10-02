@@ -1,6 +1,6 @@
 // Prime Number Algorithm
 // Demonstrates prime number checking in Cortex
-
+// FUNCTIONAL
 func is_prime[n] |
   if [n <= 1] |
     return[false]

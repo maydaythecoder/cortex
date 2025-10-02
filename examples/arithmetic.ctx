@@ -1,6 +1,6 @@
 // Arithmetic operations example
 // Demonstrates basic arithmetic operations in Cortex
-
+// FUNCTIONAL
 func main[] |
   // Basic arithmetic
   let a := 10

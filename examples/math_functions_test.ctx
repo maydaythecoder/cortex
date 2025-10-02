@@ -15,7 +15,7 @@ func main[] |
   print["\n2. Floor function:"]
   let float1 := 3.7
   let float2 := 3.2
-  let float3 := -2.3
+  let float3 := -2.3 //error here (urnary minus unexpected token)
   print["  floor(3.7): " + str[floor[float1]]]
   print["  floor(3.2): " + str[floor[float2]]]
   print["  floor(-2.3): " + str[floor[float3]]]
