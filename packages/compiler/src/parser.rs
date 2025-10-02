@@ -18,16 +18,72 @@ pub enum ParseError {
     InvalidSyntax { line: usize, column: usize, message: String },
 }
 
+/// The Cortex parser that converts tokens into an Abstract Syntax Tree (AST).
+/// 
+/// Implements a recursive descent parser for the Cortex language.
+/// 
+/// # Examples
+/// 
+/// ```
+/// use cortex_rust::{lexer::Lexer, parser::Parser};
+/// 
+/// let source = "let x := 42";
+/// let mut lexer = Lexer::new(source);
+/// let tokens = lexer.tokenize().unwrap();
+/// 
+/// let mut parser = Parser::new(tokens);
+/// let ast = parser.parse().unwrap();
+/// 
+/// assert_eq!(ast.statements.len(), 1);
+/// ```
 pub struct Parser {
     tokens: Vec<TokenInfo>,
     position: usize,
 }
 
 impl Parser {
+    /// Creates a new parser with the given token stream.
+    /// 
+    /// # Arguments
+    /// 
+    /// * `tokens` - A vector of tokens with position information from the lexer
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use cortex_rust::{lexer::Lexer, parser::Parser};
+    /// 
+    /// let mut lexer = Lexer::new("let x := 42");
+    /// let tokens = lexer.tokenize().unwrap();
+    /// let parser = Parser::new(tokens);
+    /// ```
     pub fn new(tokens: Vec<TokenInfo>) -> Self {
         Self { tokens, position: 0 }
     }
     
+    /// Parses the token stream into an Abstract Syntax Tree (AST).
+    /// 
+    /// # Returns
+    /// 
+    /// * `Ok(Program)` - The root AST node containing all parsed statements
+    /// * `Err(anyhow::Error)` - If a syntax error is encountered
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use cortex_rust::{lexer::Lexer, parser::Parser};
+    /// 
+    /// let source = r#"
+    ///     func add[a, b] |
+    ///         return[a + b]
+    ///     ^
+    /// "#;
+    /// 
+    /// let mut lexer = Lexer::new(source);
+    /// let tokens = lexer.tokenize().unwrap();
+    /// let mut parser = Parser::new(tokens);
+    /// let ast = parser.parse().unwrap();
+    /// ```
     pub fn parse(&mut self) -> Result<Program> {
         let mut statements = Vec::new();
         

@@ -49,6 +49,33 @@ impl std::fmt::Display for Value {
     }
 }
 
+/// The Cortex interpreter that executes AST nodes directly.
+/// 
+/// Provides a tree-walking interpreter with variable scoping, function calls,
+/// and built-in functions.
+/// 
+/// # Examples
+/// 
+/// ```
+/// use cortex_rust::{lexer::Lexer, parser::Parser as CortexParser, codegen::Interpreter};
+/// 
+/// let source = r#"
+///     func add[a, b] |
+///         return[a + b]
+///     ^
+///     
+///     let result := add[10, 20]
+///     print[result]
+/// "#;
+/// 
+/// let mut lexer = Lexer::new(source);
+/// let tokens = lexer.tokenize().unwrap();
+/// let mut parser = CortexParser::new(tokens);
+/// let ast = parser.parse().unwrap();
+/// 
+/// let mut interpreter = Interpreter::new();
+/// interpreter.interpret(&ast).unwrap();
+/// ```
 pub struct Interpreter {
     variables: HashMap<String, Value>,
     functions: HashMap<String, Function>,
@@ -56,6 +83,15 @@ pub struct Interpreter {
 }
 
 impl Interpreter {
+    /// Creates a new interpreter with empty variable and function environments.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use cortex_rust::codegen::Interpreter;
+    /// 
+    /// let interpreter = Interpreter::new();
+    /// ```
     pub fn new() -> Self {
         Self {
             variables: HashMap::new(),
@@ -64,6 +100,34 @@ impl Interpreter {
         }
     }
     
+    /// Interprets a Cortex program AST.
+    /// 
+    /// Executes all statements in the program sequentially, maintaining state
+    /// across function and variable definitions.
+    /// 
+    /// # Arguments
+    /// 
+    /// * `program` - The root AST node containing all statements
+    /// 
+    /// # Returns
+    /// 
+    /// * `Ok(())` - If execution completes successfully
+    /// * `Err(anyhow::Error)` - If a runtime error occurs
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use cortex_rust::{lexer::Lexer, parser::Parser as CortexParser, codegen::Interpreter, ast::Program};
+    /// 
+    /// let source = "let x := 42";
+    /// let mut lexer = Lexer::new(source);
+    /// let tokens = lexer.tokenize().unwrap();
+    /// let mut parser = CortexParser::new(tokens);
+    /// let ast = parser.parse().unwrap();
+    /// 
+    /// let mut interpreter = Interpreter::new();
+    /// interpreter.interpret(&ast).unwrap();
+    /// ```
     pub fn interpret(&mut self, program: &Program) -> Result<()> {
         // Interpret the program
         self.interpret_program(program)?;

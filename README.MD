@@ -40,11 +40,11 @@ Instead of writing AI in bloated frameworks, Cortex gives you a **language desig
 git clone https://github.com/muhyadinmohamed/cortex
 cd cortex
 
-# Install dependencies
-npm install
+# Build the compiler (Rust)
+cd packages/compiler
+cargo build --release
 
-# Build all components
-npm run build
+# The compiler binary will be at: target/release/cortexc
 ```
 
 ### Hello World
@@ -225,42 +225,41 @@ main[]
 ``` txt
 cortex/
 ├─ packages/                    # Core packages
-│  ├─ compiler/                # Rust compiler/interpreter
+│  ├─ compiler/                # Rust compiler/interpreter ⭐
 │  │  ├─ src/                 # Source code
 │  │  │  ├─ main.rs           # CLI interface
-│  │  │  ├─ lexer.rs          # Tokenizer
-│  │  │  ├─ parser.rs         # Parser
-│  │  │  ├─ ast.rs            # AST definitions
-│  │  │  ├─ codegen.rs        # Interpreter
+│  │  │  ├─ lib.rs            # Library interface
+│  │  │  ├─ lexer.rs          # Tokenizer (with tests)
+│  │  │  ├─ parser.rs         # Parser (with tests)
+│  │  │  ├─ ast.rs            # AST definitions (with tests)
+│  │  │  ├─ codegen.rs        # Interpreter (with tests)
 │  │  │  ├─ error.rs          # Error handling
 │  │  │  └─ debugger.rs       # Debugger
+│  │  ├─ tests/               # Integration tests
+│  │  │  └─ integration_tests.rs  # 28 end-to-end tests
 │  │  └─ Cargo.toml           # Rust dependencies
-│  ├─ cli/                     # Command-line interface
-│  │  ├─ src/                 # CLI source code
-│  │  └─ Cargo.toml           # CLI dependencies
-│  ├─ language-server/         # Language Server Protocol
-│  │  ├─ src/                 # LSP implementation
-│  │  └─ Cargo.toml           # LSP dependencies
 │  └─ vscode-extension/        # VSCode extension
-│     ├─ src/                 # Extension source (TypeScript)
+│     ├─ extension.js         # Extension implementation
 │     ├─ package.json         # Extension manifest
-│     └─ syntaxes/            # Syntax highlighting
-├─ tools/                      # Development tools
-│  ├─ formatter/              # Code formatter
-│  ├─ debugger/               # Debugging tools
-│  └─ linter/                 # Code linter
-├─ docs/                       # Documentation
+│     ├─ syntaxes/            # Syntax highlighting
+│     └─ icons/               # Extension icons
+├─ docs/                       # Comprehensive documentation
 │  ├─ api/                    # API reference
-│  ├─ examples/               # Example programs
-│  └─ tutorials/              # Step-by-step guides
-├─ tests/                      # Test suites
-│  ├─ unit/                   # Unit tests
-│  ├─ integration/            # Integration tests
-│  └─ benchmarks/             # Performance benchmarks
+│  ├─ examples/               # Example .ctx programs
+│  ├─ ADVANCED_FEATURES.md
+│  ├─ AI_ML_IMPLEMENTATION_GUIDE.md
+│  ├─ SYNTAX_REFERENCE.md
+│  └─ ... (20+ documentation files)
 ├─ assets/                     # Logos and branding
-├─ .github/                    # GitHub workflows
-└─ package.json               # Root package configuration
+│  ├─ cortex-with-text.svg
+│  └─ cortex.svg
+├─ cortex.toml                 # Project configuration
+├─ README.MD                   # Main documentation
+├─ TEST_SUMMARY.md             # Test suite report
+└─ run_cortex.sh              # Convenience script
 ```
+
+**Note**: The project has been cleaned to include only functional, tested components. CLI and language-server packages can be added in the future when fully implemented.
 
 ---
 
@@ -451,15 +450,43 @@ We welcome contributions! Here's how to get started:
 
 ```bash
 git clone https://github.com/yourname/cortex
-cd cortex/rust
+cd cortex/packages/compiler
 cargo build
 
 # Run examples
-cargo run -- run ../examples/hello_world.ctx
+cargo run -- run ../../docs/examples/hello_world.ctx
 
 # Check syntax
-cargo run -- check ../examples/hello_world.ctx
+cargo run -- check ../../docs/examples/hello_world.ctx
 ```
+
+### Running Tests
+
+The Cortex compiler has comprehensive test coverage including unit tests, integration tests, and doc tests.
+
+```bash
+# Run all tests
+cd packages/compiler
+cargo test
+
+# Run tests with output
+cargo test -- --nocapture
+
+# Run specific test
+cargo test test_simple_variable_assignment
+
+# Run tests and show ignored tests
+cargo test -- --include-ignored
+
+# Generate and open documentation (includes doc tests)
+cargo doc --no-deps --open
+```
+
+**Test Organization:**
+
+- **Unit tests**: Located in each source file within `#[cfg(test)]` modules
+- **Integration tests**: Located in `packages/compiler/tests/` directory
+- **Doc tests**: Embedded in documentation comments throughout the codebase
 
 ---
 

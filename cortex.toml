@@ -63,10 +63,7 @@ include_private = false
 # Workspace configuration
 [workspace]
 members = [
-    "packages/compiler",
-    "packages/cli", 
-    "packages/language-server",
-    "packages/vscode-extension"
+    "packages/compiler"
 ]
 
 # CI/CD configuration
