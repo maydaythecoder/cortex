@@ -1,6 +1,6 @@
 // Simple Algorithms Demo
 // Demonstrates basic algorithms in Cortex
-//UNKNOWN ERROR IN RETURNING RESULTS (stops after prime number)
+/// UNKNOWN ERROR IN RETURNING RESULTS (stops after prime number)
 func is_prime[n] |
   if [n <= 1] |
     return[false]

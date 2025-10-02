@@ -1,6 +1,6 @@
 // Simple Sorting Demo
 // Demonstrates sorting logic without arrays in Cortex
-// FUNCTIONAL
+/// FUNCTIONAL
 func find_min[a, b, c, d, e] |
   let min := a
   

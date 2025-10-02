@@ -1,6 +1,6 @@
 // Factorial Algorithm
 // Demonstrates iterative approach in Cortex
-// FUNCTIONAL
+/// FUNCTIONAL
 func factorial[n] |
   if [n <= 1] |
     return[1]

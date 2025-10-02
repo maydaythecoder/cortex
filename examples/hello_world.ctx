@@ -1,6 +1,6 @@
 // Hello World in Cortex
 // Demonstrates basic syntax with brackets and block delimiters
-//FUNCTIONAL
+/// FUNCTIONAL
 // Main function
 func main[] |
   print["Hello, World!"]

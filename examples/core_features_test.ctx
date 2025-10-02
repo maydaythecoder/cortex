@@ -1,13 +1,13 @@
 // CORE FEATURES TEST SUITE
 // Tests the essential functionality of Cortex
-
+/// Error line 10
 func main[] |
   print["=== CORTEX CORE FEATURES TEST ==="]
   
   // 1. Variables and Arithmetic
   let x := 42
   let y := 3.14
-  let neg := -10 // error here (unary minus unexpected token)
+  let neg := -10 ///error here (unary minus unexpected token)
   let pos := +5
   print["Variables: " + str[x] + ", " + str[y] + ", " + str[neg] + ", " + str[pos]]
   print["Arithmetic: " + str[x + y] + ", " + str[x * 2] + ", " + str[x ** 2]]

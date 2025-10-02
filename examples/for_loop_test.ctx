@@ -1,10 +1,11 @@
 // Test comprehensive for loop functionality
+/// Error line 8
 func main[] |
   print["=== FOR LOOP TEST SUITE ==="]
   
   // 1. Test range iteration: for i in 1..5
   print["\n1. Range iteration (for i in 1..5):"]
-  for i in 1..5 | //error here (unknown reason)
+  for i in 1..5 | ///error here (unknown reason)
     print["  i = " + str[i]]
   ^
   

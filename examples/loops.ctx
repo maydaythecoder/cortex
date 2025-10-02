@@ -1,6 +1,6 @@
 // Loops example
 // Demonstrates while loops and basic control flow in Cortex
-// UNKNOWN ERROR IN RETURNING RESULTS
+/// UNKNOWN ERROR IN RETURNING RESULTS
 func main[] |
   // While loop example - count from 1 to 5
   let counter := 1

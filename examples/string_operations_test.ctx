@@ -1,11 +1,12 @@
 // Test string manipulation functions
+/// Error line 9
 func main[] |
   print["=== STRING OPERATIONS TEST SUITE ==="]
 
   // 1. Test substring function
   print["\n1. Substring function:"]
   let text := "Hello World"
-  let sub1 := substring[text, 0, 5] //error here (undefined function substring)
+  let sub1 := substring[text, 0, 5] ///error here (undefined function substring)
   let sub2 := substring[text, 6, 5]
   let sub3 := substring[text, 2, 3]
   print["  Original: " + str[text]]
