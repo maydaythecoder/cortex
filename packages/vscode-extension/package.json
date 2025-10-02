@@ -2,7 +2,7 @@
     "name": "cortex-language",
     "displayName": "Cortex Language",
     "description": "Complete Cortex language support with bundled compiler, syntax highlighting, formatting, debugging, and IntelliSense",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "publisher": "muhyadinmohamed",
     "engines": {
         "vscode": "^1.74.0"
