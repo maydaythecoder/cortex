@@ -74,6 +74,20 @@
                 "path": "./syntaxes/cortex.tmLanguage.json"
             }
         ],
+        "configurationDefaults": {
+            "[cortex]": {
+                "editor.tokenColorCustomizations": {
+                    "textMateRules": [
+                        {
+                            "scope": "comment.line.double-slash.cortex",
+                            "settings": {
+                                "foreground": "#EEC8E0"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         "configuration": {
             "title": "Cortex",
             "properties": {

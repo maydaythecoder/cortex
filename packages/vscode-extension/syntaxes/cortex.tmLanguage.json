@@ -25,6 +25,10 @@
         "comments": {
             "patterns": [
                 {
+                    "name": "comment.line.triple-slash.muted.cortex",
+                    "match": "///.*$"
+                },
+                {
                     "name": "comment.line.double-slash.cortex",
                     "match": "//.*$"
                 },
