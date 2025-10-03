@@ -335,27 +335,6 @@ impl IndexAssignment {
     }
 }
 
-// Visitor trait for AST traversal
-#[allow(dead_code)]
-pub trait Visitor<T> {
-    fn visit_program(&mut self, program: &Program) -> T;
-    fn visit_function(&mut self, function: &Function) -> T;
-    fn visit_variable(&mut self, variable: &Variable) -> T;
-    fn visit_binary_op(&mut self, binary_op: &BinaryOp) -> T;
-    fn visit_unary_op(&mut self, unary_op: &UnaryOp) -> T;
-    fn visit_array(&mut self, array: &Array) -> T;
-    fn visit_dictionary(&mut self, dictionary: &Dictionary) -> T;
-    fn visit_index(&mut self, index: &IndexExpression) -> T;
-    fn visit_literal(&mut self, literal: &Literal) -> T;
-    fn visit_identifier(&mut self, identifier: &Identifier) -> T;
-    fn visit_block(&mut self, block: &Block) -> T;
-    fn visit_if_statement(&mut self, if_statement: &IfStatement) -> T;
-    fn visit_while_loop(&mut self, while_loop: &WhileLoop) -> T;
-    fn visit_for_loop(&mut self, for_loop: &ForLoop) -> T;
-    fn visit_return_statement(&mut self, return_statement: &ReturnStatement) -> T;
-    fn visit_assignment(&mut self, assignment: &Assignment) -> T;
-    fn visit_constant_assignment(&mut self, constant_assignment: &ConstantAssignment) -> T;
-}
 
 #[cfg(test)]
 mod tests {

@@ -40,10 +40,12 @@ pub mod parser;
 pub mod ast;
 pub mod codegen;
 pub mod error;
+pub mod visitor;
 
 pub use lexer::Lexer;
 pub use parser::Parser;
 pub use ast::Program;
 pub use codegen::Interpreter;
 pub use error::CompilerError;
+pub use visitor::{Visitor, TypeChecker, ConstantFolder, AstPrinter};
 
