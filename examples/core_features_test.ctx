@@ -1,6 +1,6 @@
 // CORE FEATURES TEST SUITE
 // Tests the essential functionality of Cortex
-/// Error line 10
+/// FUNCTIONAL
 func main[] |
   print["=== CORTEX CORE FEATURES TEST ==="]
   

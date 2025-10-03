@@ -1,6 +1,6 @@
 // Printing example
 // Demonstrates various printing capabilities in Cortex
-///UNKNOWN ERROR IN RETURNING RESULTS
+///FUNCTIONAL
 func main[] |
   // Basic string printing
   print["Hello, World!"]
@@ -35,10 +35,10 @@ func main[] |
   print["Status: Active"]
   print["=================="]
   
-  // Multiple values
+  // Multiple values (concatenated as single string)
   print["Multiple values:"]
-  print["First", "Second", "Third"]
-  print["Numbers:", 1, 2, 3]
+  print["First" + " " + "Second" + " " + "Third"]
+  print["Numbers: " + str[1] + " " + str[2] + " " + str[3]]
   
   // Special characters and formatting
   print["\nSpecial formatting:"]
@@ -47,3 +47,5 @@ func main[] |
   print["Line 3"]
   print["End of program"]
 ^
+
+main[]

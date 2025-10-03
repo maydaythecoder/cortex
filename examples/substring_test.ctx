@@ -1,4 +1,5 @@
 // Test substring function
+/// FUNCTIONAL
 func main[] |
   let text := "Hello World"
   let sub := substring[text, 0, 5]

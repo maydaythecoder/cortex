@@ -1,7 +1,7 @@
 // COMPREHENSIVE TEST SUITE FOR CORTEX PROGRAMMING LANGUAGE
 // This file systematically tests all currently supported features
 // Based on structured testing methodology for programming languages
-/// Error line 37
+///FUNCTIONAL
 func main[] |
   print["=========================================="]
   print["     CORTEX COMPREHENSIVE TEST SUITE     "]
@@ -34,7 +34,7 @@ func main[] |
   print["Arithmetic: " + str[a] + " ** " + str[b] + " = " + str[a ** b]]
   
   // Unary operators
-  let neg := -42 ///error here (unary minus unexpected token)
+  let neg := -42
   let pos := +42
   print["Unary minus: -42 = " + str[neg]]
   print["Unary plus: +42 = " + str[pos]]

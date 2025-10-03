@@ -1,6 +1,6 @@
 // Array and Dictionary Indexing Demo
 // Demonstrates array and dictionary access operations
-/// Error line 11
+/// FUNCTIONAL
 func main[] |
   print["=== ARRAY INDEXING ==="]
   
@@ -8,7 +8,7 @@ func main[] |
   let numbers := [10, 20, 30, 40, 50]
   let fruits := ["apple", "banana", "cherry"]
   
-  print["Numbers array: " + str[numbers]] ///error here (type conversion)
+  print["Numbers array: " + str[numbers]]
   print["Fruits array: " + str[fruits]]
   
   // Access array elements

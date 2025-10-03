@@ -1,7 +1,6 @@
 // COMPREHENSIVE CORTEX TEST SUITE
 // Tests all major functionality to ensure everything works correctly
-/// ALL FUNCTIONAL - NO ERRORS EXPECTED
-
+/// FUNCTIONAL
 func main[] |
   print["=== COMPREHENSIVE CORTEX TEST SUITE ==="]
   

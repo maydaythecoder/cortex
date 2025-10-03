@@ -1,4 +1,5 @@
 // Test unary minus
+/// FUNCTIONAL
 func main[] |
   let neg := -42
   print[neg]

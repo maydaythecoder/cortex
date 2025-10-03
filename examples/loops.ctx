@@ -1,6 +1,6 @@
 // Loops example
 // Demonstrates while loops and basic control flow in Cortex
-/// UNKNOWN ERROR IN RETURNING RESULTS
+///FUNCTIONAL
 func main[] |
   // While loop example - count from 1 to 5
   let counter := 1
@@ -8,7 +8,7 @@ func main[] |
   print["While loop example:"]
   while [counter <= 5] |
     print["Counter: " + str[counter]]
-    let counter := counter + 1
+    counter := counter + 1
   ^
   
   // Conditional statements
@@ -29,9 +29,9 @@ func main[] |
     let j := 1
     while [j <= 2] |
       print["  Inner loop: " + str[j]]
-      let j := j + 1
+      j := j + 1
     ^
-    let i := i + 1
+    i := i + 1
   ^
   
   // Mathematical loop - factorial
@@ -41,9 +41,11 @@ func main[] |
   let temp := 1
   
   while [temp <= n] |
-    let factorial := factorial * temp
-    let temp := temp + 1
+    factorial := factorial * temp
+    temp := temp + 1
   ^
   
   print["Factorial of " + str[n] + " = " + str[factorial]]
 ^
+
+main[]
