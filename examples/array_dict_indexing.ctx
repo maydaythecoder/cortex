@@ -8,7 +8,7 @@ func main[] |
   let numbers := [10, 20, 30, 40, 50]
   let fruits := ["apple", "banana", "cherry"]
   
-  print["Numbers array: " + str[numbers]] ///error here (dtpe conversion)
+  print["Numbers array: " + str[numbers]] ///error here (type conversion)
   print["Fruits array: " + str[fruits]]
   
   // Access array elements
