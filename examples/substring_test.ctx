@@ -1,0 +1,7 @@
+// Test substring function
+func main[] |
+  let text := "Hello World"
+  let sub := substring[text, 0, 5]
+  print[sub]
+^
+main[]

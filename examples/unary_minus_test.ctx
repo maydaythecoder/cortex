@@ -1,0 +1,6 @@
+// Test unary minus
+func main[] |
+  let neg := -42
+  print[neg]
+^
+main[]

@@ -1,0 +1,8 @@
+// Simple arithmetic test
+func main[] |
+  let a := 10
+  let b := 3
+  let sum := a + b
+  print[sum]
+^
+main[]
