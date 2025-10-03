@@ -48,6 +48,18 @@ impl ErrorContext {
 }
 
 #[derive(Error, Debug, Clone)]
+pub enum ParseError {
+    #[error("Unexpected token: expected {expected}, got {actual} at line {line}:{column}")]
+    UnexpectedToken { expected: String, actual: String, line: usize, column: usize },
+    
+    #[error("Unexpected end of input")]
+    UnexpectedEof,
+    
+    #[error("Invalid syntax at line {line}:{column}: {message}")]
+    InvalidSyntax { line: usize, column: usize, message: String },
+}
+
+#[derive(Error, Debug, Clone)]
 pub enum CompilerError {
     #[error("Lexical error: {message} at line {line}:{column}")]
     LexicalError { message: String, line: usize, column: usize },
@@ -126,6 +138,12 @@ impl fmt::Display for DetailedError {
     }
 }
 
+impl std::error::Error for DetailedError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        Some(&self.error)
+    }
+}
+
 impl From<std::io::Error> for CompilerError {
     fn from(error: std::io::Error) -> Self {
         CompilerError::IOError {
@@ -138,6 +156,37 @@ impl From<anyhow::Error> for CompilerError {
     fn from(error: anyhow::Error) -> Self {
         CompilerError::InternalError {
             message: error.to_string(),
+        }
+    }
+}
+
+impl From<ParseError> for DetailedError {
+    fn from(error: ParseError) -> Self {
+        match error {
+            ParseError::UnexpectedToken { expected, actual, line, column } => {
+                let compiler_error = CompilerError::ParseError {
+                    message: format!("Expected {}, got {}", expected, actual),
+                    line,
+                    column,
+                };
+                DetailedError::new(compiler_error)
+            }
+            ParseError::UnexpectedEof => {
+                let compiler_error = CompilerError::ParseError {
+                    message: "Unexpected end of input".to_string(),
+                    line: 0,
+                    column: 0,
+                };
+                DetailedError::new(compiler_error)
+            }
+            ParseError::InvalidSyntax { line, column, message } => {
+                let compiler_error = CompilerError::ParseError {
+                    message,
+                    line,
+                    column,
+                };
+                DetailedError::new(compiler_error)
+            }
         }
     }
 }

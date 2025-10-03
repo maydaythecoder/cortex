@@ -4,19 +4,9 @@
 
 use crate::lexer::{Token, TokenInfo};
 use crate::ast::*;
+use crate::error::{CompilerError, DetailedError, ErrorContext, ParseError};
 use anyhow::Result;
 
-#[derive(Debug, thiserror::Error)]
-pub enum ParseError {
-    #[error("Unexpected token: expected {expected}, got {actual} at line {line}:{column}")]
-    UnexpectedToken { expected: String, actual: String, line: usize, column: usize },
-    
-    #[error("Unexpected end of input")]
-    UnexpectedEof,
-    
-    #[error("Invalid syntax at line {line}:{column}: {message}")]
-    InvalidSyntax { line: usize, column: usize, message: String },
-}
 
 /// The Cortex parser that converts tokens into an Abstract Syntax Tree (AST).
 /// 
@@ -47,6 +37,42 @@ impl Parser {
     /// # Arguments
     /// 
     /// * `tokens` - A vector of tokens with position information from the lexer
+    
+    /// Creates a detailed parse error with source context
+    fn parse_error(&self, message: String, line: usize, column: usize) -> DetailedError {
+        let error = CompilerError::ParseError { message, line, column };
+        let source_line = self.get_source_line(line);
+        let context = ErrorContext::new(source_line);
+        DetailedError::new(error).with_context(context)
+    }
+    
+    /// Creates an unexpected token error
+    fn unexpected_token_error(&self, expected: String, actual: String, line: usize, column: usize) -> DetailedError {
+        let message = format!("Expected {}, got {}", expected, actual);
+        self.parse_error(message, line, column)
+    }
+    
+    /// Creates an unexpected EOF error
+    fn unexpected_eof_error(&self) -> DetailedError {
+        let error = CompilerError::ParseError { 
+            message: "Unexpected end of input".to_string(), 
+            line: 0, 
+            column: 0 
+        };
+        DetailedError::new(error)
+    }
+    
+    /// Gets the source line at the given line number for error reporting
+    fn get_source_line(&self, line_num: usize) -> String {
+        // Find the line in the token stream
+        if let Some(_token) = self.tokens.iter().find(|t| t.line == line_num) {
+            // This is a simplified approach - in a real implementation,
+            // you'd want to track the original source
+            format!("Line {}", line_num)
+        } else {
+            "".to_string()
+        }
+    }
     /// 
     /// # Examples
     /// 
@@ -147,7 +173,7 @@ impl Parser {
     /// let mut parser = Parser::new(tokens);
     /// let ast = parser.parse().unwrap();
     /// ```
-    pub fn parse(&mut self) -> Result<Program> {
+    pub fn parse(&mut self) -> Result<Program, DetailedError> {
         let mut statements = Vec::new();
         
         while !self.is_at_end() {
@@ -176,21 +202,21 @@ impl Parser {
         self.current_token()
     }
     
-    fn expect(&mut self, expected: Token) -> Result<TokenInfo> {
+    fn expect(&mut self, expected: Token) -> Result<TokenInfo, DetailedError> {
         let current = self.current_token()
-            .ok_or_else(|| ParseError::UnexpectedEof)?;
+            .ok_or_else(|| self.unexpected_eof_error())?;
         
         if current.token == expected {
             let token = current.clone();
             self.advance();
             Ok(token)
         } else {
-            Err(ParseError::UnexpectedToken {
-                expected: format!("{:?}", expected),
-                actual: format!("{:?}", current.token),
-                line: current.line,
-                column: current.column,
-            }.into())
+            Err(self.unexpected_token_error(
+                format!("{:?}", expected),
+                format!("{:?}", current.token),
+                current.line,
+                current.column,
+            ))
         }
     }
     
@@ -204,7 +230,7 @@ impl Parser {
         false
     }
     
-    fn parse_statement(&mut self) -> Result<Option<Statement>> {
+    fn parse_statement(&mut self) -> Result<Option<Statement>, DetailedError> {
         // Skip comments and newlines
         while let Some(current) = self.current_token() {
             match &current.token {
@@ -306,7 +332,7 @@ impl Parser {
         Ok(Some(statement))
     }
     
-    fn parse_assignment(&mut self) -> Result<Statement> {
+    fn parse_assignment(&mut self) -> Result<Statement, DetailedError> {
         self.expect(Token::Let)?;
         
         let var_name = match self.current_token() {
@@ -367,7 +393,7 @@ impl Parser {
     }
     
     
-    fn parse_function(&mut self) -> Result<Statement> {
+    fn parse_function(&mut self) -> Result<Statement, DetailedError> {
         self.expect(Token::Func)?;
         
         let name = match self.current_token() {
@@ -470,7 +496,7 @@ impl Parser {
         Ok(Statement::Function(Function::new(name, parameters, return_type, body)))
     }
     
-    fn parse_block(&mut self) -> Result<Block> {
+    fn parse_block(&mut self) -> Result<Block, DetailedError> {
         self.expect(Token::Pipe)?;
         
         let mut statements = Vec::new();
@@ -497,7 +523,7 @@ impl Parser {
         Ok(Block::new(statements))
     }
     
-    fn parse_if_statement(&mut self) -> Result<Statement> {
+    fn parse_if_statement(&mut self) -> Result<Statement, DetailedError> {
         self.expect(Token::If)?;
         
         self.expect(Token::LeftBracket)?;
@@ -555,7 +581,7 @@ impl Parser {
         Ok(Statement::IfStatement(IfStatement::new(condition, then_block, else_block)))
     }
     
-    fn parse_while_loop(&mut self) -> Result<Statement> {
+    fn parse_while_loop(&mut self) -> Result<Statement, DetailedError> {
         self.expect(Token::While)?;
         
         self.expect(Token::LeftBracket)?;
@@ -567,7 +593,7 @@ impl Parser {
         Ok(Statement::WhileLoop(WhileLoop::new(condition, body)))
     }
     
-    fn parse_for_loop(&mut self) -> Result<Statement> {
+    fn parse_for_loop(&mut self) -> Result<Statement, DetailedError> {
         self.expect(Token::For)?;
         
         // Parse variable name
@@ -605,7 +631,7 @@ impl Parser {
         Ok(Statement::ForLoop(ForLoop::new(variable, iterable, body)))
     }
     
-    fn parse_return_statement(&mut self) -> Result<Statement> {
+    fn parse_return_statement(&mut self) -> Result<Statement, DetailedError> {
         self.expect(Token::Return)?;
         
         // Check if there's a return value in brackets
@@ -639,34 +665,34 @@ impl Parser {
     /// * `min_bp` - Minimum binding power (precedence level) for this parse
     /// 
     /// # Reference
-    /// 
-    /// Based on Pratt parsing algorithm from:
-    /// - https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html
-    fn parse_expression(&mut self) -> Result<Expression> {
+    
+    /// Main expression parsing method using Pratt parsing
+    fn parse_expression(&mut self) -> Result<Expression, DetailedError> {
         self.parse_expression_bp(0)
     }
     
-    fn parse_expression_bp(&mut self, min_bp: u8) -> Result<Expression> {
-        // Parse prefix/unary operators and atoms
+    /// Parses expression with given minimum binding power (Pratt parsing)
+    fn parse_expression_bp(&mut self, min_bp: u8) -> Result<Expression, DetailedError> {
+        // Parse prefix (unary operators and atoms)
         let mut left = self.parse_prefix()?;
         
-        // Parse postfix operators (function calls, array indexing)
+        // Parse postfix operations (function calls, indexing)
         left = self.parse_postfix_ops(left)?;
         
-        // Parse binary operators with precedence climbing
+        // Parse binary operations with precedence climbing
         loop {
             let current = match self.current_token() {
-                Some(tok) => tok,
+                Some(token) => token,
                 None => break,
             };
             
-            // Check if current token is a binary operator
+            // Get binding power for the operator
             let (l_bp, r_bp) = match Self::binding_power(&current.token) {
-                Some(bp) => bp,
-                None => break,
+                Some((l, r)) => (l, r),
+                None => break, // Not a binary operator
             };
             
-            // If the binding power is less than minimum, stop
+            // Check if we should continue parsing (precedence climbing)
             if l_bp < min_bp {
                 break;
             }
@@ -697,7 +723,7 @@ impl Parser {
     }
     
     /// Parses prefix operators (unary operators) and atoms
-    fn parse_prefix(&mut self) -> Result<Expression> {
+    fn parse_prefix(&mut self) -> Result<Expression, DetailedError> {
         let current = self.current_token()
             .ok_or_else(|| ParseError::UnexpectedEof)?;
         
@@ -722,7 +748,7 @@ impl Parser {
     }
     
     /// Parses atomic expressions (literals, identifiers, parenthesized expressions)
-    fn parse_atom(&mut self) -> Result<Expression> {
+    fn parse_atom(&mut self) -> Result<Expression, DetailedError> {
         let current = self.current_token()
             .ok_or_else(|| ParseError::UnexpectedEof)?;
         
@@ -790,7 +816,7 @@ impl Parser {
     }
     
     /// Parses array literals
-    fn parse_array(&mut self) -> Result<Expression> {
+    fn parse_array(&mut self) -> Result<Expression, DetailedError> {
         self.advance(); // Consume '['
         
         if self.match_token(Token::RightBracket) {
@@ -823,7 +849,7 @@ impl Parser {
     }
     
     /// Parses postfix operators (function calls, array indexing)
-    fn parse_postfix_ops(&mut self, mut left: Expression) -> Result<Expression> {
+    fn parse_postfix_ops(&mut self, mut left: Expression) -> Result<Expression, DetailedError> {
         // This method handles postfix operations like function calls and indexing
         loop {
             let current = match self.current_token() {
@@ -904,7 +930,7 @@ impl Parser {
     // }
     
     
-    fn parse_dictionary(&mut self) -> Result<Expression> {
+    fn parse_dictionary(&mut self) -> Result<Expression, DetailedError> {
         self.expect(Token::LeftBrace)?;
         
         let mut pairs = Vec::new();
