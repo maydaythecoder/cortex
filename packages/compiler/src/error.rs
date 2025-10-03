@@ -84,6 +84,12 @@ pub enum CompilerError {
     
     #[error("Configuration error: {message}")]
     ConfigError { message: String },
+    
+    #[error("Security error: {message}")]
+    SecurityError { message: String },
+    
+    #[error("Resource limit exceeded: {message}")]
+    ResourceLimitExceeded { message: String },
 }
 
 impl fmt::Display for ErrorContext {

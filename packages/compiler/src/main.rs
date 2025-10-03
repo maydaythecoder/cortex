@@ -12,6 +12,7 @@ mod parser;
 mod ast;
 mod codegen;
 mod error;
+mod security;
 
 use lexer::Lexer;
 use parser::Parser as CortexParser;

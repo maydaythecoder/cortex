@@ -6,6 +6,7 @@
 use logos::Logos;
 use std::fmt;
 use crate::error::{CompilerError, DetailedError, ErrorContext};
+use crate::security::SecurityContext;
 
 /// Token categories for better organization and classification
 #[derive(Debug, Clone, PartialEq)]
@@ -495,6 +496,7 @@ impl fmt::Display for Token {
 pub struct Lexer<'a> {
     source: &'a str,
     lexer: logos::Lexer<'a, Token>,
+    security: SecurityContext,
 }
 
 impl<'a> Lexer<'a> {
@@ -512,9 +514,15 @@ impl<'a> Lexer<'a> {
     /// let lexer = Lexer::new("let x := 42");
     /// ```
     pub fn new(source: &'a str) -> Self {
+        Self::with_security(source, SecurityContext::new())
+    }
+    
+    /// Creates a new lexer with custom security configuration
+    pub fn with_security(source: &'a str, security: SecurityContext) -> Self {
         Self {
             source,
             lexer: Token::lexer(source),
+            security,
         }
     }
     
@@ -535,9 +543,15 @@ impl<'a> Lexer<'a> {
     /// assert!(tokens.len() > 0);
     /// ```
     pub fn tokenize(&mut self) -> Result<Vec<TokenInfo>, DetailedError> {
+        // Validate source size
+        self.security.config.validate_source_size(self.source.len())?;
+        
         let mut tokens = Vec::new();
         
         while let Some(token) = self.lexer.next() {
+            // Check token count limit
+            self.security.config.validate_token_count(tokens.len() + 1)?;
+            
             let span = self.lexer.span();
             let token_text = &self.source[span.start..span.end];
             
@@ -547,6 +561,9 @@ impl<'a> Lexer<'a> {
             
             match token {
                 Ok(token) => {
+                    // Validate token-specific limits
+                    self.validate_token(&token, line, column, length)?;
+                    
                     let token_info = TokenInfo::new(
                         token,
                         line,
@@ -576,6 +593,33 @@ impl<'a> Lexer<'a> {
         }
         
         Ok(tokens)
+    }
+    
+    /// Validates token-specific security constraints
+    fn validate_token(&self, token: &Token, line: usize, column: usize, length: usize) -> Result<(), DetailedError> {
+        match token {
+            Token::String(s) => {
+                // Validate string literal length (excluding quotes)
+                let string_length = s.len().saturating_sub(2); // Remove quotes
+                self.security.config.validate_string_length(string_length, line, column)?;
+            }
+            Token::Identifier(name) => {
+                // Validate identifier length
+                self.security.config.validate_identifier_length(name.len(), line, column)?;
+            }
+            Token::Number(n) => {
+                // Validate number string length (prevent extremely long numbers)
+                if n.len() > 1000 {
+                    return Err(DetailedError::new(CompilerError::SecurityError {
+                        message: format!("Number literal too long ({} characters)", n.len()),
+                    }).with_context(ErrorContext::new(format!("Line {}", line))
+                        .with_suggestion("Use scientific notation for very large numbers".to_string())
+                        .with_help("Long number literals can cause performance issues".to_string())));
+                }
+            }
+            _ => {} // Other tokens don't need validation
+        }
+        Ok(())
     }
     
     /// Calculates line and column position from byte offset

@@ -5,6 +5,7 @@
 use crate::lexer::{Token, TokenInfo};
 use crate::ast::*;
 use crate::error::{CompilerError, DetailedError, ErrorContext, ParseError};
+use crate::security::SecurityContext;
 use anyhow::Result;
 
 
@@ -29,6 +30,7 @@ use anyhow::Result;
 pub struct Parser {
     tokens: Vec<TokenInfo>,
     position: usize,
+    security: SecurityContext,
 }
 
 impl Parser {
@@ -84,7 +86,16 @@ impl Parser {
     /// let parser = Parser::new(tokens);
     /// ```
     pub fn new(tokens: Vec<TokenInfo>) -> Self {
-        Self { tokens, position: 0 }
+        Self::with_security(tokens, SecurityContext::new())
+    }
+    
+    /// Creates a new parser with custom security configuration
+    pub fn with_security(tokens: Vec<TokenInfo>, security: SecurityContext) -> Self {
+        Self {
+            tokens,
+            position: 0,
+            security,
+        }
     }
     
     /// Returns the binding power (precedence and associativity) for binary operators.
@@ -458,6 +469,9 @@ impl Parser {
                     None
                 };
                 
+                // Validate parameter count
+                self.security.config.validate_function_parameters(parameters.len() + 1, 0, 0)?;
+                
                 parameters.push(Variable::new(param_name, type_annotation));
                 
                 if !self.match_token(Token::Comma) {
@@ -497,6 +511,8 @@ impl Parser {
     }
     
     fn parse_block(&mut self) -> Result<Block, DetailedError> {
+        self.security.recursion_tracker.enter()?;
+        
         self.expect(Token::Pipe)?;
         
         let mut statements = Vec::new();
@@ -520,6 +536,7 @@ impl Parser {
             }
         }
         
+        self.security.recursion_tracker.exit();
         Ok(Block::new(statements))
     }
     
@@ -673,6 +690,9 @@ impl Parser {
     
     /// Parses expression with given minimum binding power (Pratt parsing)
     fn parse_expression_bp(&mut self, min_bp: u8) -> Result<Expression, DetailedError> {
+        // Check recursion depth
+        self.security.recursion_tracker.enter()?;
+        
         // Parse prefix (unary operators and atoms)
         let mut left = self.parse_prefix()?;
         
@@ -719,11 +739,14 @@ impl Parser {
             left = Expression::BinaryOp(BinaryOp::new(left, operator, right));
         }
         
+        self.security.recursion_tracker.exit();
         Ok(left)
     }
     
     /// Parses prefix operators (unary operators) and atoms
     fn parse_prefix(&mut self) -> Result<Expression, DetailedError> {
+        self.security.recursion_tracker.enter()?;
+        
         let current = self.current_token()
             .ok_or_else(|| ParseError::UnexpectedEof)?;
         
@@ -731,19 +754,26 @@ impl Parser {
             Token::Not => {
                 self.advance();
                 let operand = self.parse_prefix()?;
+                self.security.recursion_tracker.exit();
                 Ok(Expression::UnaryOp(UnaryOp::new("!".to_string(), operand)))
             }
             Token::Minus => {
                 self.advance();
                 let operand = self.parse_prefix()?;
+                self.security.recursion_tracker.exit();
                 Ok(Expression::UnaryOp(UnaryOp::new("-".to_string(), operand)))
             }
             Token::Plus => {
                 self.advance();
                 let operand = self.parse_prefix()?;
+                self.security.recursion_tracker.exit();
                 Ok(Expression::UnaryOp(UnaryOp::new("+".to_string(), operand)))
             }
-            _ => self.parse_atom(),
+            _ => {
+                let result = self.parse_atom();
+                self.security.recursion_tracker.exit();
+                result
+            }
         }
     }
     
@@ -827,6 +857,9 @@ impl Parser {
             let mut elements = Vec::new();
             
             loop {
+                // Validate collection size
+                self.security.config.validate_collection_size(elements.len() + 1, 0, 0)?;
+                
                 let element = self.parse_expression()?;
                 elements.push(element);
                 
@@ -936,6 +969,9 @@ impl Parser {
         let mut pairs = Vec::new();
         if !self.match_token(Token::RightBrace) {
             loop {
+                // Validate collection size
+                self.security.config.validate_collection_size(pairs.len() + 1, 0, 0)?;
+                
                 let key = self.parse_expression()?;
                 self.expect(Token::Colon)?;
                 let value = self.parse_expression()?;
