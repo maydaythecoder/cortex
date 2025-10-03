@@ -1,0 +1,30 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - Assignment:
+      variable: arr
+      value:
+        Array:
+          elements:
+            - Literal:
+                value:
+                  Number: 1
+                literal_type: number
+            - Literal:
+                value:
+                  Number: 2
+                literal_type: number
+            - Literal:
+                value:
+                  Number: 3
+                literal_type: number
+            - Literal:
+                value:
+                  Number: 4
+                literal_type: number
+            - Literal:
+                value:
+                  Number: 5
+                literal_type: number

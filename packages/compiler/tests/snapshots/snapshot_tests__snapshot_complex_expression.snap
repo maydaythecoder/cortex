@@ -1,0 +1,42 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - Assignment:
+      variable: result
+      value:
+        BinaryOp:
+          left:
+            BinaryOp:
+              left:
+                BinaryOp:
+                  left:
+                    Identifier:
+                      name: a
+                  operator: +
+                  right:
+                    Identifier:
+                      name: b
+              operator: "**"
+              right:
+                Literal:
+                  value:
+                    Number: 2
+                  literal_type: number
+          operator: +
+          right:
+            BinaryOp:
+              left:
+                BinaryOp:
+                  left:
+                    Identifier:
+                      name: c
+                  operator: "*"
+                  right:
+                    Identifier:
+                      name: d
+              operator: /
+              right:
+                Identifier:
+                  name: e

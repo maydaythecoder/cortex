@@ -1,0 +1,36 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - Function:
+      name: calculate
+      parameters:
+        - name: x
+          type_annotation:
+            type_name: number
+        - name: y
+          type_annotation:
+            type_name: number
+        - name: z
+          type_annotation:
+            type_name: number
+      return_type: number
+      body:
+        statements:
+          - ReturnStatement:
+              value:
+                BinaryOp:
+                  left:
+                    BinaryOp:
+                      left:
+                        Identifier:
+                          name: x
+                      operator: "*"
+                      right:
+                        Identifier:
+                          name: y
+                  operator: +
+                  right:
+                    Identifier:
+                      name: z

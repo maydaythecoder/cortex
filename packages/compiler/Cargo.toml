@@ -26,8 +26,12 @@ indexmap = "2.0"
 log = "0.4"
 env_logger = "0.10"
 
+# Serialization (for snapshot testing)
+serde = { version = "1.0", features = ["derive"] }
+
 [dev-dependencies]
 criterion = "0.5"
+insta = { version = "1.40", features = ["yaml"] }
 
 [[bin]]
 name = "cortexc"

@@ -1,0 +1,69 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - Function:
+      name: fibonacci
+      parameters:
+        - name: n
+          type_annotation:
+            type_name: number
+      return_type: number
+      body:
+        statements:
+          - IfStatement:
+              condition:
+                BinaryOp:
+                  left:
+                    Identifier:
+                      name: n
+                  operator: "<"
+                  right:
+                    Literal:
+                      value:
+                        Number: 2
+                      literal_type: number
+              then_block:
+                statements:
+                  - ReturnStatement:
+                      value:
+                        Identifier:
+                          name: n
+              else_block: ~
+          - ReturnStatement:
+              value:
+                BinaryOp:
+                  left:
+                    Index:
+                      container:
+                        Identifier:
+                          name: fibonacci
+                      index:
+                        BinaryOp:
+                          left:
+                            Identifier:
+                              name: n
+                          operator: "-"
+                          right:
+                            Literal:
+                              value:
+                                Number: 1
+                              literal_type: number
+                  operator: +
+                  right:
+                    Index:
+                      container:
+                        Identifier:
+                          name: fibonacci
+                      index:
+                        BinaryOp:
+                          left:
+                            Identifier:
+                              name: n
+                          operator: "-"
+                          right:
+                            Literal:
+                              value:
+                                Number: 2
+                              literal_type: number

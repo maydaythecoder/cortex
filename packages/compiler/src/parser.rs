@@ -61,6 +61,69 @@ impl Parser {
         Self { tokens, position: 0 }
     }
     
+    /// Returns the binding power (precedence and associativity) for binary operators.
+    /// 
+    /// Returns a tuple of (left_binding_power, right_binding_power).
+    /// For left-associative operators: (n, n+1)
+    /// For right-associative operators: (n+1, n)
+    /// 
+    /// Higher values = higher precedence
+    /// 
+    /// Reference: Pratt parsing / precedence climbing algorithm
+    fn binding_power(op: &Token) -> Option<(u8, u8)> {
+        match op {
+            // Logical OR - lowest precedence
+            Token::Or => Some((1, 2)),
+            
+            // Logical AND
+            Token::And => Some((3, 4)),
+            
+            // Equality operators
+            Token::Equals | Token::NotEquals => Some((5, 6)),
+            
+            // Comparison operators
+            Token::LessThan | Token::LessEqual | 
+            Token::GreaterThan | Token::GreaterEqual => Some((7, 8)),
+            
+            // Range operator
+            Token::Range => Some((9, 10)),
+            
+            // Addition and subtraction
+            Token::Plus | Token::Minus => Some((11, 12)),
+            
+            // Multiplication, division, and modulo
+            Token::Multiply | Token::Divide | Token::Modulo => Some((13, 14)),
+            
+            // Power operator (right-associative)
+            Token::Power => Some((16, 15)),
+            
+            // Not a binary operator
+            _ => None,
+        }
+    }
+    
+    /// Returns the operator string for a token
+    fn token_to_operator(token: &Token) -> Option<String> {
+        match token {
+            Token::Or => Some("||".to_string()),
+            Token::And => Some("&&".to_string()),
+            Token::Equals => Some("==".to_string()),
+            Token::NotEquals => Some("!=".to_string()),
+            Token::LessThan => Some("<".to_string()),
+            Token::LessEqual => Some("<=".to_string()),
+            Token::GreaterThan => Some(">".to_string()),
+            Token::GreaterEqual => Some(">=".to_string()),
+            Token::Range => Some("..".to_string()),
+            Token::Plus => Some("+".to_string()),
+            Token::Minus => Some("-".to_string()),
+            Token::Multiply => Some("*".to_string()),
+            Token::Divide => Some("/".to_string()),
+            Token::Modulo => Some("%".to_string()),
+            Token::Power => Some("**".to_string()),
+            _ => None,
+        }
+    }
+    
     /// Parses the token stream into an Abstract Syntax Tree (AST).
     /// 
     /// # Returns
@@ -566,200 +629,100 @@ impl Parser {
         Ok(Statement::ReturnStatement(ReturnStatement::new(value)))
     }
     
+    /// Parses an expression using Pratt parsing (precedence climbing).
+    /// 
+    /// This implementation correctly handles operator precedence and associativity,
+    /// including right-associative operators like power (**).
+    /// 
+    /// # Arguments
+    /// 
+    /// * `min_bp` - Minimum binding power (precedence level) for this parse
+    /// 
+    /// # Reference
+    /// 
+    /// Based on Pratt parsing algorithm from:
+    /// - https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html
     fn parse_expression(&mut self) -> Result<Expression> {
-        self.parse_range()
+        self.parse_expression_bp(0)
     }
     
-    fn parse_range(&mut self) -> Result<Expression> {
-        let mut left = self.parse_logical_or()?;
+    fn parse_expression_bp(&mut self, min_bp: u8) -> Result<Expression> {
+        // Parse prefix/unary operators and atoms
+        let mut left = self.parse_prefix()?;
         
-        if self.match_token(Token::Range) {
-            let right = self.parse_logical_or()?;
-            left = Expression::Range(RangeExpression::new(left, right));
-        }
+        // Parse postfix operators (function calls, array indexing)
+        left = self.parse_postfix_ops(left)?;
         
-        Ok(left)
-    }
-    
-    fn parse_logical_or(&mut self) -> Result<Expression> {
-        let mut left = self.parse_logical_and()?;
-        
-        while self.match_token(Token::Or) {
-            let right = self.parse_logical_and()?;
-            left = Expression::BinaryOp(BinaryOp::new(left, "||".to_string(), right));
-        }
-        
-        Ok(left)
-    }
-    
-    fn parse_logical_and(&mut self) -> Result<Expression> {
-        let mut left = self.parse_equality()?;
-        
-        while self.match_token(Token::And) {
-            let right = self.parse_equality()?;
-            left = Expression::BinaryOp(BinaryOp::new(left, "&&".to_string(), right));
-        }
-        
-        Ok(left)
-    }
-    
-    fn parse_equality(&mut self) -> Result<Expression> {
-        let mut left = self.parse_comparison()?;
-        
-        while self.match_token(Token::Equals) | self.match_token(Token::NotEquals) {
-            let operator = match self.tokens.get(self.position - 1) {
-                Some(token) => match &token.token {
-                    Token::Equals => "==".to_string(),
-                    Token::NotEquals => "!=".to_string(),
-                    _ => unreachable!(),
-                }
-                None => unreachable!(),
+        // Parse binary operators with precedence climbing
+        loop {
+            let current = match self.current_token() {
+                Some(tok) => tok,
+                None => break,
             };
-            let right = self.parse_comparison()?;
-            left = Expression::BinaryOp(BinaryOp::new(left, operator, right));
-        }
-        
-        Ok(left)
-    }
-    
-    fn parse_comparison(&mut self) -> Result<Expression> {
-        let mut left = self.parse_term()?;
-        
-        while self.match_token(Token::LessThan) | 
-              self.match_token(Token::LessEqual) | 
-              self.match_token(Token::GreaterThan) | 
-              self.match_token(Token::GreaterEqual) {
-            let operator = match self.tokens.get(self.position - 1) {
-                Some(token) => match &token.token {
-                    Token::LessThan => "<".to_string(),
-                    Token::LessEqual => "<=".to_string(),
-                    Token::GreaterThan => ">".to_string(),
-                    Token::GreaterEqual => ">=".to_string(),
-                    _ => unreachable!(),
-                }
-                None => unreachable!(),
+            
+            // Check if current token is a binary operator
+            let (l_bp, r_bp) = match Self::binding_power(&current.token) {
+                Some(bp) => bp,
+                None => break,
             };
-            let right = self.parse_term()?;
-            left = Expression::BinaryOp(BinaryOp::new(left, operator, right));
-        }
-        
-        Ok(left)
-    }
-    
-    fn parse_term(&mut self) -> Result<Expression> {
-        let mut left = self.parse_factor()?;
-        
-        while self.match_token(Token::Plus) | self.match_token(Token::Minus) {
-            let operator = match self.tokens.get(self.position - 1) {
-                Some(token) => match &token.token {
-                    Token::Plus => "+".to_string(),
-                    Token::Minus => "-".to_string(),
-                    _ => unreachable!(),
-                }
-                None => unreachable!(),
-            };
-            let right = self.parse_factor()?;
-            left = Expression::BinaryOp(BinaryOp::new(left, operator, right));
-        }
-        
-        Ok(left)
-    }
-    
-    fn parse_factor(&mut self) -> Result<Expression> {
-        let mut left = self.parse_unary()?;
-        
-        while self.match_token(Token::Multiply) | 
-              self.match_token(Token::Divide) | 
-              self.match_token(Token::Modulo) | 
-              self.match_token(Token::Power) {
-            let operator = match self.tokens.get(self.position - 1) {
-                Some(token) => match &token.token {
-                    Token::Multiply => "*".to_string(),
-                    Token::Divide => "/".to_string(),
-                    Token::Modulo => "%".to_string(),
-                    Token::Power => "**".to_string(),
-                    _ => unreachable!(),
-                }
-                None => unreachable!(),
-            };
-            let right = self.parse_unary()?;
-            left = Expression::BinaryOp(BinaryOp::new(left, operator, right));
-        }
-        
-        Ok(left)
-    }
-    
-    fn parse_unary(&mut self) -> Result<Expression> {
-        if self.match_token(Token::Not) {
-            let operand = self.parse_unary()?;
-            Ok(Expression::UnaryOp(UnaryOp::new("!".to_string(), operand)))
-        } else if self.match_token(Token::Minus) {
-            let operand = self.parse_unary()?;
-            Ok(Expression::UnaryOp(UnaryOp::new("-".to_string(), operand)))
-        } else if self.match_token(Token::Plus) {
-            let operand = self.parse_unary()?;
-            Ok(Expression::UnaryOp(UnaryOp::new("+".to_string(), operand)))
-        } else {
-            self.parse_postfix()
-        }
-    }
-    
-    fn parse_postfix(&mut self) -> Result<Expression> {
-        let mut left = self.parse_primary()?;
-        
-        // Handle postfix operations (function calls and array indexing)
-        while let Some(current) = self.current_token() {
-            match &current.token {
-                Token::LeftBracket => {
-                    self.advance(); // Consume '['
-                    
-                    // Check if this is an empty function call
-                    if self.match_token(Token::RightBracket) {
-                        // This is a function call with no arguments
-                        // For now, we'll treat this as an index expression with a null index
-                        left = Expression::Index(IndexExpression::new(left, Expression::Literal(Literal::new(LiteralValue::Null, "null".to_string()))));
-                    } else {
-                        // Parse the arguments (could be single argument or multiple)
-                        let mut arguments = Vec::new();
-                        
-                        loop {
-                            let arg = self.parse_expression()?;
-                            arguments.push(arg);
-                            
-                            if self.match_token(Token::RightBracket) {
-                                break;
-                            }
-                            
-                            if !self.match_token(Token::Comma) {
-                                return Err(ParseError::UnexpectedToken {
-                                    expected: "comma or closing bracket".to_string(),
-                                    actual: format!("{:?}", self.current_token().map(|t| &t.token).unwrap_or(&Token::Error)),
-                                    line: self.current_token().map(|t| t.line).unwrap_or(0),
-                                    column: self.current_token().map(|t| t.column).unwrap_or(0),
-                                }.into());
-                            }
-                        }
-                        
-                        // Handle function call arguments properly
-                        let index = if arguments.len() == 1 {
-                            // Single argument - use it directly
-                            arguments[0].clone()
-                        } else {
-                            // Multiple arguments - wrap in array
-                            Expression::Array(Array::new(arguments))
-                        };
-                        
-                        left = Expression::Index(IndexExpression::new(left, index));
-                    }
-                }
-                _ => break,
+            
+            // If the binding power is less than minimum, stop
+            if l_bp < min_bp {
+                break;
             }
+            
+            // Get the operator string
+            let operator = Self::token_to_operator(&current.token)
+                .expect("Token should have operator representation");
+            
+            // Special handling for range operator
+            if current.token == Token::Range {
+                self.advance();
+                let right = self.parse_expression_bp(r_bp)?;
+                left = Expression::Range(RangeExpression::new(left, right));
+                continue;
+            }
+            
+            // Consume the operator
+            self.advance();
+            
+            // Parse the right-hand side with appropriate binding power
+            let right = self.parse_expression_bp(r_bp)?;
+            
+            // Create binary operation
+            left = Expression::BinaryOp(BinaryOp::new(left, operator, right));
         }
         
         Ok(left)
     }
     
-    fn parse_primary(&mut self) -> Result<Expression> {
+    /// Parses prefix operators (unary operators) and atoms
+    fn parse_prefix(&mut self) -> Result<Expression> {
+        let current = self.current_token()
+            .ok_or_else(|| ParseError::UnexpectedEof)?;
+        
+        match &current.token {
+            Token::Not => {
+                self.advance();
+                let operand = self.parse_prefix()?;
+                Ok(Expression::UnaryOp(UnaryOp::new("!".to_string(), operand)))
+            }
+            Token::Minus => {
+                self.advance();
+                let operand = self.parse_prefix()?;
+                Ok(Expression::UnaryOp(UnaryOp::new("-".to_string(), operand)))
+            }
+            Token::Plus => {
+                self.advance();
+                let operand = self.parse_prefix()?;
+                Ok(Expression::UnaryOp(UnaryOp::new("+".to_string(), operand)))
+            }
+            _ => self.parse_atom(),
+        }
+    }
+    
+    /// Parses atomic expressions (literals, identifiers, parenthesized expressions)
+    fn parse_atom(&mut self) -> Result<Expression> {
         let current = self.current_token()
             .ok_or_else(|| ParseError::UnexpectedEof)?;
         
@@ -803,39 +766,18 @@ impl Parser {
             }
             
             Token::LeftBracket => {
-                self.advance();
-                
-                if self.match_token(Token::RightBracket) {
-                    // Empty array
-                    Ok(Expression::Array(Array::new(vec![])))
-                } else {
-                    // Parse array elements
-                    let mut elements = Vec::new();
-                    
-                    loop {
-                        let element = self.parse_expression()?;
-                        elements.push(element);
-                        
-                        if self.match_token(Token::RightBracket) {
-                            break;
-                        }
-                        
-                        if !self.match_token(Token::Comma) {
-                            return Err(ParseError::UnexpectedToken {
-                                expected: "comma or closing bracket".to_string(),
-                                actual: format!("{:?}", self.current_token().map(|t| &t.token).unwrap_or(&Token::Error)),
-                                line: self.current_token().map(|t| t.line).unwrap_or(0),
-                                column: self.current_token().map(|t| t.column).unwrap_or(0),
-                            }.into());
-                        }
-                    }
-                    
-                    Ok(Expression::Array(Array::new(elements)))
-                }
+                self.parse_array()
             }
             
             Token::LeftBrace => {
                 self.parse_dictionary()
+            }
+            
+            Token::LeftParen => {
+                self.advance();
+                let expr = self.parse_expression()?;
+                self.expect(Token::RightParen)?;
+                Ok(expr)
             }
             
             _ => Err(ParseError::UnexpectedToken {
@@ -846,6 +788,98 @@ impl Parser {
             }.into())
         }
     }
+    
+    /// Parses array literals
+    fn parse_array(&mut self) -> Result<Expression> {
+        self.advance(); // Consume '['
+        
+        if self.match_token(Token::RightBracket) {
+            // Empty array
+            Ok(Expression::Array(Array::new(vec![])))
+        } else {
+            // Parse array elements
+            let mut elements = Vec::new();
+            
+            loop {
+                let element = self.parse_expression()?;
+                elements.push(element);
+                
+                if self.match_token(Token::RightBracket) {
+                    break;
+                }
+                
+                if !self.match_token(Token::Comma) {
+                    return Err(ParseError::UnexpectedToken {
+                        expected: "comma or closing bracket".to_string(),
+                        actual: format!("{:?}", self.current_token().map(|t| &t.token).unwrap_or(&Token::Error)),
+                        line: self.current_token().map(|t| t.line).unwrap_or(0),
+                        column: self.current_token().map(|t| t.column).unwrap_or(0),
+                    }.into());
+                }
+            }
+            
+            Ok(Expression::Array(Array::new(elements)))
+        }
+    }
+    
+    /// Parses postfix operators (function calls, array indexing)
+    fn parse_postfix_ops(&mut self, mut left: Expression) -> Result<Expression> {
+        // This method handles postfix operations like function calls and indexing
+        loop {
+            let current = match self.current_token() {
+                Some(tok) => tok,
+                None => break,
+            };
+            
+            match &current.token {
+                Token::LeftBracket => {
+                    self.advance(); // Consume '['
+                    
+                    // Check if this is an empty function call
+                    if self.match_token(Token::RightBracket) {
+                        left = Expression::Index(IndexExpression::new(
+                            left,
+                            Expression::Literal(Literal::new(LiteralValue::Null, "null".to_string()))
+                        ));
+                    } else {
+                        // Parse the arguments (could be single argument or multiple)
+                        let mut arguments = Vec::new();
+                        
+                        loop {
+                            let arg = self.parse_expression()?;
+                            arguments.push(arg);
+                            
+                            if self.match_token(Token::RightBracket) {
+                                break;
+                            }
+                            
+                            if !self.match_token(Token::Comma) {
+                                return Err(ParseError::UnexpectedToken {
+                                    expected: "comma or closing bracket".to_string(),
+                                    actual: format!("{:?}", self.current_token().map(|t| &t.token).unwrap_or(&Token::Error)),
+                                    line: self.current_token().map(|t| t.line).unwrap_or(0),
+                                    column: self.current_token().map(|t| t.column).unwrap_or(0),
+                                }.into());
+                            }
+                        }
+                        
+                        // Handle function call arguments properly
+                        let index = if arguments.len() == 1 {
+                            arguments[0].clone()
+        } else {
+                            Expression::Array(Array::new(arguments))
+                        };
+                        
+                        left = Expression::Index(IndexExpression::new(left, index));
+                    }
+                }
+                _ => break,
+            }
+        }
+        
+        Ok(left)
+    }
+    
     
     // fn parse_call(&mut self, function_name: String) -> Result<Expression> {
     //     let mut arguments = Vec::new();
@@ -948,6 +982,144 @@ mod tests {
             }
         } else {
             panic!("Expected expression statement");
+        }
+    }
+    
+    #[test]
+    fn test_operator_precedence() {
+        // Test that multiplication has higher precedence than addition
+        // 1 + 2 * 3 should parse as 1 + (2 * 3), not (1 + 2) * 3
+        let source = "1 + 2 * 3";
+        let mut lexer = Lexer::new(source);
+        let tokens = lexer.tokenize().unwrap();
+        let mut parser = Parser::new(tokens);
+        let ast = parser.parse().unwrap();
+        
+        if let Statement::Expression(Expression::BinaryOp(add_op)) = &ast.statements[0] {
+            assert_eq!(add_op.operator, "+");
+            // Right side should be multiplication
+            if let Expression::BinaryOp(mul_op) = &*add_op.right {
+                assert_eq!(mul_op.operator, "*");
+            } else {
+                panic!("Expected multiplication on right side");
+            }
+        } else {
+            panic!("Expected addition expression");
+        }
+    }
+    
+    #[test]
+    fn test_power_right_associativity() {
+        // Test that power operator is right-associative
+        // 2 ** 3 ** 2 should parse as 2 ** (3 ** 2), not (2 ** 3) ** 2
+        let source = "2 ** 3 ** 2";
+        let mut lexer = Lexer::new(source);
+        let tokens = lexer.tokenize().unwrap();
+        let mut parser = Parser::new(tokens);
+        let ast = parser.parse().unwrap();
+        
+        if let Statement::Expression(Expression::BinaryOp(power_op)) = &ast.statements[0] {
+            assert_eq!(power_op.operator, "**");
+            // Right side should also be power
+            if let Expression::BinaryOp(inner_power) = &*power_op.right {
+                assert_eq!(inner_power.operator, "**");
+            } else {
+                panic!("Expected power operation on right side for right-associativity");
+            }
+        } else {
+            panic!("Expected power expression");
+        }
+    }
+    
+    #[test]
+    fn test_complex_precedence() {
+        // Test complex expression: 2 + 3 * 4 ** 2 - 1
+        // Should parse as: 2 + (3 * (4 ** 2)) - 1
+        let source = "2 + 3 * 4 ** 2 - 1";
+        let mut lexer = Lexer::new(source);
+        let tokens = lexer.tokenize().unwrap();
+        let mut parser = Parser::new(tokens);
+        let ast = parser.parse().unwrap();
+        
+        // The root should be subtraction (lowest precedence in this expression)
+        if let Statement::Expression(Expression::BinaryOp(sub_op)) = &ast.statements[0] {
+            assert_eq!(sub_op.operator, "-");
+            
+            // Left side should be addition
+            if let Expression::BinaryOp(add_op) = &*sub_op.left {
+                assert_eq!(add_op.operator, "+");
+                
+                // Right side of addition should be multiplication
+                if let Expression::BinaryOp(mul_op) = &*add_op.right {
+                    assert_eq!(mul_op.operator, "*");
+                    
+                    // Right side of multiplication should be power
+                    if let Expression::BinaryOp(power_op) = &*mul_op.right {
+                        assert_eq!(power_op.operator, "**");
+                    } else {
+                        panic!("Expected power operation");
+                    }
+                } else {
+                    panic!("Expected multiplication");
+                }
+            } else {
+                panic!("Expected addition");
+            }
+        } else {
+            panic!("Expected subtraction expression");
+        }
+    }
+    
+    #[test]
+    fn test_logical_operators_precedence() {
+        // Test that && has higher precedence than ||
+        // true || false && true should parse as true || (false && true)
+        let source = "true || false && true";
+        let mut lexer = Lexer::new(source);
+        let tokens = lexer.tokenize().unwrap();
+        let mut parser = Parser::new(tokens);
+        let ast = parser.parse().unwrap();
+        
+        if let Statement::Expression(Expression::BinaryOp(or_op)) = &ast.statements[0] {
+            assert_eq!(or_op.operator, "||");
+            
+            // Right side should be AND
+            if let Expression::BinaryOp(and_op) = &*or_op.right {
+                assert_eq!(and_op.operator, "&&");
+            } else {
+                panic!("Expected AND operation on right side");
+            }
+        } else {
+            panic!("Expected OR expression");
+        }
+    }
+    
+    #[test]
+    fn test_comparison_operators() {
+        // Test comparison operators
+        let source = "1 < 2 && 3 > 2";
+        let mut lexer = Lexer::new(source);
+        let tokens = lexer.tokenize().unwrap();
+        let mut parser = Parser::new(tokens);
+        let ast = parser.parse().unwrap();
+        
+        if let Statement::Expression(Expression::BinaryOp(and_op)) = &ast.statements[0] {
+            assert_eq!(and_op.operator, "&&");
+            
+            // Both sides should be comparison operators
+            if let Expression::BinaryOp(left_cmp) = &*and_op.left {
+                assert_eq!(left_cmp.operator, "<");
+            } else {
+                panic!("Expected less-than comparison");
+            }
+            
+            if let Expression::BinaryOp(right_cmp) = &*and_op.right {
+                assert_eq!(right_cmp.operator, ">");
+            } else {
+                panic!("Expected greater-than comparison");
+            }
+        } else {
+            panic!("Expected AND expression");
         }
     }
 }

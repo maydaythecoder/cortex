@@ -1,0 +1,29 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - ForLoop:
+      variable: i
+      iterable:
+        Range:
+          start:
+            Literal:
+              value:
+                Number: 0
+              literal_type: number
+          end:
+            Literal:
+              value:
+                Number: 10
+              literal_type: number
+      body:
+        statements:
+          - Expression:
+              Index:
+                container:
+                  Identifier:
+                    name: print
+                index:
+                  Identifier:
+                    name: i

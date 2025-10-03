@@ -1,0 +1,26 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - Assignment:
+      variable: dict
+      value:
+        Dictionary:
+          pairs:
+            - - Literal:
+                  value:
+                    String: name
+                  literal_type: string
+              - Literal:
+                  value:
+                    String: Cortex
+                  literal_type: string
+            - - Literal:
+                  value:
+                    String: version
+                  literal_type: string
+              - Literal:
+                  value:
+                    Number: 1
+                  literal_type: number

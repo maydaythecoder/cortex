@@ -1,0 +1,43 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - Expression:
+      Index:
+        container:
+          Identifier:
+            name: add
+        index:
+          Array:
+            elements:
+              - Index:
+                  container:
+                    Identifier:
+                      name: multiply
+                  index:
+                    Array:
+                      elements:
+                        - Literal:
+                            value:
+                              Number: 2
+                            literal_type: number
+                        - Literal:
+                            value:
+                              Number: 3
+                            literal_type: number
+              - Index:
+                  container:
+                    Identifier:
+                      name: divide
+                  index:
+                    Array:
+                      elements:
+                        - Literal:
+                            value:
+                              Number: 10
+                            literal_type: number
+                        - Literal:
+                            value:
+                              Number: 2
+                            literal_type: number

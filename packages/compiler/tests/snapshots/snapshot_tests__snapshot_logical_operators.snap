@@ -1,0 +1,26 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - Expression:
+      BinaryOp:
+        left:
+          Literal:
+            value:
+              Boolean: true
+            literal_type: boolean
+        operator: "||"
+        right:
+          BinaryOp:
+            left:
+              Literal:
+                value:
+                  Boolean: false
+                literal_type: boolean
+            operator: "&&"
+            right:
+              Literal:
+                value:
+                  Boolean: true
+                literal_type: boolean

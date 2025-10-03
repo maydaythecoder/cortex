@@ -1,0 +1,12 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - ConstantAssignment:
+      variable: PI
+      value:
+        Literal:
+          value:
+            Number: 3.14159
+          literal_type: number

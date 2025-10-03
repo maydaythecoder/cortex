@@ -1,0 +1,47 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - Assignment:
+      variable: i
+      value:
+        Literal:
+          value:
+            Number: 0
+          literal_type: number
+  - WhileLoop:
+      condition:
+        BinaryOp:
+          left:
+            Identifier:
+              name: i
+          operator: "<"
+          right:
+            Literal:
+              value:
+                Number: 10
+              literal_type: number
+      body:
+        statements:
+          - Expression:
+              Index:
+                container:
+                  Identifier:
+                    name: print
+                index:
+                  Identifier:
+                    name: i
+          - Assignment:
+              variable: i
+              value:
+                BinaryOp:
+                  left:
+                    Identifier:
+                      name: i
+                  operator: +
+                  right:
+                    Literal:
+                      value:
+                        Number: 1
+                      literal_type: number

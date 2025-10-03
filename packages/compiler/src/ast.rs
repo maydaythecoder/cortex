@@ -3,8 +3,9 @@
 //! Defines the AST nodes for the Cortex language.
 
 use std::fmt;
+use serde::{Serialize, Deserialize};
 
-// #[derive(Debug, Clone, PartialEq)]
+// #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 // pub enum NodeType {
 //     // Program structure
 //     Program,
@@ -33,7 +34,7 @@ use std::fmt;
 //     TypeAnnotation,
 // }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum LiteralValue {
     Number(f64),
     String(String),
@@ -52,7 +53,7 @@ impl fmt::Display for LiteralValue {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum Expression {
     Literal(Literal),
     Identifier(Identifier),
@@ -64,7 +65,7 @@ pub enum Expression {
     Range(RangeExpression),
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum Statement {
     Function(Function),
     IfStatement(IfStatement),
@@ -77,7 +78,7 @@ pub enum Statement {
     Expression(Expression),
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Program {
     pub statements: Vec<Statement>,
 }
@@ -88,7 +89,7 @@ impl Program {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Function {
     pub name: String,
     pub parameters: Vec<Variable>,
@@ -102,7 +103,7 @@ impl Function {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Variable {
     pub name: String,
     pub type_annotation: Option<TypeAnnotation>,
@@ -114,7 +115,7 @@ impl Variable {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct TypeAnnotation {
     pub type_name: String,
 }
@@ -125,7 +126,7 @@ impl TypeAnnotation {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct BinaryOp {
     pub left: Box<Expression>,
     pub operator: String,
@@ -142,7 +143,7 @@ impl BinaryOp {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct UnaryOp {
     pub operator: String,
     pub operand: Box<Expression>,
@@ -158,7 +159,7 @@ impl UnaryOp {
 }
 
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Array {
     pub elements: Vec<Expression>,
 }
@@ -169,7 +170,7 @@ impl Array {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Dictionary {
     pub pairs: Vec<(Expression, Expression)>,
 }
@@ -180,7 +181,7 @@ impl Dictionary {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct IndexExpression {
     pub container: Box<Expression>,
     pub index: Box<Expression>,
@@ -195,7 +196,7 @@ impl IndexExpression {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RangeExpression {
     pub start: Box<Expression>,
     pub end: Box<Expression>,
@@ -210,7 +211,7 @@ impl RangeExpression {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Literal {
     pub value: LiteralValue,
     pub literal_type: String,
@@ -222,7 +223,7 @@ impl Literal {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Identifier {
     pub name: String,
 }
@@ -233,7 +234,7 @@ impl Identifier {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Block {
     pub statements: Vec<Statement>,
 }
@@ -244,7 +245,7 @@ impl Block {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct IfStatement {
     pub condition: Expression,
     pub then_block: Block,
@@ -257,7 +258,7 @@ impl IfStatement {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct WhileLoop {
     pub condition: Expression,
     pub body: Block,
@@ -269,7 +270,7 @@ impl WhileLoop {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ForLoop {
     pub variable: String,
     pub iterable: Option<Expression>,
@@ -282,7 +283,7 @@ impl ForLoop {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ReturnStatement {
     pub value: Option<Expression>,
 }
@@ -293,7 +294,7 @@ impl ReturnStatement {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Assignment {
     pub variable: String,
     pub value: Expression,
@@ -305,7 +306,7 @@ impl Assignment {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ConstantAssignment {
     pub variable: String,
     pub value: Expression,
@@ -317,7 +318,7 @@ impl ConstantAssignment {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct IndexAssignment {
     pub container: Box<Expression>,
     pub index: Box<Expression>,

@@ -1,0 +1,26 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - Expression:
+      BinaryOp:
+        left:
+          Literal:
+            value:
+              Number: 2
+            literal_type: number
+        operator: "**"
+        right:
+          BinaryOp:
+            left:
+              Literal:
+                value:
+                  Number: 3
+                literal_type: number
+            operator: "**"
+            right:
+              Literal:
+                value:
+                  Number: 2
+                literal_type: number

@@ -1,0 +1,26 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - Assignment:
+      variable: x
+      value:
+        BinaryOp:
+          left:
+            UnaryOp:
+              operator: "-"
+              operand:
+                Literal:
+                  value:
+                    Number: 5
+                  literal_type: number
+          operator: +
+          right:
+            UnaryOp:
+              operator: "!"
+              operand:
+                Literal:
+                  value:
+                    Boolean: false
+                  literal_type: boolean

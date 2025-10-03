@@ -1,0 +1,10 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - Assignment:
+      variable: empty
+      value:
+        Array:
+          elements: []

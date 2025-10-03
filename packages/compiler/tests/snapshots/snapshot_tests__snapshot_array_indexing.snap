@@ -1,0 +1,19 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - IndexAssignment:
+      container:
+        Identifier:
+          name: arr
+      index:
+        Literal:
+          value:
+            Number: 0
+          literal_type: number
+      value:
+        Literal:
+          value:
+            Number: 42
+          literal_type: number

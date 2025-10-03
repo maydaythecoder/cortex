@@ -1,0 +1,12 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - Assignment:
+      variable: message
+      value:
+        Literal:
+          value:
+            String: "Hello, Cortex!"
+          literal_type: string

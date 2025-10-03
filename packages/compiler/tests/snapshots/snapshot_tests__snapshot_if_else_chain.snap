@@ -1,0 +1,67 @@
+---
+source: tests/snapshot_tests.rs
+expression: ast
+---
+statements:
+  - IfStatement:
+      condition:
+        BinaryOp:
+          left:
+            Identifier:
+              name: x
+          operator: "<"
+          right:
+            Literal:
+              value:
+                Number: 0
+              literal_type: number
+      then_block:
+        statements:
+          - Expression:
+              Index:
+                container:
+                  Identifier:
+                    name: print
+                index:
+                  Literal:
+                    value:
+                      String: negative
+                    literal_type: string
+      else_block:
+        statements:
+          - IfStatement:
+              condition:
+                BinaryOp:
+                  left:
+                    Identifier:
+                      name: x
+                  operator: "=="
+                  right:
+                    Literal:
+                      value:
+                        Number: 0
+                      literal_type: number
+              then_block:
+                statements:
+                  - Expression:
+                      Index:
+                        container:
+                          Identifier:
+                            name: print
+                        index:
+                          Literal:
+                            value:
+                              String: zero
+                            literal_type: string
+              else_block:
+                statements:
+                  - Expression:
+                      Index:
+                        container:
+                          Identifier:
+                            name: print
+                        index:
+                          Literal:
+                            value:
+                              String: positive
+                            literal_type: string
