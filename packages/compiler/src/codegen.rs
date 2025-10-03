@@ -197,12 +197,22 @@ impl Interpreter {
     }
     
     fn interpret_while_loop(&mut self, while_loop: &WhileLoop) -> Result<()> {
+        let mut iteration_count = 0;
         loop {
+            iteration_count += 1;
+            if iteration_count > 10000 {
+                return Err(anyhow::anyhow!("While loop exceeded maximum iterations (10000) - possible infinite loop"));
+            }
             let condition = self.interpret_expression(&while_loop.condition)?;
             if !self.is_truthy(&condition) {
                 break;
             }
             self.interpret_block(&while_loop.body)?;
+            
+            // Check for return statement
+            if self.current_return_value.is_some() {
+                break;
+            }
         }
         Ok(())
     }
