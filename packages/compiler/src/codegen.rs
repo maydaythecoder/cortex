@@ -771,6 +771,11 @@ impl Interpreter {
                         } else {
                             Err(anyhow::anyhow!("round() expects a number"))
                         }
+                    } else if self.variables.contains_key(&identifier.name) {
+                        // This is array/dictionary indexing - the identifier refers to a variable
+                        let container = self.interpret_expression(&index_expr.container)?;
+                        let index = self.interpret_expression(&index_expr.index)?;
+                        self.access_element(&container, &index)
                     } else if self.functions.contains_key(&identifier.name) {
                         // This is a user-defined function call
                         let index_value = self.interpret_expression(&index_expr.index)?;
@@ -806,7 +811,8 @@ impl Interpreter {
                             self.call_function(&identifier.name, vec![index_value])
                         }
                     } else {
-                        // This is array/dictionary indexing - the identifier refers to a variable
+                        // This is array/dictionary indexing - the identifier could refer to a variable that hasn't been declared yet
+                        // or it might be a typo. Try to access as variable first, let it fail naturally if undefined
                         let container = self.interpret_expression(&index_expr.container)?;
                         let index = self.interpret_expression(&index_expr.index)?;
                         self.access_element(&container, &index)
